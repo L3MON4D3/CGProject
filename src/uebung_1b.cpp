@@ -5,20 +5,16 @@ const int WINDOW_WIDTH =  800;
 const int WINDOW_HEIGHT = 800;
 
 // called whenever the window gets resized
-void
-resizeCallback(GLFWwindow* window, int width, int height);
+void resizeCallback(GLFWwindow* window, int width, int height);
 
 // loads a shader source file, tries to compile the shader
 // and checks for compilation errors
-unsigned int
-compileShaderHelper(const char* filename, unsigned int type);
+unsigned int compileShaderHelper(const char* filename, unsigned int type);
 
 // checks linked program for linker errors
-bool
-checkProgram(unsigned int program);
+bool checkProgram(unsigned int program);
 
-int
-main(int, char* argv[]) {
+int main(int, char* argv[]) {
     GLFWwindow* window = initOpenGL(WINDOW_WIDTH, WINDOW_HEIGHT, argv[0]);
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
@@ -86,8 +82,7 @@ void resizeCallback(GLFWwindow*, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-unsigned int
-compileShaderHelper(const char* filename, unsigned int type) {
+unsigned int compileShaderHelper(const char* filename, unsigned int type) {
     const char* shaderSource = loadShaderFile(filename);
 
     // create shader object
@@ -111,8 +106,7 @@ compileShaderHelper(const char* filename, unsigned int type) {
     return shader;
 }
 
-bool
-checkProgram(unsigned int program) {
+bool checkProgram(unsigned int program) {
     int success;
     char infoLog[512];
     glGetProgramiv(program, GL_LINK_STATUS, &success);

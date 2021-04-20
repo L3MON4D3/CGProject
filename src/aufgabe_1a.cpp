@@ -66,8 +66,7 @@ int main(int, char* argv[]) {
     glfwTerminate();
 }
 
-void resizeCallback(GLFWwindow*, int width, int height)
-{
+void resizeCallback(GLFWwindow*, int width, int height) {
     // set new width and height as viewport size
     glViewport(0, 0, width, height);
 }
