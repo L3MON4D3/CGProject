@@ -29,7 +29,8 @@ int main(int, char**) {
     };
 
     unsigned int indices[] = {
-        0, 1, 2
+        0, 1, 2,
+        0, 2, 3
     };
 
     unsigned int VAO;
@@ -54,7 +55,7 @@ int main(int, char**) {
         // render something...
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*) 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*) 0);
 
         // swap buffers == show rendered content
         glfwSwapBuffers(window);
