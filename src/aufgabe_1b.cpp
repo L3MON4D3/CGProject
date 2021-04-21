@@ -29,23 +29,18 @@ int main(int, char**) {
     vertices[0] = 0.f;
     vertices[1] = 0.f;
     vertices[2] = 0.f;
-    for (unsigned int i = 0; i < num_segments; ++i) {
-        float angle = (2.0 * M_PI * i) / num_segments;
-
-        vertices[3 + i*3 + 0] = 0.f; // X
-        vertices[3 + i*3 + 1] = 0.f; // Y
+	float angle_inc = (2.0 * M_PI) / num_segments;
+	float angle = 0;
+    for (unsigned int i = 0; i < num_segments; ++i, angle += angle_inc) {
+        vertices[3 + i*3 + 0] = std::cos(angle)*radius; // X
+        vertices[3 + i*3 + 1] = std::sin(angle)*radius; // Y
         vertices[3 + i*3 + 2] = 0.f; // Z
 
-        unsigned int current_index = i + 1;
-        unsigned int next_index = current_index + 1;
-        if (next_index > num_segments) {
-            next_index = 1;
-        }
-
         indices[i*3 + 0] = 0;
-        indices[i*3 + 1] = 0;
-        indices[i*3 + 2] = 0;
+        indices[i*3 + 1] = i+1;
+        indices[i*3 + 2] = i+2;
     }
+    indices[3*num_segments-1] = 1;
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
