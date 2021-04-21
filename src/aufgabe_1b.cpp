@@ -6,12 +6,10 @@ const int WINDOW_WIDTH =  800;
 const int WINDOW_HEIGHT = 800;
 
 // called whenever the window gets resized
-void
-resizeCallback(GLFWwindow* window, int width, int height);
+void resizeCallback(GLFWwindow* window, int width, int height);
 
-int
-main(int, char* argv[]) {
-    GLFWwindow* window = initOpenGL(WINDOW_WIDTH, WINDOW_HEIGHT, argv[0]);
+int main(int, char**) {
+    GLFWwindow* window = initOpenGL(WINDOW_WIDTH, WINDOW_HEIGHT, "glfw");
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     // load and compile shaders and link program
@@ -79,7 +77,6 @@ main(int, char* argv[]) {
     glfwTerminate();
 }
 
-void resizeCallback(GLFWwindow*, int width, int height)
-{
+void resizeCallback(GLFWwindow*, int width, int height) {
     glViewport(0, 0, width, height);
 }
