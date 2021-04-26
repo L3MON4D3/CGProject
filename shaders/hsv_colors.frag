@@ -12,17 +12,17 @@ vec4 hsva2rgba(vec4 hsva) {
     float q = hsva.z * (1 - hsva.y * f);
     float t = hsva.z * (1 - hsva.y * (1 - f));
     if (hi == 0 || hi == 6)
-		return vec4(hsva.z, t, p, 1);
+		return vec4(hsva.z, t, p, hsva.w);
 	else if (hi == 1)
-		return vec4(q, hsva.z, p, 1);
+		return vec4(q, hsva.z, p, hsva.w);
 	else if (hi == 2)
-		return vec4(p, hsva.z, t, 1);
+		return vec4(p, hsva.z, t, hsva.w);
 	else if (hi == 3)
-		return vec4(p, q, hsva.z, 1);
+		return vec4(p, q, hsva.z, hsva.w);
 	else if (hi == 4)
-		return vec4(t, p, hsva.z, 1);
+		return vec4(t, p, hsva.z, hsva.w);
 	else if (hi == 5)
-		return vec4(hsva.z, p, q, 1);
+		return vec4(hsva.z, p, q, hsva.w);
 
 }
 
