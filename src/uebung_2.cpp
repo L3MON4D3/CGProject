@@ -10,8 +10,8 @@ void
 resizeCallback(GLFWwindow* window, int width, int height);
 
 int
-main(int, char* argv[]) {
-    GLFWwindow* window = initOpenGL(WINDOW_WIDTH, WINDOW_HEIGHT, argv[0]);
+main(int, char**) {
+    GLFWwindow* window = initOpenGL(WINDOW_WIDTH, WINDOW_HEIGHT, "glfw");
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     // load and compile shaders and link program
