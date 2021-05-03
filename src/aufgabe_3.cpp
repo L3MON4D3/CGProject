@@ -85,7 +85,15 @@ main(int, char**) {
         earth.bind();
         glDrawElements(GL_TRIANGLES, earth.vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
-        // TODO: use EARTH_MOON_DISTANCE and time_month variables to transform and render moon
+        moon.transform = sun.transform *
+                         glm::rotate<float>(2 * M_PI * time_year, glm::vec3(0.f, 1.f, 0.f)) *
+                         glm::translate(glm::vec3(SUN_EARTH_DISTANCE, 0.f, 0.f)) *
+                         glm::rotate<float>(2 * M_PI * time_month, glm::vec3(0.f, 1.f, 0.f)) *
+                         glm::translate(glm::vec3(EARTH_MOON_DISTANCE, 0.f, 0.f)) *
+                         glm::scale<float>(glm::vec3(0.2f, 0.2f, 0.2f));
+        glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &moon.transform[0][0]);
+        moon.bind();
+        glDrawElements(GL_TRIANGLES, moon.vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
         // swap buffers == show rendered content
         glfwSwapBuffers(window);
