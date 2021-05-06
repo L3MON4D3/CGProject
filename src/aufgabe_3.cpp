@@ -77,23 +77,24 @@ main(int, char**) {
         glDrawElements(GL_TRIANGLES, sun.vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
         // render earth
-        earth.transform = sun.transform *
+		glm::mat4 earth_pos = sun.transform *
                           glm::rotate<float>(2 * M_PI * time_year, glm::vec3(0.f, 1.f, 0.f)) *
-                          glm::translate(glm::vec3(SUN_EARTH_DISTANCE, 0.f, 0.f)) *
-                          glm::scale<float>(glm::vec3(0.5f, 0.5f, 0.5f));
+                          glm::translate(glm::vec3(SUN_EARTH_DISTANCE, 0.f, 0.f));
+
+        earth.transform = earth_pos * glm::scale<float>(glm::vec3(0.5f, 0.5f, 0.5f));
+
+
         glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &earth.transform[0][0]);
         earth.bind();
         glDrawElements(GL_TRIANGLES, earth.vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
-        moon.transform = sun.transform *
-		                 // and then move it next to the earth.
-                         glm::rotate<float>(2 * M_PI * time_year, glm::vec3(0.f, 1.f, 0.f)) *
-                         glm::translate(glm::vec3(SUN_EARTH_DISTANCE, 0.f, 0.f)) *
-                         // First apply 'moon-transformations'.
+        moon.transform = earth_pos *
+						 // First apply 'moon-transformations'.
                          glm::rotate<float>(2 * M_PI * time_month, glm::vec3(0.f, 1.f, 0.f)) *
                          glm::translate(glm::vec3(EARTH_MOON_DISTANCE, 0.f, 0.f)) *
                          // just smaller than earth.
                          glm::scale<float>(glm::vec3(0.2f, 0.2f, 0.2f));
+
         glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &moon.transform[0][0]);
         moon.bind();
         glDrawElements(GL_TRIANGLES, moon.vertex_count, GL_UNSIGNED_INT, (void*) 0);
