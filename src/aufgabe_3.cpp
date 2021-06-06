@@ -86,11 +86,11 @@ main(int, char**) {
         glUniformMatrix4fv(view_mat_loc, 1, GL_FALSE, &view_matrix[0][0]);
         glUniformMatrix4fv(proj_mat_loc, 1, GL_FALSE, &proj_matrix[0][0]);
 
-        float time = (getTimeDelta() % 100000)/100000;
+        float time = (getTimeDelta() % 5000)/5000.f;
 
         // render sun
-		std::vector<tinyspline::real> pos = spline.eval(0.7).result();
-		glm::mat4 sun_transform = glm::translate(sun.transform, glm::vec3(pos[0], pos[1], 0));
+		std::vector<tinyspline::real> pos = spline.eval(time).result();
+		glm::mat4 sun_transform = glm::translate(sun.transform, glm::vec3(pos[0], 0, pos[1]));
         glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &sun_transform[0][0]);
 
         sun.bind();
