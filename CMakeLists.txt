@@ -54,13 +54,21 @@ source_group("Vendors" FILES ${VENDORS_SOURCES})
 
 add_definitions(-DGLFW_INCLUDE_NONE
                 -DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
-foreach(PROJECT_SOURCE_FILE ${PROJECT_SOURCES})
-    get_filename_component(SRC_NAME ${PROJECT_SOURCE_FILE} NAME_WE)
-    add_executable(${SRC_NAME} ${PROJECT_SOURCE_FILE} ${PROJECT_HEADERS}
-                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
-                               ${LIBRARY_SOURCES} ${VENDORS_SOURCES})
-    target_link_libraries(${SRC_NAME} assimp glfw
-                          ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
-    #set_target_properties(${SRC_NAME} PROPERTIES
-        #RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
-endforeach(PROJECT_SOURCE_FILE)
+
+add_subdirectory("libs/tinyspline")
+add_executable(space ${PROJECT_SOURCES} ${PROJECT_HEADERS} ${PROJECT_CONFIGS}
+                     ${LIBRARY_SOURCES} ${VENDORS_SOURCES})
+
+target_link_libraries(space assimp glfw tinysplinecxx
+					  ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
+
+#foreach(PROJECT_SOURCE_FILE ${PROJECT_SOURCES})
+#    get_filename_component(SRC_NAME ${PROJECT_SOURCE_FILE} NAME_WE)
+#    add_executable(${SRC_NAME} ${PROJECT_SOURCE_FILE} ${PROJECT_HEADERS}
+#                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+#                               ${LIBRARY_SOURCES} ${VENDORS_SOURCES})
+#    target_link_libraries(${SRC_NAME} assimp glfw
+#                          ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
+#    #set_target_properties(${SRC_NAME} PROPERTIES
+#        #RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+#endforeach(PROJECT_SOURCE_FILE)

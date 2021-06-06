@@ -5,6 +5,7 @@
 #include "buffer.hpp"
 #include "camera.hpp"
 #include "mesh.hpp"
+#include <tinysplinecxx.h>
 
 const int WINDOW_WIDTH =  800;
 const int WINDOW_HEIGHT = 800;
@@ -12,12 +13,11 @@ const float FOV = 45.f;
 const float NEAR_VALUE = 0.1f;
 const float FAR_VALUE = 100.f;
 const float SUN_EARTH_DISTANCE = 5.f;
-const float EARTH_MOON_DISTANCE = 2.f;
 
 glm::mat4 proj_matrix;
 std::chrono::time_point<std::chrono::system_clock> start_time;
 
-float getTimeDelta();
+int getTimeDelta();
 
 // called whenever the window gets resized
 void
@@ -54,6 +54,24 @@ main(int, char**) {
     glEnable(GL_DEPTH_TEST);
 
     start_time = std::chrono::system_clock::now();
+	tinyspline::BSpline spline(7);
+
+	std::vector<tinyspline::real> ctrlp = spline.controlPoints();
+	ctrlp[0]  = -1.75; // x0
+	ctrlp[1]  = -1.0;  // y0
+	ctrlp[2]  = -1.5;  // x1
+	ctrlp[3]  = -0.5;  // y1
+	ctrlp[4]  = -1.5;  // x2
+	ctrlp[5]  =  0.0;  // y2
+	ctrlp[6]  = -1.25; // x3
+	ctrlp[7]  =  0.5;  // y3
+	ctrlp[8]  = -0.75; // x4
+	ctrlp[9]  =  0.75; // y4
+	ctrlp[10] =  0.0;  // x5
+	ctrlp[11] =  0.5;  // y5
+	ctrlp[12] =  0.5;  // x6
+	ctrlp[13] =  0.0;  // y6
+	spline.setControlPoints(ctrlp);
 
     // rendering loop
     while (glfwWindowShouldClose(window) == false) {
@@ -68,36 +86,15 @@ main(int, char**) {
         glUniformMatrix4fv(view_mat_loc, 1, GL_FALSE, &view_matrix[0][0]);
         glUniformMatrix4fv(proj_mat_loc, 1, GL_FALSE, &proj_matrix[0][0]);
 
-        float time_year = getTimeDelta();
-        float time_month = std::fmod(time_year * 12.f, 1.f);
+        float time = (getTimeDelta() % 100000)/100000;
 
         // render sun
-        glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &sun.transform[0][0]);
+		std::vector<tinyspline::real> pos = spline.eval(0.7).result();
+		glm::mat4 sun_transform = glm::translate(sun.transform, glm::vec3(pos[0], pos[1], 0));
+        glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &sun_transform[0][0]);
+
         sun.bind();
         glDrawElements(GL_TRIANGLES, sun.vertex_count, GL_UNSIGNED_INT, (void*) 0);
-
-        // render earth
-		glm::mat4 earth_pos = sun.transform *
-                          glm::rotate<float>(2 * M_PI * time_year, glm::vec3(0.f, 1.f, 0.f)) *
-                          glm::translate(glm::vec3(SUN_EARTH_DISTANCE, 0.f, 0.f));
-
-        earth.transform = earth_pos * glm::scale<float>(glm::vec3(0.5f, 0.5f, 0.5f));
-
-
-        glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &earth.transform[0][0]);
-        earth.bind();
-        glDrawElements(GL_TRIANGLES, earth.vertex_count, GL_UNSIGNED_INT, (void*) 0);
-
-        moon.transform = earth_pos *
-						 // First apply 'moon-transformations'.
-                         glm::rotate<float>(2 * M_PI * time_month, glm::vec3(0.f, 1.f, 0.f)) *
-                         glm::translate(glm::vec3(EARTH_MOON_DISTANCE, 0.f, 0.f)) *
-                         // just smaller than earth.
-                         glm::scale<float>(glm::vec3(0.2f, 0.2f, 0.2f));
-
-        glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &moon.transform[0][0]);
-        moon.bind();
-        glDrawElements(GL_TRIANGLES, moon.vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
         // swap buffers == show rendered content
         glfwSwapBuffers(window);
@@ -116,7 +113,7 @@ void resizeCallback(GLFWwindow*, int width, int height)
     proj_matrix = glm::perspective(FOV, static_cast<float>(width) / height, NEAR_VALUE, FAR_VALUE);
 }
 
-float getTimeDelta() {
+int getTimeDelta() {
     auto now = std::chrono::system_clock::now();
-    return static_cast<float>((std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time).count() % 5000) / 5000.f);
+    return std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time).count();
 }
