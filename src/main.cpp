@@ -6,6 +6,7 @@
 #include "camera.hpp"
 #include "mesh.hpp"
 #include <tinysplinecxx.h>
+#include "Object.hpp"
 
 const int WINDOW_WIDTH =  800;
 const int WINDOW_HEIGHT = 800;
@@ -54,24 +55,35 @@ main(int, char**) {
     glEnable(GL_DEPTH_TEST);
 
     start_time = std::chrono::system_clock::now();
-	tinyspline::BSpline spline(7);
+	tinyspline::BSpline spline(7, 3);
+	spline.setControlPoints({
+		-1.75,
+		-1.0, 
+		 1,
+		-1.5, 
+		-0.5, 
+		 3,
+		-1.5, 
+		 0.0, 
+		 2,
+		-1.25,
+		 0.5, 
+		 1,
+		-0.75,
+		 0.75,
+		 2,
+		 0.0, 
+		 0.5, 
+		 7,
+		 0.5, 
+		 0.0,
+		 6
+	});
 
-	std::vector<tinyspline::real> ctrlp = spline.controlPoints();
-	ctrlp[0]  = -1.75; // x0
-	ctrlp[1]  = -1.0;  // y0
-	ctrlp[2]  = -1.5;  // x1
-	ctrlp[3]  = -0.5;  // y1
-	ctrlp[4]  = -1.5;  // x2
-	ctrlp[5]  =  0.0;  // y2
-	ctrlp[6]  = -1.25; // x3
-	ctrlp[7]  =  0.5;  // y3
-	ctrlp[8]  = -0.75; // x4
-	ctrlp[9]  =  0.75; // y4
-	ctrlp[10] =  0.0;  // x5
-	ctrlp[11] =  0.5;  // y5
-	ctrlp[12] =  0.5;  // x6
-	ctrlp[13] =  0.0;  // y6
-	spline.setControlPoints(ctrlp);
+	Object o = Object{sun, {spline}, [](float t, const std::vector<tinyspline::BSpline> & curves) {
+		return glm::translate(util::std2glm(curves[0].eval(t).result()));
+	}
+};
 
     // rendering loop
     while (glfwWindowShouldClose(window) == false) {
@@ -89,8 +101,7 @@ main(int, char**) {
         float time = (getTimeDelta() % 5000)/5000.f;
 
         // render sun
-		std::vector<tinyspline::real> pos = spline.eval(time).result();
-		glm::mat4 sun_transform = glm::translate(sun.transform, glm::vec3(pos[0], 0, pos[1]));
+		glm::mat4 sun_transform = o.get_model_mat(time);
         glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &sun_transform[0][0]);
 
         sun.bind();
