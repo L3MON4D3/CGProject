@@ -39,9 +39,7 @@ main(int, char**) {
     glDeleteShader(fragmentShader);
     glDeleteShader(vertexShader);
 
-    geometry sun = loadMesh("sphere.obj", false, glm::vec4(1.f, 0.6f, 0.f, 1.f));
-    geometry earth = loadMesh("sphere.obj", false, glm::vec4(0.f, 0.0f, 1.f, 1.f));
-    geometry moon = loadMesh("sphere.obj", false, glm::vec4(0.5f, 0.5f, 0.5f, 1.f));
+    geometry sun = loadMesh("craft_speederA.obj", false);
 
     glUseProgram(shaderProgram);
     int model_mat_loc = glGetUniformLocation(shaderProgram, "model_mat");
