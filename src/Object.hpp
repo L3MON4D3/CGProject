@@ -22,22 +22,25 @@ public:
 		const std::vector<tinyspline::BSpline> curves,
 		std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func =
 			[](float t, std::vector<tinyspline::BSpline> curves) {
+				// Calculate correct forward from derived func.
 				glm::vec3 forw = glm::normalize(util::std2glm(curves[1].eval(t).result()));
+				// get vector that points up and is orthogonal to forw.
 				glm::vec3 up = util::gs1(forw, global_up);
+				// Third vector for complete base.
 				glm::vec3 x = glm::normalize(glm::cross(forw, up));
-				// 'passive' rotation.
-				glm::mat4 forw_rotate = {
-					x.x, up.x, forw.x, 0,
-					x.y, up.y, forw.y, 0,
-					x.z, up.z, forw.z, 0,
-					  0,    0,      0, 1,
+
+				glm::mat4 rot = {
+					   x.x,    x.y,    x.z, 0,
+					  up.x,   up.y,   up.z, 0,
+					forw.x, forw.y, forw.z, 0,
+					     0,      0,      0, 1
 				};
 
 				return
 					// translate to position.
 					glm::translate(util::std2glm(curves[0].eval(t).result())) *
 					// rotate model_forw onto forw.
-					forw_rotate;
+					rot;
 			}
 	);
 	
