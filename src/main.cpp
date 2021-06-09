@@ -39,7 +39,7 @@ main(int, char**) {
     glDeleteShader(fragmentShader);
     glDeleteShader(vertexShader);
 
-    geometry sun = loadMesh("craft_speederA.obj", false);
+    geometry sun = util::load_scene_full_mesh("craft_cargoB.obj", false)[0];
 
     glUseProgram(shaderProgram);
     int model_mat_loc = glGetUniformLocation(shaderProgram, "model_mat");
@@ -80,8 +80,7 @@ main(int, char**) {
 
 	Object o = Object{sun, {spline}, [](float t, const std::vector<tinyspline::BSpline> & curves) {
 		return glm::translate(util::std2glm(curves[0].eval(t).result()));
-	}
-};
+	}};
 
     // rendering loop
     while (glfwWindowShouldClose(window) == false) {
