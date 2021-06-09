@@ -53,34 +53,36 @@ main(int, char**) {
     glEnable(GL_DEPTH_TEST);
 
     start_time = std::chrono::system_clock::now();
-	tinyspline::BSpline spline(7, 3);
-	spline.setControlPoints({
-		-1.75,
-		-1.0, 
-		 1,
-		-1.5, 
-		-0.5, 
-		 3,
-		-1.5, 
-		 0.0, 
-		 2,
-		-1.25,
-		 0.5, 
-		 1,
-		-0.75,
-		 0.75,
-		 2,
-		 0.0, 
-		 0.5, 
-		 7,
-		 0.5, 
-		 0.0,
-		 6
-	});
+	tinyspline::BSpline spline(5, 3);
+	std::vector<tinyspline::real> ctrlp = {
+        -10.078,
+        -7.937,
+        12.548,
 
-	Object o = Object{sun, {spline}, [](float t, const std::vector<tinyspline::BSpline> & curves) {
-		return glm::translate(util::std2glm(curves[0].eval(t).result()));
-	}};
+        -3.015,
+        1.653,
+        7.937,
+
+        3.078,
+        4.315,
+        1.016,
+
+        -8.829,
+        0.512,
+        -14.713,
+
+        18.335,
+        -2.174,
+        -5.515,
+
+	};
+	spline.setControlPoints(ctrlp);
+
+	Object o = Object{sun, {spline, spline.derive(1)},
+		//[](float t, const std::vector<tinyspline::BSpline> & curves) {
+		//	return glm::translate(util::std2glm(curves[0].eval(t).result()));
+		//}
+	};
 
     // rendering loop
     while (glfwWindowShouldClose(window) == false) {
