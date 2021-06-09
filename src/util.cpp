@@ -134,6 +134,6 @@ namespace util {
 	}
 
 	glm::vec3 gs1(glm::vec3 a, glm::vec3 b) {
-		return glm::normalize(b - glm::normalize(glm::dot(a, b)*a));
+		return glm::normalize(b - glm::dot(a, b)*a);
 	}
 }
