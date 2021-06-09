@@ -132,4 +132,8 @@ namespace util {
 		traverse(scene->mRootNode, glm::identity<glm::mat4>());
 		return objects;
 	}
+
+	glm::vec3 gs1(glm::vec3 a, glm::vec3 b) {
+		return glm::normalize(b - glm::normalize(glm::dot(a, b)*a));
+	}
 }
