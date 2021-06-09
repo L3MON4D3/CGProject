@@ -5,8 +5,10 @@
 #include "buffer.hpp"
 #include "camera.hpp"
 #include "mesh.hpp"
-#include <tinysplinecxx.h>
 #include "Object.hpp"
+
+#include <tinysplinecxx.h>
+#include <imgui.hpp>
 
 const int WINDOW_WIDTH =  800;
 const int WINDOW_HEIGHT = 800;
@@ -30,6 +32,8 @@ main(int, char**) {
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     camera cam(window);
+
+    init_imgui(window);
 
     // load and compile shaders and link program
     unsigned int vertexShader = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
@@ -91,6 +95,12 @@ main(int, char**) {
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // define UI
+        imgui_new_frame(400, 200);
+        ImGui::Begin("Shading");
+		ImGui::Button("uwu");
+        ImGui::End();
+
         glUseProgram(shaderProgram);
 
         glm::mat4 view_matrix = cam.view_matrix();
@@ -106,13 +116,14 @@ main(int, char**) {
         sun.bind();
         glDrawElements(GL_TRIANGLES, sun.vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
+		imgui_render();
         // swap buffers == show rendered content
         glfwSwapBuffers(window);
         // process window events
         glfwPollEvents();
     }
 
-
+	cleanup_imgui();
     glfwTerminate();
 }
 
