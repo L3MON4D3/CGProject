@@ -1,13 +1,12 @@
 #include "mesh.hpp"
 #include "util.hpp"
+#include "camera.hpp"
 #include <cmath>
 
 #include <glm/gtx/transform.hpp>
 #include <tinysplinecxx.h>
 #include <functional>
 
-const glm::vec3 model_forw = glm::vec3(0,0,1);
-const glm::vec3 model_up = glm::vec3(0,1,0);
 const glm::vec3 global_up = glm::vec3(0,1,0);
 
 class Object {
@@ -15,11 +14,14 @@ private:
 	const geometry &model;
 	const std::vector<tinyspline::BSpline> curves;
 	std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func;
+	unsigned int shader_program;
+	int model_mat_loc;
 	
 public:
 	Object(
-		const geometry & model,
+		const geometry &model,
 		const std::vector<tinyspline::BSpline> curves,
+		unsigned int shader_program,
 		std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func =
 			[](float t, std::vector<tinyspline::BSpline> curves) {
 				// Calculate correct forward from derived func.
@@ -44,5 +46,6 @@ public:
 			}
 	);
 	
-	glm::mat4 get_model_mat(float t);
+	glm::mat4 get_model_mat(float);
+	void render(float time);
 };

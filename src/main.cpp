@@ -49,7 +49,9 @@ main(int, char**) {
     int model_mat_loc = glGetUniformLocation(shaderProgram, "model_mat");
     int view_mat_loc = glGetUniformLocation(shaderProgram, "view_mat");
     int proj_mat_loc = glGetUniformLocation(shaderProgram, "proj_mat");
+
     proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
+
     int light_dir_loc = glGetUniformLocation(shaderProgram, "light_dir");
     glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
     glUniform3fv(light_dir_loc, 1, &light_dir[0]);
@@ -78,11 +80,10 @@ main(int, char**) {
         18.335,
         -2.174,
         -5.515,
-
 	};
 	spline.setControlPoints(ctrlp);
 
-	Object o = Object{sun, {spline, spline.derive(1)},
+	Object o = Object{sun, {spline, spline.derive(1)}, shaderProgram,
 		//[](float t, const std::vector<tinyspline::BSpline> & curves) {
 		//	return glm::translate(util::std2glm(curves[0].eval(t).result()));
 		//}
@@ -107,14 +108,7 @@ main(int, char**) {
         glUniformMatrix4fv(view_mat_loc, 1, GL_FALSE, &view_matrix[0][0]);
         glUniformMatrix4fv(proj_mat_loc, 1, GL_FALSE, &proj_matrix[0][0]);
 
-        float time = (getTimeDelta() % 5000)/5000.f;
-
-        // render sun
-		glm::mat4 sun_transform = o.get_model_mat(time);
-        glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &sun_transform[0][0]);
-
-        sun.bind();
-        glDrawElements(GL_TRIANGLES, sun.vertex_count, GL_UNSIGNED_INT, (void*) 0);
+        o.render((getTimeDelta() % 5000)/5000.0f);
 
 		imgui_render();
         // swap buffers == show rendered content
