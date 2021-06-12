@@ -51,6 +51,7 @@ main(int, char**) {
     glDeleteShader(fragmentShaderCurve);
 
     geometry sun = util::load_scene_full_mesh("craft_cargoB.obj", false)[0];
+
     proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
 
     glUseProgram(shaderProgramObj);
@@ -61,9 +62,13 @@ main(int, char**) {
     glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
     glUniform3fv(light_dir_loc, 1, &light_dir[0]);
 
+	glUniformMatrix4fv(proj_mat_loc_obj, 1, GL_FALSE, &proj_matrix[0][0]);
+
     glUseProgram(shaderProgramCurve);
     int view_mat_loc_curve = glGetUniformLocation(shaderProgramCurve, "view_mat");
     int proj_mat_loc_curve = glGetUniformLocation(shaderProgramCurve, "proj_mat");
+
+	glUniformMatrix4fv(proj_mat_loc_curve, 1, GL_FALSE, &proj_matrix[0][0]);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -113,13 +118,13 @@ main(int, char**) {
 
         glUseProgram(shaderProgramObj);
         glUniformMatrix4fv(view_mat_loc_obj, 1, GL_FALSE, &view_matrix[0][0]);
-        glUniformMatrix4fv(proj_mat_loc_obj, 1, GL_FALSE, &proj_matrix[0][0]);
 
         glUseProgram(shaderProgramCurve);
         glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
-        glUniformMatrix4fv(proj_mat_loc_curve, 1, GL_FALSE, &proj_matrix[0][0]);
 
-        o.render((getTimeDelta() % 5000)/5000.0f);
+		float t = (getTimeDelta() % 5000)/5000.0f;
+        o.render(t);
+        c.set_color(glm::vec4(0, t, 0, 1));
         c.render(0);
 
 		imgui_render();
