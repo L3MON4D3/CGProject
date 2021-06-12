@@ -5,7 +5,9 @@
 #include "buffer.hpp"
 #include "camera.hpp"
 #include "mesh.hpp"
+
 #include "Object.hpp"
+#include "Curve.hpp"
 
 #include <tinysplinecxx.h>
 #include <imgui.hpp>
@@ -39,22 +41,30 @@ main(int, char**) {
     unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
     unsigned int fragmentShaderObj = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
     unsigned int shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
-    // after linking the program the shader objects are no longer needed
     glDeleteShader(fragmentShaderObj);
     glDeleteShader(vertexShaderObj);
+
+	unsigned int vertexShaderCurve = compileShader("curve_render.vert", GL_VERTEX_SHADER);
+	unsigned int fragmentShaderCurve = compileShader("curve_render.frag", GL_FRAGMENT_SHADER);
+    unsigned int shaderProgramCurve = linkProgram(vertexShaderCurve, fragmentShaderCurve);
+    glDeleteShader(vertexShaderCurve);
+    glDeleteShader(fragmentShaderCurve);
 
     geometry sun = util::load_scene_full_mesh("craft_cargoB.obj", false)[0];
 
     glUseProgram(shaderProgramObj);
-    int model_mat_loc = glGetUniformLocation(shaderProgramObj, "model_mat");
-    int view_mat_loc = glGetUniformLocation(shaderProgramObj, "view_mat");
-    int proj_mat_loc = glGetUniformLocation(shaderProgramObj, "proj_mat");
+    int view_mat_loc_obj = glGetUniformLocation(shaderProgramObj, "view_mat");
+    int proj_mat_loc_obj = glGetUniformLocation(shaderProgramObj, "proj_mat");
 
     proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
 
     int light_dir_loc = glGetUniformLocation(shaderProgramObj, "light_dir");
     glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
     glUniform3fv(light_dir_loc, 1, &light_dir[0]);
+
+    glUseProgram(shaderProgramCurve);
+    int view_mat_loc_curve = glGetUniformLocation(shaderProgramCurve, "view_mat");
+    int proj_mat_loc_curve = glGetUniformLocation(shaderProgramCurve, "proj_mat");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -89,6 +99,8 @@ main(int, char**) {
 		//}
 	};
 
+	Curve c = Curve(spline, shaderProgramCurve, glm::vec4(1,0,0,1));
+
     // rendering loop
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
@@ -102,13 +114,18 @@ main(int, char**) {
 		ImGui::Button("uwu");
         ImGui::End();
 
-        glUseProgram(shaderProgramObj);
-
         glm::mat4 view_matrix = cam.view_matrix();
-        glUniformMatrix4fv(view_mat_loc, 1, GL_FALSE, &view_matrix[0][0]);
-        glUniformMatrix4fv(proj_mat_loc, 1, GL_FALSE, &proj_matrix[0][0]);
+
+        glUseProgram(shaderProgramObj);
+        glUniformMatrix4fv(view_mat_loc_obj, 1, GL_FALSE, &view_matrix[0][0]);
+        glUniformMatrix4fv(proj_mat_loc_obj, 1, GL_FALSE, &proj_matrix[0][0]);
+
+        glUseProgram(shaderProgramCurve);
+        glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
+        glUniformMatrix4fv(proj_mat_loc_curve, 1, GL_FALSE, &proj_matrix[0][0]);
 
         o.render((getTimeDelta() % 5000)/5000.0f);
+        c.render(0);
 
 		imgui_render();
         // swap buffers == show rendered content
