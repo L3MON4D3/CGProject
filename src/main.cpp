@@ -41,8 +41,8 @@ main(int, char**) {
     unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
     unsigned int fragmentShaderObj = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
     unsigned int shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
-    glDeleteShader(fragmentShaderObj);
     glDeleteShader(vertexShaderObj);
+    glDeleteShader(fragmentShaderObj);
 
 	unsigned int vertexShaderCurve = compileShader("curve_render.vert", GL_VERTEX_SHADER);
 	unsigned int fragmentShaderCurve = compileShader("curve_render.frag", GL_FRAGMENT_SHADER);
@@ -51,14 +51,13 @@ main(int, char**) {
     glDeleteShader(fragmentShaderCurve);
 
     geometry sun = util::load_scene_full_mesh("craft_cargoB.obj", false)[0];
+    proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
 
     glUseProgram(shaderProgramObj);
     int view_mat_loc_obj = glGetUniformLocation(shaderProgramObj, "view_mat");
     int proj_mat_loc_obj = glGetUniformLocation(shaderProgramObj, "proj_mat");
-
-    proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
-
     int light_dir_loc = glGetUniformLocation(shaderProgramObj, "light_dir");
+
     glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
     glUniform3fv(light_dir_loc, 1, &light_dir[0]);
 
@@ -68,7 +67,6 @@ main(int, char**) {
 
     glEnable(GL_DEPTH_TEST);
 
-    start_time = std::chrono::system_clock::now();
 	tinyspline::BSpline spline(5, 3);
 	std::vector<tinyspline::real> ctrlp = {
         -10.078,
@@ -93,15 +91,12 @@ main(int, char**) {
 	};
 	spline.setControlPoints(ctrlp);
 
-	Object o = Object{sun, {spline, spline.derive(1)}, shaderProgramObj,
-		//[](float t, const std::vector<tinyspline::BSpline> & curves) {
-		//	return glm::translate(util::std2glm(curves[0].eval(t).result()));
-		//}
-	};
+	Object o = Object{sun, {spline, spline.derive(1)}, shaderProgramObj};
 
 	Curve c = Curve(spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 
     // rendering loop
+    start_time = std::chrono::system_clock::now();
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
