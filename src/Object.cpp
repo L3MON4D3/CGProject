@@ -16,6 +16,7 @@ glm::mat4 Object::get_model_mat(float t) {
 }
 
 void Object::render(float time) {
+	glUseProgram(shader_program);
 	glBindVertexArray(model.vao);
 
 	glm::mat4 sun_transform = model_func(time, curves);
