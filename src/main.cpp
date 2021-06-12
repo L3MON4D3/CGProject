@@ -36,23 +36,23 @@ main(int, char**) {
     init_imgui(window);
 
     // load and compile shaders and link program
-    unsigned int vertexShader = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
-    unsigned int fragmentShader = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
-    unsigned int shaderProgram = linkProgram(vertexShader, fragmentShader);
+    unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
+    unsigned int fragmentShaderObj = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
+    unsigned int shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
     // after linking the program the shader objects are no longer needed
-    glDeleteShader(fragmentShader);
-    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShaderObj);
+    glDeleteShader(vertexShaderObj);
 
     geometry sun = util::load_scene_full_mesh("craft_cargoB.obj", false)[0];
 
-    glUseProgram(shaderProgram);
-    int model_mat_loc = glGetUniformLocation(shaderProgram, "model_mat");
-    int view_mat_loc = glGetUniformLocation(shaderProgram, "view_mat");
-    int proj_mat_loc = glGetUniformLocation(shaderProgram, "proj_mat");
+    glUseProgram(shaderProgramObj);
+    int model_mat_loc = glGetUniformLocation(shaderProgramObj, "model_mat");
+    int view_mat_loc = glGetUniformLocation(shaderProgramObj, "view_mat");
+    int proj_mat_loc = glGetUniformLocation(shaderProgramObj, "proj_mat");
 
     proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
 
-    int light_dir_loc = glGetUniformLocation(shaderProgram, "light_dir");
+    int light_dir_loc = glGetUniformLocation(shaderProgramObj, "light_dir");
     glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
     glUniform3fv(light_dir_loc, 1, &light_dir[0]);
 
@@ -83,7 +83,7 @@ main(int, char**) {
 	};
 	spline.setControlPoints(ctrlp);
 
-	Object o = Object{sun, {spline, spline.derive(1)}, shaderProgram,
+	Object o = Object{sun, {spline, spline.derive(1)}, shaderProgramObj,
 		//[](float t, const std::vector<tinyspline::BSpline> & curves) {
 		//	return glm::translate(util::std2glm(curves[0].eval(t).result()));
 		//}
@@ -102,7 +102,7 @@ main(int, char**) {
 		ImGui::Button("uwu");
         ImGui::End();
 
-        glUseProgram(shaderProgram);
+        glUseProgram(shaderProgramObj);
 
         glm::mat4 view_matrix = cam.view_matrix();
         glUniformMatrix4fv(view_mat_loc, 1, GL_FALSE, &view_matrix[0][0]);
