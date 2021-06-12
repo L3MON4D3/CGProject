@@ -7,8 +7,7 @@ const int res = 1000;
 
 Curve::Curve(tinyspline::BSpline spline, unsigned int shader_program, glm::vec4 color) :
 	shader_program{shader_program},
-	color_loc{glGetUniformLocation(shader_program, "color")},
-	color{color} {
+	color_loc{glGetUniformLocation(shader_program, "color")} {
 	float vertices[res*3];
 	for (int i=0; i != res; i++) {
 		auto vert = spline.eval(float(i)/(res-1)).result();
@@ -23,12 +22,17 @@ Curve::Curve(tinyspline::BSpline spline, unsigned int shader_program, glm::vec4 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	set_color(color);
+}
+
+void Curve::set_color(glm::vec4 color) {
+	glUseProgram(shader_program);
+	glUniform4fv(color_loc, 1, &color.x);
 }
 
 void Curve::render(float) {
 	glUseProgram(shader_program);
-
-	glUniform4fv(color_loc, 1, &color.x);
 
 	glBindVertexArray(vao);
 	glDrawArrays(GL_LINE_STRIP, 0, res);
