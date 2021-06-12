@@ -11,7 +11,7 @@ Curve::Curve(tinyspline::BSpline spline, unsigned int shader_program, glm::vec4 
 	color{color} {
 	float vertices[res*3];
 	for (int i=0; i != res; i++) {
-		auto vert = spline.eval(float(i)/res).result();
+		auto vert = spline.eval(float(i)/(res-1)).result();
 		vertices[3*i  ] = vert[0];
 		vertices[3*i+1] = vert[1];
 		vertices[3*i+2] = vert[2];
