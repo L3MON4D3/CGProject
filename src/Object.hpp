@@ -1,6 +1,7 @@
 #include "mesh.hpp"
 #include "util.hpp"
 #include "camera.hpp"
+#include "Renderable.hpp"
 #include <cmath>
 
 #include <glm/gtx/transform.hpp>
@@ -9,7 +10,7 @@
 
 const glm::vec3 global_up = glm::vec3(0,1,0);
 
-class Object {
+class Object : public Renderable{
 private:
 	const geometry &model;
 	const std::vector<tinyspline::BSpline> curves;
