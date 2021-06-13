@@ -96,7 +96,7 @@ main(int, char**) {
 	};
 	spline.setControlPoints(ctrlp);
 
-	Object o = Object{sun, {spline, spline.derive(1)}, shaderProgramObj};
+	Object o = Object{sun, glm::translate(glm::vec3(0, -.3, 0)), {spline, spline.derive(1)}, shaderProgramObj};
 
 	Curve c = Curve(spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 
