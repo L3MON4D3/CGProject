@@ -13,17 +13,15 @@ const glm::vec3 global_up = glm::vec3(0,1,0);
 class Object : public Renderable{
 private:
 	const geometry &model;
-	const glm::mat4 model_transform;
-	const std::vector<tinyspline::BSpline> curves;
 	std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func;
 	unsigned int shader_program;
 	int model_mat_loc;
 	
 public:
+	std::vector<tinyspline::BSpline> curves;
 	Object(
 		const geometry &model,
-		const glm::mat4 model_transform,
-		const std::vector<tinyspline::BSpline> curves,
+		std::vector<tinyspline::BSpline> curves,
 		unsigned int shader_program,
 		std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func =
 			[](float t, std::vector<tinyspline::BSpline> curves) {
