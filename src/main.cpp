@@ -106,18 +106,34 @@ main(int, char**) {
 
     // rendering loop
     start_time = std::chrono::system_clock::now();
+	int indx = 0;
+	float t = 0;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float t;
+		tinyspline::BSpline &current = o.curves[0];
         // define UI
         imgui_new_frame(400, 200);
         ImGui::Begin("Shading");
 		ImGui::SliderFloat("time", &t, 0, 1);
+		ImGui::SliderInt("point", &indx, 0, current.order());
+
+		std::vector<tinyspline::real> ctrl_point = current.controlPointAt(indx);
+		float x = ctrl_point[0];
+		float y = ctrl_point[1];
+		float z = ctrl_point[2];
+		ImGui::SliderFloat("x", &x, -20, 20);
+		ImGui::SliderFloat("y", &y, -20, 20);
+		ImGui::SliderFloat("z", &z, -20, 20);
+
         ImGui::End();
+
+        current.setControlPointAt(indx, std::vector<double>{x,y,z});
+		o.curves[1] = current.derive(1);
+		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
 
         glm::mat4 view_matrix = cam.view_matrix();
 
