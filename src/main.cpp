@@ -108,10 +108,11 @@ main(int, char**) {
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        float t;
         // define UI
         imgui_new_frame(400, 200);
         ImGui::Begin("Shading");
-		ImGui::Button("uwu");
+		ImGui::SliderFloat("time", &t, 0, 1);
         ImGui::End();
 
         glm::mat4 view_matrix = cam.view_matrix();
@@ -122,9 +123,8 @@ main(int, char**) {
         glUseProgram(shaderProgramCurve);
         glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
 
-		float t = (getTimeDelta() % 5000)/5000.0f;
+		//float t = (getTimeDelta() % 5000)/5000.0f;
         o.render(t);
-        c.set_color(glm::vec4(0, t, 0, 1));
         c.render(0);
 
 		imgui_render();
