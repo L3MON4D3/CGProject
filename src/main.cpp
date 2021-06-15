@@ -108,6 +108,7 @@ main(int, char**) {
     start_time = std::chrono::system_clock::now();
 	int indx = 0;
 	float t = 0;
+	bool play = false;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -129,6 +130,9 @@ main(int, char**) {
 		ImGui::SliderFloat("y", &y, -20, 20);
 		ImGui::SliderFloat("z", &z, -20, 20);
 
+		if (ImGui::Checkbox("play", &play) && play)
+			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
+
         ImGui::End();
 
         current.setControlPointAt(indx, std::vector<double>{x,y,z});
@@ -143,7 +147,8 @@ main(int, char**) {
         glUseProgram(shaderProgramCurve);
         glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
 
-		//float t = (getTimeDelta() % 5000)/5000.0f;
+		if (play)
+			t = (getTimeDelta() % 5000)/5000.0f;
         o.render(t);
         c.render(0);
 
