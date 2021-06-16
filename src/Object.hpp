@@ -1,3 +1,5 @@
+#pragma once
+
 #include "mesh.hpp"
 #include "util.hpp"
 #include "camera.hpp"
@@ -7,8 +9,6 @@
 #include <glm/gtx/transform.hpp>
 #include <tinysplinecxx.h>
 #include <functional>
-
-const glm::vec3 global_up = glm::vec3(0,1,0);
 
 class Object : public Renderable{
 private:
@@ -28,7 +28,7 @@ public:
 				// Calculate correct forward from derived func.
 				glm::vec3 forw = glm::normalize(util::std2glm(curves[1].eval(t).result()));
 				// get vector that points up and is orthogonal to forw.
-				glm::vec3 up = util::gs1(forw, global_up);
+				glm::vec3 up = util::gs1(forw, util::up);
 				// Third vector for complete base.
 				glm::vec3 x = glm::normalize(glm::cross(forw, up));
 
