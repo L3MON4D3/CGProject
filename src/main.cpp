@@ -8,6 +8,7 @@
 
 #include "Object.hpp"
 #include "Curve.hpp"
+#include "Camera.hpp"
 
 #include <tinysplinecxx.h>
 #include <imgui.hpp>
@@ -101,6 +102,7 @@ main(int, char**) {
 		sun,
 		{spline, spline.derive(1)}, shaderProgramObj,
 	};
+	Camera d = Camera{{spline, spline.derive(1)}, {shaderProgramObj, shaderProgramCurve}};
 
 	Curve c = Curve(spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 
@@ -109,6 +111,7 @@ main(int, char**) {
 	int indx = 0;
 	float t = 0;
 	bool play = false;
+	bool view_cam = false;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -132,6 +135,7 @@ main(int, char**) {
 
 		if (ImGui::Checkbox("play", &play) && play)
 			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
+		ImGui::Checkbox("cam", &view_cam);
 
         ImGui::End();
 
@@ -139,13 +143,17 @@ main(int, char**) {
 		o.curves[1] = current.derive(1);
 		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
 
-        glm::mat4 view_matrix = cam.view_matrix();
+        if (view_cam) {
+			glm::mat4 view_matrix = cam.view_matrix();
 
-        glUseProgram(shaderProgramObj);
-        glUniformMatrix4fv(view_mat_loc_obj, 1, GL_FALSE, &view_matrix[0][0]);
+			glUseProgram(shaderProgramObj);
+			glUniformMatrix4fv(view_mat_loc_obj, 1, GL_FALSE, &view_matrix[0][0]);
 
-        glUseProgram(shaderProgramCurve);
-        glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
+			glUseProgram(shaderProgramCurve);
+			glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
+		} else {
+			d.set_view_mat(t);
+		}
 
 		if (play)
 			t = (getTimeDelta() % 5000)/5000.0f;
