@@ -112,6 +112,7 @@ main(int, char**) {
 	float t = 0;
 	bool play = false;
 	bool view_cam = false;
+	int range = 20;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -124,14 +125,15 @@ main(int, char**) {
         ImGui::Begin("Shading");
 		ImGui::SliderFloat("time", &t, 0, 1);
 		ImGui::SliderInt("point", &indx, 0, current.order());
+		ImGui::InputInt("range", &range);
 
 		std::vector<tinyspline::real> ctrl_point = current.controlPointAt(indx);
 		float x = ctrl_point[0];
 		float y = ctrl_point[1];
 		float z = ctrl_point[2];
-		ImGui::SliderFloat("x", &x, -20, 20);
-		ImGui::SliderFloat("y", &y, -20, 20);
-		ImGui::SliderFloat("z", &z, -20, 20);
+		ImGui::SliderFloat("x", &x, -range, range);
+		ImGui::SliderFloat("y", &y, -range, range);
+		ImGui::SliderFloat("z", &z, -range, range);
 
 		if (ImGui::Checkbox("play", &play) && play)
 			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
