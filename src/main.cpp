@@ -13,11 +13,11 @@
 #include <tinysplinecxx.h>
 #include <imgui.hpp>
 
-const int WINDOW_WIDTH =  800;
-const int WINDOW_HEIGHT = 800;
+const int WINDOW_WIDTH = 1200;
+const int WINDOW_HEIGHT = 1200;
 const float FOV = 45.f;
 const float NEAR_VALUE = 0.1f;
-const float FAR_VALUE = 100.f;
+const float FAR_VALUE = 600.f;
 const float SUN_EARTH_DISTANCE = 5.f;
 
 glm::mat4 proj_matrix;
@@ -122,9 +122,15 @@ main(int, char**) {
 		tinyspline::BSpline &current = o.curves[0];
         // define UI
         imgui_new_frame(400, 200);
-        ImGui::Begin("Shading");
+        ImGui::Begin("Time+Cam");
 		if(ImGui::SliderFloat("time", &t, 0, 1))
 			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
+		if (ImGui::Checkbox("play", &play) && play)
+			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
+		ImGui::Checkbox("freecam", &view_cam);
+        ImGui::End();
+
+		ImGui::Begin("Curves");
 		ImGui::SliderInt("point", &indx, 0, current.order());
 		ImGui::InputInt("range", &range);
 
@@ -135,16 +141,12 @@ main(int, char**) {
 		ImGui::SliderFloat("x", &x, -range, range);
 		ImGui::SliderFloat("y", &y, -range, range);
 		ImGui::SliderFloat("z", &z, -range, range);
-
-		if (ImGui::Checkbox("play", &play) && play)
-			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
-		ImGui::Checkbox("cam", &view_cam);
-
-        ImGui::End();
+		ImGui::End();
 
         current.setControlPointAt(indx, std::vector<double>{x,y,z});
 		o.curves[1] = current.derive(1);
 		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
+		d.curves[0] = current;
 
 		if (play)
 			t = (getTimeDelta() % 5000)/5000.0f;
