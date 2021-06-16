@@ -123,7 +123,8 @@ main(int, char**) {
         // define UI
         imgui_new_frame(400, 200);
         ImGui::Begin("Shading");
-		ImGui::SliderFloat("time", &t, 0, 1);
+		if(ImGui::SliderFloat("time", &t, 0, 1))
+			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
 		ImGui::SliderInt("point", &indx, 0, current.order());
 		ImGui::InputInt("range", &range);
 
