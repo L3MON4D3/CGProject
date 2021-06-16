@@ -102,7 +102,7 @@ main(int, char**) {
 		sun,
 		{spline, spline.derive(1)}, shaderProgramObj,
 	};
-	Camera d = Camera{{spline, spline.derive(1)}, {shaderProgramObj, shaderProgramCurve}};
+	Camera d = Camera{{spline}, {shaderProgramObj, shaderProgramCurve}};
 
 	Curve c = Curve(spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 
