@@ -11,10 +11,15 @@ Camera::Camera(
 	
 	// Get all view-matrix-locations once here.
 	view_locs = std::vector<int>(shader_programs.size());
-	for (unsigned int i = 0; i != shader_programs.size(); ++i)
+	for (size_t i = 0; i != shader_programs.size(); ++i)
 		view_locs[i] = glGetUniformLocation(shader_programs[i], "view_mat");
 }
 
-glm::mat4 Camera::get_view_mat(float t) {
-	return cam_func(t, curves);
+void Camera::set_view_mat(float t) {
+	glm::mat4 view_mat = cam_func(t, curves);
+
+	for (size_t i = 0; i != shader_programs.size(); ++i) {
+		glUseProgram(shader_programs[i]);
+		glUniformMatrix4fv(view_locs[i], 1, GL_FALSE, &view_mat[0][0]);
+	}
 }
