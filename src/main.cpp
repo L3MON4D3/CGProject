@@ -143,6 +143,9 @@ main(int, char**) {
 		o.curves[1] = current.derive(1);
 		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
 
+		if (play)
+			t = (getTimeDelta() % 5000)/5000.0f;
+
         if (view_cam) {
 			glm::mat4 view_matrix = cam.view_matrix();
 
@@ -155,8 +158,6 @@ main(int, char**) {
 			d.set_view_mat(t);
 		}
 
-		if (play)
-			t = (getTimeDelta() % 5000)/5000.0f;
         o.render(t);
         c.render(0);
 
