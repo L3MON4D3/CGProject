@@ -74,8 +74,8 @@ main(int, char**) {
 
     glEnable(GL_DEPTH_TEST);
 
-	tinyspline::BSpline spline(5, 3);
-	std::vector<tinyspline::real> ctrlp = {
+	tinyspline::BSpline pos_spline(5, 3);
+	pos_spline.setControlPoints({
         -10.078,
         -7.937,
         12.548,
@@ -95,16 +95,25 @@ main(int, char**) {
         18.335,
         -2.174,
         -5.515,
-	};
-	spline.setControlPoints(ctrlp);
+	});
+
+	tinyspline::BSpline rot_spline(5, 1);
+	rot_spline.setControlPoints({
+		0,
+		0,
+		2*3.14,
+		2*3.14,
+		2*3.14,
+	});
 
 	Object o = Object{
 		sun,
-		{spline, spline.derive(1)}, shaderProgramObj,
+		{pos_spline, pos_spline.derive(1), rot_spline},
+		shaderProgramObj,
 	};
-	Camera d = Camera{{spline}, {shaderProgramObj, shaderProgramCurve}};
+	Camera d = Camera{{pos_spline}, {shaderProgramObj, shaderProgramCurve}};
 
-	Curve c = Curve(spline, shaderProgramCurve, glm::vec4(1,0,0,1));
+	Curve c = Curve(pos_spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 
     // rendering loop
     start_time = std::chrono::system_clock::now();
@@ -130,7 +139,7 @@ main(int, char**) {
 		ImGui::Checkbox("freecam", &view_cam);
         ImGui::End();
 
-		ImGui::Begin("Curves");
+		ImGui::Begin("Curves1");
 		ImGui::SliderInt("point", &indx, 0, current.order());
 		ImGui::InputInt("range", &range);
 
@@ -141,6 +150,16 @@ main(int, char**) {
 		ImGui::SliderFloat("x", &x, -range, range);
 		ImGui::SliderFloat("y", &y, -range, range);
 		ImGui::SliderFloat("z", &z, -range, range);
+		ImGui::End();
+
+		ImGui::Begin("Curves2");
+		const size_t count = 100;
+		float *plot = new float[count];
+		for (size_t i = 0; i != count; ++i)
+			plot[i] = o.curves[2].eval(float(i)/count).result()[0];
+		
+		ImGui::PlotLines("rotation", plot, count);
+		delete[] plot;
 		ImGui::End();
 
         current.setControlPointAt(indx, std::vector<double>{x,y,z});

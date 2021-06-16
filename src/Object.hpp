@@ -43,7 +43,7 @@ public:
 					// translate to position.
 					glm::translate(util::std2glm(curves[0].eval(t).result())) *
 					// rotate model_forw onto forw.
-					rot;
+					rot * glm::rotate<float>(curves[2].eval(t).result()[0], glm::vec3(0,0,1));
 			}
 	);
 	
