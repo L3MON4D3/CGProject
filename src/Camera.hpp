@@ -22,7 +22,7 @@ public:
 		std::vector<unsigned int> shader,
 		std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> cam_func =
 			[](float t, std::vector<tinyspline::BSpline> curves) {
-				t = curves[1].eval(t).result()[0];
+				t = util::eval_timespline(curves[1], t);
 
 				glm::vec3 a = glm::vec3(20,20,20);
 				//look along negative z.
