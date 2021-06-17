@@ -51,7 +51,7 @@ main(int, char**) {
     glDeleteShader(vertexShaderCurve);
     glDeleteShader(fragmentShaderCurve);
 
-    geometry sun = util::load_scene_full_mesh("craft_speederA.obj", false)[0];
+    geometry sun = util::load_scene_full_mesh("craft_cargoA.obj", false)[0];
     sun.transform = glm::translate(glm::vec3(0, -.4, 0));
 
     proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
@@ -97,12 +97,21 @@ main(int, char**) {
         -5.515,
 	});
 
-	tinyspline::BSpline rot_spline(5, 1);
+	tinyspline::BSpline rot_spline(5, 2);
 	rot_spline.setControlPoints({
 		0,
 		0,
+
+		.2,
+		0,
+
+		.5,
 		2*3.14,
+
+		.7,
 		2*3.14,
+
+		1,
 		2*3.14,
 	});
 
