@@ -97,7 +97,7 @@ main(int, char**) {
         -5.515,
 	});
 
-	tinyspline::BSpline rot_spline(5, 2);
+	tinyspline::BSpline rot_spline(7, 2);
 	rot_spline.setControlPoints({
 		0,
 		0,
@@ -106,13 +106,19 @@ main(int, char**) {
 		0,
 
 		.5,
-		2*3.14,
+		0,
+
+		.5,
+		0,
+
+		.5,
+		0,
 
 		.7,
-		2*3.14,
+		0,
 
 		1,
-		2*3.14,
+		0
 	});
 
 	tinyspline::BSpline time_spline(5, 1);
@@ -137,6 +143,7 @@ main(int, char**) {
     start_time = std::chrono::system_clock::now();
 	int indx_pos = 0;
 	int indx_time = 0;
+	int indx_rot = 0;
 	float t = 0;
 	bool play = false;
 	bool view_cam = false;
@@ -157,7 +164,10 @@ main(int, char**) {
 
 		if(ImGui::SliderFloat("time", &t, 0, 1))
 			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
-		util::plot_time(time_spline, "time");
+		util::plot_spline(time_spline, "time", [](tinyspline::BSpline &spline, float t) {
+			return util::eval_timespline(spline, t);
+		});
+
 		ImGui::SliderInt("point", &indx_time, 0, time_spline.numControlPoints()-1);
 		util::control_point_edit1(time_spline, indx_time, ImVec2(-1,2));
         ImGui::End();
@@ -170,7 +180,11 @@ main(int, char**) {
 		ImGui::End();
 
 		ImGui::Begin("Curves2");
-		util::plot_spline(o.curves[2], "rot");
+		util::plot_spline(o.curves[2], "rot", [](tinyspline::BSpline &spline, float t) {
+			return spline.bisect(t).result()[1];
+		});
+		ImGui::SliderInt("point", &indx_rot, 0, o.curves[2].numControlPoints()-1);
+		util::control_point_edit2(o.curves[2], indx_rot, ImVec2(0, 1), ImVec2(-10, 10));
 		ImGui::End();
 
 		o.curves[3] = time_spline;

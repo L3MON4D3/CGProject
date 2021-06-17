@@ -138,24 +138,16 @@ namespace util {
 		return glm::normalize(b - glm::dot(a, b)*a);
 	}
 
-	void plot_spline(tinyspline::BSpline spline, std::string name) {
+	void plot_spline(
+		tinyspline::BSpline spline,
+		std::string name,
+		std::function<float(tinyspline::BSpline &spline, float t)> eval_func) {
+
 		const size_t count = 200;
 		float plot[count];
 		for (size_t i = 0; i != count; ++i)
-			plot[i] = spline.eval(float(i)/count).result()[0];
+			plot[i] = eval_func(spline, float(i)/count);
 		
-		ImGui::PlotLines(
-			name.c_str(), plot, count, 0, 
-			NULL, FLT_MAX, FLT_MAX, 
-			ImVec2(280, 100));
-	}
-
-	void plot_time(tinyspline::BSpline spline, std::string name) {
-		const size_t count = 200;
-		float plot[count];
-		for (size_t i = 0; i != count; ++i)
-			plot[i] = eval_timespline(spline, float(i)/count);
-
 		ImGui::PlotLines(
 			name.c_str(), plot, count, 0, 
 			NULL, FLT_MAX, FLT_MAX, 
