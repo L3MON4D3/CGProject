@@ -135,7 +135,8 @@ main(int, char**) {
 
     // rendering loop
     start_time = std::chrono::system_clock::now();
-	int indx = 0;
+	int indx_pos = 0;
+	int indx_time = 0;
 	float t = 0;
 	bool play = false;
 	bool view_cam = false;
@@ -150,37 +151,30 @@ main(int, char**) {
         // define UI
         imgui_new_frame(400, 200);
         ImGui::Begin("Time+Cam");
-		if(ImGui::SliderFloat("time", &t, 0, 1))
-			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
 		if (ImGui::Checkbox("play", &play) && play)
 			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
 		ImGui::Checkbox("freecam", &view_cam);
+
+		if(ImGui::SliderFloat("time", &t, 0, 1))
+			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
+		util::plot_time(time_spline, "time");
+		ImGui::SliderInt("point", &indx_time, 0, time_spline.numControlPoints()-1);
+		util::control_point_edit1(time_spline, indx_time, ImVec2(-1,2));
         ImGui::End();
 
 		ImGui::Begin("Curves1");
-		ImGui::SliderInt("point", &indx, 0, current.numControlPoints()-1);
+		ImGui::SliderInt("point", &indx_pos, 0, current.numControlPoints()-1);
 		ImGui::InputInt("range", &range);
 
-		std::vector<tinyspline::real> ctrl_point = current.controlPointAt(indx);
-		float x = ctrl_point[0];
-		float y = ctrl_point[1];
-		float z = ctrl_point[2];
-		ImGui::SliderFloat("x", &x, -range, range);
-		ImGui::SliderFloat("y", &y, -range, range);
-		ImGui::SliderFloat("z", &z, -range, range);
+		util::control_point_edit3(current, indx_pos, ImVec2(-range, range));
 		ImGui::End();
 
 		ImGui::Begin("Curves2");
-		const size_t count = 100;
-		float *plot = new float[count];
-		for (size_t i = 0; i != count; ++i)
-			plot[i] = o.curves[2].eval(float(i)/count).result()[0];
-		
-		ImGui::PlotLines("rotation", plot, count);
-		delete[] plot;
+		util::plot_spline(o.curves[2], "rot");
 		ImGui::End();
 
-        current.setControlPointAt(indx, std::vector<double>{x,y,z});
+		o.curves[3] = time_spline;
+		d.curves[1] = time_spline;
 		o.curves[1] = current.derive(1);
 		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
 		d.curves[0] = current;

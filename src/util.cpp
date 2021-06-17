@@ -1,6 +1,7 @@
 #include "util.hpp"
 #include <functional>
 #include <buffer.hpp>
+#include <algorithm>
 
 namespace util {
 	glm::vec3 std2glm(std::vector<double> vec) {
@@ -135,5 +136,63 @@ namespace util {
 
 	glm::vec3 gs1(glm::vec3 a, glm::vec3 b) {
 		return glm::normalize(b - glm::dot(a, b)*a);
+	}
+
+	void plot_spline(tinyspline::BSpline spline, std::string name) {
+		const size_t count = 200;
+		float plot[count];
+		for (size_t i = 0; i != count; ++i)
+			plot[i] = spline.eval(float(i)/count).result()[0];
+		
+		ImGui::PlotLines(
+			name.c_str(), plot, count, 0, 
+			NULL, FLT_MAX, FLT_MAX, 
+			ImVec2(280, 100));
+	}
+
+	void plot_time(tinyspline::BSpline spline, std::string name) {
+		const size_t count = 200;
+		float plot[count];
+		for (size_t i = 0; i != count; ++i)
+			plot[i] = eval_timespline(spline, float(i)/count);
+
+		ImGui::PlotLines(
+			name.c_str(), plot, count, 0, 
+			NULL, FLT_MAX, FLT_MAX, 
+			ImVec2(280, 100));
+	}
+
+	void control_point_edit3(tinyspline::BSpline &spline, int indx, ImVec2 range) {
+		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
+		float x = ctrl_point[0];
+		float y = ctrl_point[1];
+		float z = ctrl_point[2];
+		ImGui::SliderFloat("x", &x, range.x, range.y);
+		ImGui::SliderFloat("y", &y, range.x, range.y);
+		ImGui::SliderFloat("z", &z, range.x, range.y);
+
+        spline.setControlPointAt(indx, std::vector<double>{x,y,z});
+	}
+
+	void control_point_edit2(tinyspline::BSpline &spline, int indx, ImVec2 range1, ImVec2 range2) {
+		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
+		float x = ctrl_point[0];
+		float y = ctrl_point[1];
+		ImGui::SliderFloat("x", &x, range1.x, range1.y);
+		ImGui::SliderFloat("y", &y, range2.x, range2.y);
+
+        spline.setControlPointAt(indx, std::vector<double>{x,y});
+	}
+
+	void control_point_edit1(tinyspline::BSpline &spline, int indx, ImVec2 range) {
+		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
+		float x = ctrl_point[0];
+		ImGui::SliderFloat("x", &x, range.x, range.y);
+
+        spline.setControlPointAt(indx, std::vector<double>{x});
+	}
+
+	float eval_timespline(const tinyspline::BSpline &spline, float t) {
+		return std::clamp<float>(spline.eval(t).result()[0], 0, 1);
 	}
 }
