@@ -51,7 +51,7 @@ main(int, char**) {
     glDeleteShader(vertexShaderCurve);
     glDeleteShader(fragmentShaderCurve);
 
-    geometry sun = util::load_scene_full_mesh("craft_cargoB.obj", false)[0];
+    geometry sun = util::load_scene_full_mesh("craft_speederA.obj", false)[0];
     sun.transform = glm::translate(glm::vec3(0, -.4, 0));
 
     proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
@@ -140,7 +140,7 @@ main(int, char**) {
         ImGui::End();
 
 		ImGui::Begin("Curves1");
-		ImGui::SliderInt("point", &indx, 0, current.order());
+		ImGui::SliderInt("point", &indx, 0, current.numControlPoints()-1);
 		ImGui::InputInt("range", &range);
 
 		std::vector<tinyspline::real> ctrl_point = current.controlPointAt(indx);
