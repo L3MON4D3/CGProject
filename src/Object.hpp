@@ -25,6 +25,8 @@ public:
 		unsigned int shader_program,
 		std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func =
 			[](float t, std::vector<tinyspline::BSpline> curves) {
+				t = curves[3].eval(t).result()[0];
+
 				// Calculate correct forward from derived func.
 				glm::vec3 forw = glm::normalize(util::std2glm(curves[1].eval(t).result()));
 				// get vector that points up and is orthogonal to forw.

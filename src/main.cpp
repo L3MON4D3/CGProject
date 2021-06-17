@@ -106,12 +106,21 @@ main(int, char**) {
 		2*3.14,
 	});
 
+	tinyspline::BSpline time_spline(5, 1);
+	time_spline.setControlPoints({
+		0,
+		.3,
+		.4,
+		.6,
+		1
+	});
+
 	Object o = Object{
 		sun,
-		{pos_spline, pos_spline.derive(1), rot_spline},
+		{pos_spline, pos_spline.derive(1), rot_spline, time_spline},
 		shaderProgramObj,
 	};
-	Camera d = Camera{{pos_spline}, {shaderProgramObj, shaderProgramCurve}};
+	Camera d = Camera{{pos_spline, time_spline}, {shaderProgramObj, shaderProgramCurve}};
 
 	Curve c = Curve(pos_spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 

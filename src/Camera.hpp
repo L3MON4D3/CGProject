@@ -22,7 +22,8 @@ public:
 		std::vector<unsigned int> shader,
 		std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> cam_func =
 			[](float t, std::vector<tinyspline::BSpline> curves) {
-				t = std::clamp(t, 0.0f, 1.0f);
+				t = curves[1].eval(t).result()[0];
+
 				glm::vec3 a = glm::vec3(20,20,20);
 				//look along negative z.
 				glm::vec3 forw = -glm::normalize(util::std2glm(curves[0].eval(t).result())-a);
