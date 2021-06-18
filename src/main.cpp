@@ -180,8 +180,8 @@ main(int, char**) {
 		ImGui::End();
 
 		ImGui::Begin("Curves2");
-		util::plot_spline(o.curves[2], "rot", [](tinyspline::BSpline &spline, float t) {
-			return spline.bisect(t).result()[1];
+		util::plot_spline(o.curves[2], "rot", [time_spline](tinyspline::BSpline &spline, float t) {
+			return spline.bisect(util::eval_timespline(time_spline, t)).result()[1];
 		});
 		ImGui::SliderInt("point", &indx_rot, 0, o.curves[2].numControlPoints()-1);
 		util::control_point_edit2(o.curves[2], indx_rot, ImVec2(0, 1), ImVec2(-10, 10));
