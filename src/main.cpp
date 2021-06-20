@@ -147,7 +147,9 @@ main(int, char**) {
 	float t = 0;
 	bool play = false;
 	bool view_cam = false;
-	int range = 20;
+	int range_pos = 20;
+	int range_rot = 10;
+	int range_time = 3;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -169,14 +171,15 @@ main(int, char**) {
 		});
 
 		ImGui::SliderInt("point", &indx_time, 0, time_spline.numControlPoints()-1);
-		util::control_point_edit1(time_spline, indx_time, ImVec2(-1,2));
+		ImGui::InputInt("range", &range_time);
+		util::control_point_edit1(time_spline, indx_time, ImVec2(-range_time, range_time));
         ImGui::End();
 
 		ImGui::Begin("Curves1");
 		ImGui::SliderInt("point", &indx_pos, 0, current.numControlPoints()-1);
-		ImGui::InputInt("range", &range);
+		ImGui::InputInt("range", &range_pos);
 
-		util::control_point_edit3(current, indx_pos, ImVec2(-range, range));
+		util::control_point_edit3(current, indx_pos, ImVec2(-range_pos, range_pos));
 		ImGui::End();
 
 		ImGui::Begin("Curves2");
@@ -184,14 +187,15 @@ main(int, char**) {
 			return spline.bisect(util::eval_timespline(time_spline, t)).result()[1];
 		});
 		ImGui::SliderInt("point", &indx_rot, 0, o.curves[2].numControlPoints()-1);
-		util::control_point_edit2(o.curves[2], indx_rot, ImVec2(0, 1), ImVec2(-10, 10));
+		ImGui::InputInt("range", &range_rot);
+		util::control_point_edit2(o.curves[2], indx_rot, ImVec2(0, 1), ImVec2(-range_rot, range_rot));
 		ImGui::End();
 
 		o.curves[3] = time_spline;
-		d.curves[1] = time_spline;
 		o.curves[1] = current.derive(1);
-		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
 		d.curves[0] = current;
+		d.curves[1] = time_spline;
+		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
 
 		if (play)
 			t = (getTimeDelta() % 5000)/5000.0f;
