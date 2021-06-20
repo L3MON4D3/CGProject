@@ -13,22 +13,24 @@
 class Object : public Renderable{
 private:
 	const geometry &model;
-	std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func;
+	std::function<glm::mat4(float, Object &o)> model_func;
 	unsigned int shader_program;
 	int model_mat_loc;
 	
 public:
 	std::vector<tinyspline::BSpline> curves;
+	tinyspline::BSpline pos_curve;
 	Object(
 		const geometry &model,
+		tinyspline::BSpline pos_curve,
 		std::vector<tinyspline::BSpline> curves,
 		unsigned int shader_program,
-		std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func =
-			[](float t, std::vector<tinyspline::BSpline> curves) {
-				t = util::eval_timespline(curves[3], t);
+		std::function<glm::mat4(float, Object &o)> model_func =
+			[](float t, Object &o) {
+				t = util::eval_timespline(o.curves[2], t);
 
 				// Calculate correct forward from derived func.
-				glm::vec3 forw = glm::normalize(util::std2glm(curves[1].eval(t).result()));
+				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0].eval(t).result()));
 				// get vector that points up and is orthogonal to forw.
 				glm::vec3 up = util::gs1(forw, util::up);
 				// Third vector for complete base.
@@ -43,9 +45,9 @@ public:
 
 				return
 					// translate to position.
-					glm::translate(util::std2glm(curves[0].eval(t).result())) *
+					glm::translate(util::std2glm(o.pos_curve.eval(t).result())) *
 					// rotate model_forw onto forw.
-					rot * glm::rotate<float>(curves[2].bisect(t).result()[1], glm::vec3(0,0,1));
+					rot * glm::rotate<float>(o.curves[1].bisect(t).result()[1], glm::vec3(0,0,1));
 			}
 	);
 	

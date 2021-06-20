@@ -2,17 +2,19 @@
 
 Object::Object(
 	const geometry &model,
+	tinyspline::BSpline pos_curve,
 	std::vector<tinyspline::BSpline> curves,
 	unsigned int shader_program,
-	std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> model_func
+	std::function<glm::mat4(float, Object &)> model_func
 ) : model{model},
 	model_func{model_func},
 	shader_program{shader_program},
 	model_mat_loc{glGetUniformLocation(shader_program, "model_mat")},
-	curves{curves} { }
+	curves{curves},
+	pos_curve{pos_curve} { }
 
 glm::mat4 Object::get_model_mat(float t) {
-	return model_func(t, curves)*model.transform;
+	return model_func(t, *this)*model.transform;
 }
 
 void Object::render(float time) {

@@ -132,7 +132,7 @@ main(int, char**) {
 
 	Object o = Object{
 		sun,
-		{pos_spline, pos_spline.derive(1), rot_spline, time_spline},
+		pos_spline, {pos_spline.derive(1), rot_spline, time_spline},
 		shaderProgramObj,
 	};
 	Camera d = Camera{{pos_spline, time_spline}, {shaderProgramObj, shaderProgramCurve}};
@@ -156,7 +156,7 @@ main(int, char**) {
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		tinyspline::BSpline &current = o.curves[0];
+		tinyspline::BSpline &current = o.pos_curve;
         // define UI
         imgui_new_frame(400, 200);
         ImGui::Begin("Time+Cam");
@@ -183,16 +183,16 @@ main(int, char**) {
 		ImGui::End();
 
 		ImGui::Begin("Curves2");
-		util::plot_spline(o.curves[2], "rot", [time_spline](tinyspline::BSpline &spline, float t) {
+		util::plot_spline(o.curves[1], "rot", [time_spline](tinyspline::BSpline &spline, float t) {
 			return spline.bisect(util::eval_timespline(time_spline, t)).result()[1];
 		});
-		ImGui::SliderInt("point", &indx_rot, 0, o.curves[2].numControlPoints()-1);
+		ImGui::SliderInt("point", &indx_rot, 0, o.curves[1].numControlPoints()-1);
 		ImGui::InputInt("range", &range_rot);
-		util::control_point_edit2(o.curves[2], indx_rot, ImVec2(0, 1), ImVec2(-range_rot, range_rot));
+		util::control_point_edit2(o.curves[1], indx_rot, ImVec2(0, 1), ImVec2(-range_rot, range_rot));
 		ImGui::End();
 
-		o.curves[3] = time_spline;
-		o.curves[1] = current.derive(1);
+		o.curves[2] = time_spline;
+		o.curves[0] = current.derive(1);
 		d.curves[0] = current;
 		d.curves[1] = time_spline;
 		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
