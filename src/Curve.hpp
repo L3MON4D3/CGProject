@@ -5,13 +5,12 @@
 class Curve : public Renderable {
 private:
 	unsigned int vao;
-	unsigned int shader_program;
-	int color_loc;
 
 public:
+	static unsigned int shader_program;
+	static int color_loc;
 	Curve(
 		tinyspline::BSpline,
-		unsigned int shader_program,
 		glm::vec4 color = glm::vec4(1.0,0.0,0.0,1.0));
 	void set_color(glm::vec4);
 	void render(float);

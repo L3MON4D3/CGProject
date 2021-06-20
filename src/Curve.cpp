@@ -5,9 +5,10 @@
 
 const int res = 1000;
 
-Curve::Curve(tinyspline::BSpline spline, unsigned int shader_program, glm::vec4 color) :
-	shader_program{shader_program},
-	color_loc{glGetUniformLocation(shader_program, "color")} {
+unsigned int Curve::shader_program;
+int Curve::color_loc;
+
+Curve::Curve(tinyspline::BSpline spline, glm::vec4 color) {
 	float vertices[res*3];
 	for (int i=0; i != res; i++) {
 		auto vert = spline.eval(float(i)/(res-1)).result();

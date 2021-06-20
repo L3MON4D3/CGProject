@@ -137,6 +137,9 @@ main(int, char**) {
 	};
 	Camera d = Camera{{pos_spline, time_spline}, {shaderProgramObj, shaderProgramCurve}};
 
+	// Set before rendering!!!!
+	Curve::shader_program = shaderProgramCurve;
+	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
 	Curve c = Curve(pos_spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 
     // rendering loop
