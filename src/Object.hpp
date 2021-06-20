@@ -20,16 +20,16 @@ private:
 public:
 	std::vector<tinyspline::BSpline> curves;
 	tinyspline::BSpline pos_curve;
+	tinyspline::BSpline time_curve;
 	glm::vec4 curve_color;
 	Object(
 		const geometry &model,
 		tinyspline::BSpline pos_curve,
+		tinyspline::BSpline time_curve,
 		std::vector<tinyspline::BSpline> curves,
 		unsigned int shader_program,
 		std::function<glm::mat4(float, Object &o)> model_func =
 			[](float t, Object &o) {
-				t = util::eval_timespline(o.curves[2], t);
-
 				// Calculate correct forward from derived func.
 				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0].eval(t).result()));
 				// get vector that points up and is orthogonal to forw.

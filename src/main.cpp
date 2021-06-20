@@ -132,7 +132,7 @@ main(int, char**) {
 
 	Object o = Object{
 		sun,
-		pos_spline, {pos_spline.derive(1), rot_spline, time_spline},
+		pos_spline, time_spline, {pos_spline.derive(1), rot_spline},
 		shaderProgramObj,
 	};
 	Camera d = Camera{{pos_spline, time_spline}, {shaderProgramObj, shaderProgramCurve}};
@@ -193,7 +193,7 @@ main(int, char**) {
 		util::control_point_edit2(o.curves[1], indx_rot, ImVec2(0, 1), ImVec2(-range_rot, range_rot));
 		ImGui::End();
 
-		o.curves[2] = time_spline;
+		o.time_curve = time_spline;
 		o.curves[0] = current.derive(1);
 		d.curves[0] = current;
 		d.curves[1] = time_spline;
