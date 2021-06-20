@@ -140,7 +140,6 @@ main(int, char**) {
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
 	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
-	Curve c = Curve(pos_spline, shaderProgramCurve, glm::vec4(1,0,0,1));
 
     // rendering loop
     start_time = std::chrono::system_clock::now();
@@ -198,7 +197,6 @@ main(int, char**) {
 		o.curves[0] = current.derive(1);
 		d.curves[0] = current;
 		d.curves[1] = time_spline;
-		c = Curve(current, shaderProgramCurve, glm::vec4(1,0,0,1));
 
 		if (play)
 			t = (getTimeDelta() % 5000)/5000.0f;
@@ -216,7 +214,6 @@ main(int, char**) {
 		}
 
         o.render(t);
-        c.render(0);
 
 		imgui_render();
         // swap buffers == show rendered content

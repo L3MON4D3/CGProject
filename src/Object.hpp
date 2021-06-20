@@ -20,6 +20,7 @@ private:
 public:
 	std::vector<tinyspline::BSpline> curves;
 	tinyspline::BSpline pos_curve;
+	glm::vec4 curve_color;
 	Object(
 		const geometry &model,
 		tinyspline::BSpline pos_curve,

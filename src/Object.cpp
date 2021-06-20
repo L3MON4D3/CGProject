@@ -1,4 +1,7 @@
 #include "Object.hpp"
+#include "Curve.hpp"
+
+const glm::vec4 initial_curve_color = glm::vec4(1,0,0,1);
 
 Object::Object(
 	const geometry &model,
@@ -11,7 +14,8 @@ Object::Object(
 	shader_program{shader_program},
 	model_mat_loc{glGetUniformLocation(shader_program, "model_mat")},
 	curves{curves},
-	pos_curve{pos_curve} { }
+	pos_curve{pos_curve},
+	curve_color{initial_curve_color} { }
 
 glm::mat4 Object::get_model_mat(float t) {
 	return model_func(t, *this)*model.transform;
@@ -25,4 +29,7 @@ void Object::render(float time) {
 	glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &sun_transform[0][0]);
 
 	glDrawElements(GL_TRIANGLES, model.vertex_count, GL_UNSIGNED_INT, (void*) 0);
+
+	Curve c = Curve(pos_curve, curve_color);
+	c.render(0);
 }
