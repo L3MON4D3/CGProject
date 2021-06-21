@@ -187,4 +187,9 @@ namespace util {
 	float eval_timespline(const tinyspline::BSpline &spline, float t) {
 		return std::clamp<float>(spline.eval(t).result()[0], 0, 1);
 	}
+
+	int getTimeDelta(std::chrono::time_point<std::chrono::system_clock> start_time) {
+		auto now = std::chrono::system_clock::now();
+		return std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time).count();
+	}
 }

@@ -6,6 +6,7 @@
 #include <mesh.hpp>
 #include "imgui.hpp"
 #include <string>
+#include <chrono>
 
 namespace util {
 	const glm::vec3 up = glm::vec3(0,1,0);
@@ -23,4 +24,5 @@ namespace util {
 	void control_point_edit2(tinyspline::BSpline &spline, int indx, ImVec2 range1, ImVec2 range2);
 	void control_point_edit1(tinyspline::BSpline &spline, int indx, ImVec2 range);
 	float eval_timespline(const tinyspline::BSpline &spline, float t);
+	int getTimeDelta(std::chrono::time_point<std::chrono::system_clock>);
 }

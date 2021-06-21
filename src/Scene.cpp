@@ -37,6 +37,8 @@ void Scene::render() {
 
 	util::control_point_edit3(*current.pos_curve, state.indx_pos, ImVec2(-state.range_pos, state.range_pos));
 	ImGui::End();
+	if (state.play)
+		state.time = (util::getTimeDelta(state.start_time) % 5000)/5000.0f;
 
     glm::mat4 proj_view_mat = proj_mat;
     if (state.view_cam) {

@@ -192,8 +192,3 @@ void resizeCallback(GLFWwindow*, int width, int height)
     glViewport(0, 0, width, height);
     proj_matrix = glm::perspective(FOV, static_cast<float>(width) / height, NEAR_VALUE, FAR_VALUE);
 }
-
-int getTimeDelta() {
-    auto now = std::chrono::system_clock::now();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time).count();
-}
