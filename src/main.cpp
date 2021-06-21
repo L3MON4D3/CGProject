@@ -135,7 +135,7 @@ main(int, char**) {
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
 	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
-	Curve::proj_view_loc = glGetUniformLocation(shaderProgramCurve, "proj_view");
+	Curve::proj_view_loc = glGetUniformLocation(shaderProgramCurve, "proj_view_mat");
 
     // rendering loop
     //start_time = std::chrono::system_clock::now();
