@@ -1,9 +1,9 @@
 #include "Camera.hpp"
 
 Camera::Camera(
-	std::vector<tinyspline::BSpline> curves,
+	std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
 	std::vector<unsigned int> shader_programs,
-	std::function<glm::mat4(float, std::vector<tinyspline::BSpline>)> cam_func
+	std::function<glm::mat4(float, std::vector<std::shared_ptr<tinyspline::BSpline>>)> cam_func
 ) :
 	shader_programs{shader_programs},
 	cam_func{cam_func},

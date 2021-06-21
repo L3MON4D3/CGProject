@@ -139,9 +139,9 @@ namespace util {
 	}
 
 	void plot_spline(
-		tinyspline::BSpline spline,
+		const tinyspline::BSpline &spline,
 		std::string name,
-		std::function<float(tinyspline::BSpline &spline, float t)> eval_func) {
+		std::function<float(const tinyspline::BSpline &spline, float t)> eval_func) {
 
 		const size_t count = 200;
 		float plot[count];

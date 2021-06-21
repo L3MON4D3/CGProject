@@ -9,6 +9,7 @@
 #include "Object.hpp"
 #include "Curve.hpp"
 #include "Camera.hpp"
+#include "Scene.hpp"
 
 #include <tinysplinecxx.h>
 #include <imgui.hpp>
@@ -74,8 +75,8 @@ main(int, char**) {
 
     glEnable(GL_DEPTH_TEST);
 
-	tinyspline::BSpline pos_spline(5, 3);
-	pos_spline.setControlPoints({
+	auto pos_spline = std::make_shared<tinyspline::BSpline>(5, 3);
+	pos_spline->setControlPoints({
         -10.078,
         -7.937,
         12.548,
@@ -97,8 +98,8 @@ main(int, char**) {
         -5.515,
 	});
 
-	tinyspline::BSpline rot_spline(7, 2);
-	rot_spline.setControlPoints({
+	auto rot_spline = std::make_shared<tinyspline::BSpline>(7, 2);
+	rot_spline->setControlPoints({
 		0,
 		0,
 
@@ -121,8 +122,8 @@ main(int, char**) {
 		0
 	});
 
-	tinyspline::BSpline time_spline(5, 1);
-	time_spline.setControlPoints({
+	auto time_spline = std::make_shared<tinyspline::BSpline>(5, 1);
+	time_spline->setControlPoints({
 		0,
 		.3,
 		.4,
@@ -130,90 +131,72 @@ main(int, char**) {
 		1
 	});
 
-	Object o = Object{
-		sun,
-		pos_spline, time_spline, {pos_spline.derive(1), rot_spline},
-		shaderProgramObj,
-	};
+	//Object o = ;
 	Camera d = Camera{{pos_spline, time_spline}, {shaderProgramObj, shaderProgramCurve}};
+	auto o = std::make_unique<Object>(
+		sun,
+		pos_spline, time_spline, std::vector{
+			std::make_shared<tinyspline::BSpline>(pos_spline->derive(1)),
+			rot_spline},
+		shaderProgramObj
+	);
+
+	struct state1 : ImGuiState { } s_state;
+	Scene s = Scene{{std::move(o)}, d, [](Scene, ImGuiState) { }, s_state};
 
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
 	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
 
     // rendering loop
-    start_time = std::chrono::system_clock::now();
-	int indx_pos = 0;
-	int indx_time = 0;
-	int indx_rot = 0;
-	float t = 0;
-	bool play = false;
-	bool view_cam = false;
-	int range_pos = 20;
-	int range_rot = 10;
-	int range_time = 3;
+    //start_time = std::chrono::system_clock::now();
+	//int indx_pos = 0;
+	//int indx_time = 0;
+	//int indx_rot = 0;
+	//float t = 0;
+	//bool play = false;
+	//bool view_cam = false;
+	//int range_pos = 20;
+	//int range_rot = 10;
+	//int range_time = 3;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		tinyspline::BSpline &current = o.pos_curve;
         // define UI
-        imgui_new_frame(400, 200);
-        ImGui::Begin("Time+Cam");
-		if (ImGui::Checkbox("play", &play) && play)
-			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
-		ImGui::Checkbox("freecam", &view_cam);
+		imgui_new_frame(400, 200);
+		//ImGui::Begin("Curves2");
+		//util::plot_spline(o.curves[1], "rot", [time_spline](tinyspline::BSpline &spline, float t) {
+		//	return spline.bisect(util::eval_timespline(time_spline, t)).result()[1];
+		//});
+		//ImGui::SliderInt("point", &indx_rot, 0, o.curves[1].numControlPoints()-1);
+		//ImGui::InputInt("range", &range_rot);
+		//util::control_point_edit2(o.curves[1], indx_rot, ImVec2(0, 1), ImVec2(-range_rot, range_rot));
+		//ImGui::End();
 
-		if(ImGui::SliderFloat("time", &t, 0, 1))
-			start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(t*5000));
-		util::plot_spline(time_spline, "time", [](tinyspline::BSpline &spline, float t) {
-			return util::eval_timespline(spline, t);
-		});
+		//o.time_curve = time_spline;
+		//o.curves[0] = current.derive(1);
+		//d.curves[0] = current;
+		//d.curves[1] = time_spline;
 
-		ImGui::SliderInt("point", &indx_time, 0, time_spline.numControlPoints()-1);
-		ImGui::InputInt("range", &range_time);
-		util::control_point_edit1(time_spline, indx_time, ImVec2(-range_time, range_time));
-        ImGui::End();
+		//if (play)
+		//	t = (getTimeDelta() % 5000)/5000.0f;
 
-		ImGui::Begin("Curves1");
-		ImGui::SliderInt("point", &indx_pos, 0, current.numControlPoints()-1);
-		ImGui::InputInt("range", &range_pos);
+        //if (view_cam) {
+		//	glm::mat4 view_matrix = cam.view_matrix();
 
-		util::control_point_edit3(current, indx_pos, ImVec2(-range_pos, range_pos));
-		ImGui::End();
+		//	glUseProgram(shaderProgramObj);
+		//	glUniformMatrix4fv(view_mat_loc_obj, 1, GL_FALSE, &view_matrix[0][0]);
 
-		ImGui::Begin("Curves2");
-		util::plot_spline(o.curves[1], "rot", [time_spline](tinyspline::BSpline &spline, float t) {
-			return spline.bisect(util::eval_timespline(time_spline, t)).result()[1];
-		});
-		ImGui::SliderInt("point", &indx_rot, 0, o.curves[1].numControlPoints()-1);
-		ImGui::InputInt("range", &range_rot);
-		util::control_point_edit2(o.curves[1], indx_rot, ImVec2(0, 1), ImVec2(-range_rot, range_rot));
-		ImGui::End();
+		//	glUseProgram(shaderProgramCurve);
+		//	glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
+		//} else {
+		//	d.set_view_mat(t);
+		//}
 
-		o.time_curve = time_spline;
-		o.curves[0] = current.derive(1);
-		d.curves[0] = current;
-		d.curves[1] = time_spline;
-
-		if (play)
-			t = (getTimeDelta() % 5000)/5000.0f;
-
-        if (view_cam) {
-			glm::mat4 view_matrix = cam.view_matrix();
-
-			glUseProgram(shaderProgramObj);
-			glUniformMatrix4fv(view_mat_loc_obj, 1, GL_FALSE, &view_matrix[0][0]);
-
-			glUseProgram(shaderProgramCurve);
-			glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
-		} else {
-			d.set_view_mat(t);
-		}
-
-        o.render(t);
+        s.render();
 
 		imgui_render();
         // swap buffers == show rendered content

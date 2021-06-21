@@ -13,9 +13,9 @@ namespace util {
 	std::vector<geometry> load_scene_full_mesh(const char* filename, bool smooth);
 	glm::vec3 gs1(glm::vec3 a, glm::vec3 b);
 	void plot_spline(
-		tinyspline::BSpline spline,
+		const tinyspline::BSpline &spline,
 		std::string name,
-		std::function<float(tinyspline::BSpline &spline, float t)> eval_func = [](tinyspline::BSpline &spline, float t){
+		std::function<float(const tinyspline::BSpline &spline, float t)> eval_func = [](const tinyspline::BSpline &spline, float t){
 			return spline.eval(t).result()[0];
 		});
 
