@@ -129,8 +129,29 @@ main(int, char**) {
 		shaderProgramObj
 	);
 
-	struct state1 : ImGuiState { } s_state;
-	Scene s = Scene{{std::move(o)}, d, [](Scene, ImGuiState) { }, s_state, cam};
+	struct state1 : public ImGuiState {
+		int indx_rot;
+		int range_rot;
+
+		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
+	};
+
+	Scene s = Scene{{std::move(o)}, d, [](Object &o, std::unique_ptr<ImGuiState> &state) {
+		auto state_cast = dynamic_cast<state1 *>(state.get());
+		tinyspline::BSpline &time_curve = *o.time_curve;
+		ImGui::Begin("Curves2");
+		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
+			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
+		});
+		ImGui::SliderInt("point", &state_cast->indx_rot, 0, o.curves[1]->numControlPoints()-1);
+		ImGui::InputInt("range", &state_cast->range_rot);
+		util::control_point_edit2(*o.curves[1],
+			state_cast->indx_rot,
+			ImVec2(0, 1),
+			ImVec2(-state_cast->range_rot, state_cast->range_rot)
+		);
+		ImGui::End();
+	}, std::make_unique<state1>(0,3), cam};
 
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
@@ -156,19 +177,6 @@ main(int, char**) {
 
         // define UI
 		imgui_new_frame(400, 200);
-		//ImGui::Begin("Curves2");
-		//util::plot_spline(o.curves[1], "rot", [time_spline](tinyspline::BSpline &spline, float t) {
-		//	return spline.bisect(util::eval_timespline(time_spline, t)).result()[1];
-		//});
-		//ImGui::SliderInt("point", &indx_rot, 0, o.curves[1].numControlPoints()-1);
-		//ImGui::InputInt("range", &range_rot);
-		//util::control_point_edit2(o.curves[1], indx_rot, ImVec2(0, 1), ImVec2(-range_rot, range_rot));
-		//ImGui::End();
-
-		//o.time_curve = time_spline;
-		//o.curves[0] = current.derive(1);
-		//d.curves[0] = current;
-		//d.curves[1] = time_spline;
 
 		//if (play)
 		//	t = (getTimeDelta() % 5000)/5000.0f;

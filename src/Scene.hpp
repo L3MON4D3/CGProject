@@ -18,17 +18,19 @@ struct ImGuiState {
 	int range_pos = 20;
 	int indx_time = 0;
 	int range_time = 3;
+
+	virtual ~ImGuiState() = default;
 };
 
 class Scene {
 private:
 	Camera cam;
 	std::vector<std::shared_ptr<Object>> objects;
-	std::function<void(Scene, ImGuiState)> render_extras;
-	ImGuiState state;
+	std::function<void(Object &, std::unique_ptr<ImGuiState> &)> render_extras;
+	std::unique_ptr<ImGuiState> state;
 	std::shared_ptr<camera> free_cam;
 
 public:
-	Scene(std::vector<std::shared_ptr<Object>>, Camera, std::function<void(Scene, ImGuiState)>, ImGuiState, std::shared_ptr<camera>);
+	Scene(std::vector<std::shared_ptr<Object>>, Camera, std::function<void(Object &, std::unique_ptr<ImGuiState> &)>, std::unique_ptr<ImGuiState>, std::shared_ptr<camera>);
 	void render();
 };
