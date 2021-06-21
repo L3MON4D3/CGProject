@@ -51,5 +51,5 @@ public:
 			}
 	);
 	
-	void set_view_mat(float);
+	glm::mat4 get_view_mat(float);
 };

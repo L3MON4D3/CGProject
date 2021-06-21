@@ -35,7 +35,7 @@ main(int, char**) {
     GLFWwindow* window = initOpenGL(WINDOW_WIDTH, WINDOW_HEIGHT, "glfw");
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
-    camera cam(window);
+    auto cam = std::make_shared<camera>(window);
 
     init_imgui(window);
 
@@ -55,23 +55,11 @@ main(int, char**) {
     geometry sun = util::load_scene_full_mesh("craft_cargoA.obj", false)[0];
     sun.transform = glm::translate(glm::vec3(0, -.4, 0));
 
-    proj_matrix = glm::perspective(FOV, 1.f, NEAR_VALUE, FAR_VALUE);
-
     glUseProgram(shaderProgramObj);
-    int view_mat_loc_obj = glGetUniformLocation(shaderProgramObj, "view_mat");
-    int proj_mat_loc_obj = glGetUniformLocation(shaderProgramObj, "proj_mat");
     int light_dir_loc = glGetUniformLocation(shaderProgramObj, "light_dir");
 
     glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
     glUniform3fv(light_dir_loc, 1, &light_dir[0]);
-
-	glUniformMatrix4fv(proj_mat_loc_obj, 1, GL_FALSE, &proj_matrix[0][0]);
-
-    glUseProgram(shaderProgramCurve);
-    int view_mat_loc_curve = glGetUniformLocation(shaderProgramCurve, "view_mat");
-    int proj_mat_loc_curve = glGetUniformLocation(shaderProgramCurve, "proj_mat");
-
-	glUniformMatrix4fv(proj_mat_loc_curve, 1, GL_FALSE, &proj_matrix[0][0]);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -142,11 +130,12 @@ main(int, char**) {
 	);
 
 	struct state1 : ImGuiState { } s_state;
-	Scene s = Scene{{std::move(o)}, d, [](Scene, ImGuiState) { }, s_state};
+	Scene s = Scene{{std::move(o)}, d, [](Scene, ImGuiState) { }, s_state, cam};
 
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
 	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
+	Curve::proj_view_loc = glGetUniformLocation(shaderProgramCurve, "proj_view");
 
     // rendering loop
     //start_time = std::chrono::system_clock::now();
@@ -183,18 +172,6 @@ main(int, char**) {
 
 		//if (play)
 		//	t = (getTimeDelta() % 5000)/5000.0f;
-
-        //if (view_cam) {
-		//	glm::mat4 view_matrix = cam.view_matrix();
-
-		//	glUseProgram(shaderProgramObj);
-		//	glUniformMatrix4fv(view_mat_loc_obj, 1, GL_FALSE, &view_matrix[0][0]);
-
-		//	glUseProgram(shaderProgramCurve);
-		//	glUniformMatrix4fv(view_mat_loc_curve, 1, GL_FALSE, &view_matrix[0][0]);
-		//} else {
-		//	d.set_view_mat(t);
-		//}
 
         s.render();
 

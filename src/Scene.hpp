@@ -26,8 +26,9 @@ private:
 	std::vector<std::shared_ptr<Object>> objects;
 	std::function<void(Scene, ImGuiState)> render_extras;
 	ImGuiState state;
+	std::shared_ptr<camera> free_cam;
 
 public:
-	Scene(std::vector<std::shared_ptr<Object>>, Camera, std::function<void(Scene, ImGuiState)>, ImGuiState);
+	Scene(std::vector<std::shared_ptr<Object>>, Camera, std::function<void(Scene, ImGuiState)>, ImGuiState, std::shared_ptr<camera>);
 	void render();
 };

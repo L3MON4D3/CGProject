@@ -17,6 +17,7 @@ private:
 	std::function<glm::mat4(float, Object &o)> model_func;
 	unsigned int shader_program;
 	int model_mat_loc;
+	int pvm_mat_loc;
 	
 public:
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves;
@@ -52,8 +53,7 @@ public:
 					rot * glm::rotate<float>(o.curves[1]->bisect(t).result()[1], glm::vec3(0,0,1));
 			}
 	);
-	//Object(Object &);
 	
 	glm::mat4 get_model_mat(float);
-	void render(float time);
+	void render(float time, glm::mat4);
 };

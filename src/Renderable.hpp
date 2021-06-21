@@ -3,5 +3,5 @@
 class Renderable {
 public:
 	virtual ~Renderable() {}
-	virtual void render(float) = 0;
+	virtual void render(float, glm::mat4) = 0;
 };

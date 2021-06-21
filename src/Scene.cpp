@@ -3,11 +3,14 @@
 const glm::vec4   active_color = glm::vec4(0,1,0,1);
 const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
 
+const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
+
 Scene::Scene(
 	std::vector<std::shared_ptr<Object>> objects,
 	Camera cam,
-	std::function<void(Scene, ImGuiState)> render_extras, ImGuiState init_state) :
-	cam{cam}, objects{objects}, render_extras{render_extras}, state{init_state} { }
+	std::function<void(Scene, ImGuiState)> render_extras, ImGuiState init_state, 
+	std::shared_ptr<camera> free_cam) :
+	cam{cam}, objects{objects}, render_extras{render_extras}, state{init_state}, free_cam{free_cam} { }
 
 void Scene::render() {
 	Object &current = *objects[state.current_indx];
@@ -35,13 +38,20 @@ void Scene::render() {
 	util::control_point_edit3(*current.pos_curve, state.indx_pos, ImVec2(-state.range_pos, state.range_pos));
 	ImGui::End();
 
+    glm::mat4 proj_view_mat = proj_mat;
+    if (state.view_cam) {
+		proj_view_mat = proj_mat * free_cam->view_matrix();
+	} else {
+		proj_view_mat *= cam.get_view_mat(state.time);
+	}
+
 	for (size_t i = 0; i != objects.size(); ++i) {
 		Object &o = *objects[i];
 		if (i != state.current_indx)
 			o.curve_color = inactive_color;
 		else
-			o.curve_color =   active_color;
+			o.curve_color = active_color;
 
-		o.render(state.time);
+		o.render(state.time, proj_view_mat);
 	}
 }

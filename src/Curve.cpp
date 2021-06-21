@@ -6,6 +6,7 @@
 const int res = 1000;
 
 unsigned int Curve::shader_program;
+unsigned int Curve::proj_view_loc;
 int Curve::color_loc;
 
 Curve::Curve(tinyspline::BSpline spline, glm::vec4 color) {
@@ -32,8 +33,9 @@ void Curve::set_color(glm::vec4 color) {
 	glUniform4fv(color_loc, 1, &color.x);
 }
 
-void Curve::render(float) {
+void Curve::render(float, glm::mat4 proj_view) {
 	glUseProgram(shader_program);
+	glUniformMatrix4fv(proj_view_loc, 1, GL_FALSE, &proj_view[0][0]);
 
 	glBindVertexArray(vao);
 	glDrawArrays(GL_LINE_STRIP, 0, res);
