@@ -20,6 +20,7 @@ else()
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_BUILD_TYPE DEBUG)
 
 configure_file ( 
     "${PROJECT_SOURCE_DIR}/config.hpp.in"
@@ -59,7 +60,7 @@ add_subdirectory("libs/tinyspline")
 add_executable(space ${PROJECT_SOURCES} ${PROJECT_HEADERS} ${PROJECT_CONFIGS}
                      ${LIBRARY_SOURCES} ${VENDORS_SOURCES})
 
-target_link_libraries(space assimp glfw tinysplinecxx
+target_link_libraries(space assimp glfw tinysplinecxx -fsanitize=address
 					  ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
 
 #foreach(PROJECT_SOURCE_FILE ${PROJECT_SOURCES})
