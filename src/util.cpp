@@ -2,6 +2,7 @@
 #include <functional>
 #include <buffer.hpp>
 #include <algorithm>
+#include <memory>
 
 namespace util {
 	glm::vec3 std2glm(std::vector<double> vec) {
@@ -186,6 +187,18 @@ namespace util {
 		ImGui::SliderFloat("x", &x, offset-range, offset+range);
 
         spline.setControlPointAt(indx, std::vector<double>{x});
+	}
+
+	void control_point_edit(tinyspline::BSpline &spline, int indx, int *range, double *offset) {
+		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
+
+		if (ImGui::InputInt("range", range))
+			offset[0] = ctrl_point[0];
+
+		double min = offset[0]-range[0];
+		double max = offset[0]+range[0];
+		ImGui::SliderScalar("lbl", ImGuiDataType_Double, &ctrl_point[0], &min, &max);	
+        spline.setControlPointAt(indx, ctrl_point);
 	}
 
 	float eval_timespline(const tinyspline::BSpline &spline, float t) {

@@ -32,7 +32,7 @@ void Scene::render() {
 
 	ImGui::SliderInt("point", &state->indx_time, 0, current.time_curve->numControlPoints()-1);
 
-	util::control_point_edit1(*current.time_curve, state->indx_time, state->range_time, state->offset_time);
+	util::control_point_edit(*current.time_curve, state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
 	ImGui::Begin("Curves1");
