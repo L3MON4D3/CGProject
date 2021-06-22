@@ -20,9 +20,6 @@ namespace util {
 			return spline.eval(t).result()[0];
 		});
 
-	void control_point_edit3(tinyspline::BSpline &spline, int indx, ImVec2 range);
-	void control_point_edit2(tinyspline::BSpline &spline, int indx, ImVec2 range1, ImVec2 range2);
-	void control_point_edit1(tinyspline::BSpline &spline, int indx, int &range, float &offset);
 	void control_point_edit(tinyspline::BSpline &spline, int indx, int *range, double *offset);
 	float eval_timespline(const tinyspline::BSpline &spline, float t);
 	int getTimeDelta(std::chrono::time_point<std::chrono::system_clock>);

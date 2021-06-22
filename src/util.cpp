@@ -155,49 +155,22 @@ namespace util {
 			ImVec2(280, 100));
 	}
 
-	void control_point_edit3(tinyspline::BSpline &spline, int indx, ImVec2 range) {
-		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
-		float x = ctrl_point[0];
-		float y = ctrl_point[1];
-		float z = ctrl_point[2];
-		ImGui::SliderFloat("x", &x, range.x, range.y);
-		ImGui::SliderFloat("y", &y, range.x, range.y);
-		ImGui::SliderFloat("z", &z, range.x, range.y);
-
-        spline.setControlPointAt(indx, std::vector<double>{x,y,z});
-	}
-
-	void control_point_edit2(tinyspline::BSpline &spline, int indx, ImVec2 range1, ImVec2 range2) {
-		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
-		float x = ctrl_point[0];
-		float y = ctrl_point[1];
-		ImGui::SliderFloat("x", &x, range1.x, range1.y);
-		ImGui::SliderFloat("y", &y, range2.x, range2.y);
-
-        spline.setControlPointAt(indx, std::vector<double>{x,y});
-	}
-
-	void control_point_edit1(tinyspline::BSpline &spline, int indx, int &range, float &offset) {
-		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
-		float x = ctrl_point[0];
-
-		if (ImGui::InputInt("range", &range))
-			offset = x;
-
-		ImGui::SliderFloat("x", &x, offset-range, offset+range);
-
-        spline.setControlPointAt(indx, std::vector<double>{x});
-	}
-
 	void control_point_edit(tinyspline::BSpline &spline, int indx, int *range, double *offset) {
 		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
+		int dim = spline.dimension();
 
 		if (ImGui::InputInt("range", range))
-			offset[0] = ctrl_point[0];
+			for (int i = 0; i != dim; ++i)
+				offset[i] = ctrl_point[i];
 
-		double min = offset[0]-range[0];
-		double max = offset[0]+range[0];
-		ImGui::SliderScalar("lbl", ImGuiDataType_Double, &ctrl_point[0], &min, &max);	
+		// I guess it's fine if these get destroyed soon??
+		auto mins = std::make_unique<double[]>(3);
+		auto maxs = std::make_unique<double[]>(3);
+		for (int i = 0; i != dim; ++i) {
+			mins[i] = offset[i]-*range;
+			maxs[i] = offset[i]+*range;
+			ImGui::SliderScalar(std::to_string(i).c_str(), ImGuiDataType_Double, &ctrl_point[i], &mins[i], &maxs[i]);	
+		}
         spline.setControlPointAt(indx, ctrl_point);
 	}
 

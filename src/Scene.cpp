@@ -37,9 +37,9 @@ void Scene::render() {
 
 	ImGui::Begin("Curves1");
 	ImGui::SliderInt("point", &state->indx_pos, 0, current.pos_curve->numControlPoints()-1);
-	ImGui::InputInt("range", &state->range_pos);
+	//ImGui::InputInt("range", &state->range_pos);
 
-	util::control_point_edit3(*current.pos_curve, state->indx_pos, ImVec2(-state->range_pos, state->range_pos));
+	util::control_point_edit(*current.pos_curve, state->indx_pos, &state->range_pos, state->offset_pos);
 	ImGui::End();
 
 	render_extras(*this);

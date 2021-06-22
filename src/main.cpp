@@ -143,7 +143,8 @@ main(int, char**) {
 
 	struct state1 : public ImGuiState {
 		int indx_rot;
-		int range_rot;
+		int range_rot = 1;
+		double rot_offset[2] {0, 0};
 
 		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
 	};
@@ -157,12 +158,8 @@ main(int, char**) {
 			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
 		});
 		ImGui::SliderInt("point", &state_cast->indx_rot, 0, o.curves[1]->numControlPoints()-1);
-		ImGui::InputInt("range", &state_cast->range_rot);
-		util::control_point_edit2(*o.curves[1],
-			state_cast->indx_rot,
-			ImVec2(0, 1),
-			ImVec2(-state_cast->range_rot, state_cast->range_rot)
-		);
+		util::control_point_edit(*o.curves[1],
+			state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
 		ImGui::End();
 
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
