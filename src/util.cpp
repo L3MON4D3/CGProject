@@ -176,10 +176,14 @@ namespace util {
         spline.setControlPointAt(indx, std::vector<double>{x,y});
 	}
 
-	void control_point_edit1(tinyspline::BSpline &spline, int indx, ImVec2 range) {
+	void control_point_edit1(tinyspline::BSpline &spline, int indx, int &range, float &offset) {
 		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
 		float x = ctrl_point[0];
-		ImGui::SliderFloat("x", &x, range.x, range.y);
+
+		if (ImGui::InputInt("range", &range))
+			offset = x;
+
+		ImGui::SliderFloat("x", &x, offset-range, offset+range);
 
         spline.setControlPointAt(indx, std::vector<double>{x});
 	}

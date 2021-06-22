@@ -18,6 +18,8 @@ struct ImGuiState {
 	int range_pos = 20;
 	int indx_time = 0;
 	int range_time = 3;
+	ImVec4 offset_pos = ImVec4(0,0,0,0);
+	float offset_time = 0;
 
 	virtual ~ImGuiState() = default;
 };

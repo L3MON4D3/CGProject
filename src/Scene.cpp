@@ -29,9 +29,10 @@ void Scene::render() {
 	util::plot_spline(*current.time_curve, "time", [](const tinyspline::BSpline &spline, float t) {
 		return util::eval_timespline(spline, t);
 	});
+
 	ImGui::SliderInt("point", &state->indx_time, 0, current.time_curve->numControlPoints()-1);
-	ImGui::InputInt("range", &state->range_time);
-	util::control_point_edit1(*current.time_curve, state->indx_time, ImVec2(-state->range_time, state->range_time));
+
+	util::control_point_edit1(*current.time_curve, state->indx_time, state->range_time, state->offset_time);
 	ImGui::End();
 
 	ImGui::Begin("Curves1");
