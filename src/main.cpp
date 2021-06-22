@@ -128,14 +128,16 @@ main(int, char**) {
 		sun,
 		pos_spline1, time_spline1, std::vector{
 			std::make_shared<tinyspline::BSpline>(pos_spline1->derive(1)),
-			rot_spline1},
+			rot_spline1
+		},
 		shaderProgramObj
 	);
 	auto o2 = std::make_unique<Object>(
 		sun,
 		pos_spline2, time_spline2, std::vector{
 			std::make_shared<tinyspline::BSpline>(pos_spline2->derive(1)),
-			rot_spline2},
+			rot_spline2
+		},
 		shaderProgramObj
 	);
 
@@ -166,7 +168,6 @@ main(int, char**) {
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
 		scene.cam.curves[0] = scene.objects[0]->pos_curve;
 		scene.cam.curves[1] = scene.objects[0]->time_curve;
-
 	}, std::make_unique<state1>(0,3), cam};
 
 	// Set before rendering!!!!
@@ -174,17 +175,6 @@ main(int, char**) {
 	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
 	Curve::proj_view_loc = glGetUniformLocation(shaderProgramCurve, "proj_view_mat");
 
-    // rendering loop
-    //start_time = std::chrono::system_clock::now();
-	//int indx_pos = 0;
-	//int indx_time = 0;
-	//int indx_rot = 0;
-	//float t = 0;
-	//bool play = false;
-	//bool view_cam = false;
-	//int range_pos = 20;
-	//int range_rot = 10;
-	//int range_time = 3;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -193,9 +183,6 @@ main(int, char**) {
 
         // define UI
 		imgui_new_frame(400, 200);
-
-		//if (play)
-		//	t = (getTimeDelta() % 5000)/5000.0f;
 
         s.render();
 

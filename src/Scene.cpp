@@ -10,7 +10,7 @@ Scene::Scene(
 	Camera cam,
 	std::function<void(Scene &)> render_extras, std::unique_ptr<ImGuiState> init_state, 
 	std::shared_ptr<camera> free_cam) :
-	cam{cam}, objects{objects}, render_extras{render_extras}, state{std::move(init_state)}, free_cam{free_cam} { }
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{objects}, state{std::move(init_state)} { }
 
 void Scene::render() {
 	ImGui::Begin("Scene-controls");
