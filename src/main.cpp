@@ -63,8 +63,8 @@ main(int, char**) {
 
     glEnable(GL_DEPTH_TEST);
 
-	auto pos_spline = std::make_shared<tinyspline::BSpline>(5, 3);
-	pos_spline->setControlPoints({
+	auto pos_spline1 = std::make_shared<tinyspline::BSpline>(5, 3);
+	pos_spline1->setControlPoints({
         -10.078,
         -7.937,
         12.548,
@@ -86,8 +86,8 @@ main(int, char**) {
         -5.515,
 	});
 
-	auto rot_spline = std::make_shared<tinyspline::BSpline>(7, 2);
-	rot_spline->setControlPoints({
+	auto rot_spline1 = std::make_shared<tinyspline::BSpline>(7, 2);
+	rot_spline1->setControlPoints({
 		0,
 		0,
 
@@ -110,8 +110,8 @@ main(int, char**) {
 		0
 	});
 
-	auto time_spline = std::make_shared<tinyspline::BSpline>(5, 1);
-	time_spline->setControlPoints({
+	auto time_spline1 = std::make_shared<tinyspline::BSpline>(5, 1);
+	time_spline1->setControlPoints({
 		0,
 		.3,
 		.4,
@@ -119,13 +119,23 @@ main(int, char**) {
 		1
 	});
 
-	//Object o = ;
-	Camera d = Camera{{pos_spline, time_spline}, {shaderProgramObj, shaderProgramCurve}};
-	auto o = std::make_unique<Object>(
+	auto pos_spline2 = std::make_shared<tinyspline::BSpline>(*pos_spline1);
+	auto rot_spline2 = std::make_shared<tinyspline::BSpline>(*rot_spline1);
+	auto time_spline2 = std::make_shared<tinyspline::BSpline>(*time_spline1);
+
+	Camera d = Camera{{pos_spline1, time_spline1}, {shaderProgramObj, shaderProgramCurve}};
+	auto o1 = std::make_unique<Object>(
 		sun,
-		pos_spline, time_spline, std::vector{
-			std::make_shared<tinyspline::BSpline>(pos_spline->derive(1)),
-			rot_spline},
+		pos_spline1, time_spline1, std::vector{
+			std::make_shared<tinyspline::BSpline>(pos_spline1->derive(1)),
+			rot_spline1},
+		shaderProgramObj
+	);
+	auto o2 = std::make_unique<Object>(
+		sun,
+		pos_spline2, time_spline2, std::vector{
+			std::make_shared<tinyspline::BSpline>(pos_spline2->derive(1)),
+			rot_spline2},
 		shaderProgramObj
 	);
 
@@ -136,8 +146,9 @@ main(int, char**) {
 		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	Scene s = Scene{{std::move(o)}, d, [](Object &o, std::unique_ptr<ImGuiState> &state) {
-		auto state_cast = dynamic_cast<state1 *>(state.get());
+	Scene s = Scene{{std::move(o2), std::move(o1)}, d, [](Scene &scene) {
+		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
+		Object &o = *scene.objects[state_cast->current_indx];
 		tinyspline::BSpline &time_curve = *o.time_curve;
 		ImGui::Begin("Curves2");
 		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
@@ -151,6 +162,11 @@ main(int, char**) {
 			ImVec2(-state_cast->range_rot, state_cast->range_rot)
 		);
 		ImGui::End();
+
+		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
+		scene.cam.curves[0] = scene.objects[0]->pos_curve;
+		scene.cam.curves[1] = scene.objects[0]->time_curve;
+
 	}, std::make_unique<state1>(0,3), cam};
 
 	// Set before rendering!!!!

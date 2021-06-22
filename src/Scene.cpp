@@ -8,11 +8,14 @@ const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
 Scene::Scene(
 	std::vector<std::shared_ptr<Object>> objects,
 	Camera cam,
-	std::function<void(Object &, std::unique_ptr<ImGuiState> &)> render_extras, std::unique_ptr<ImGuiState> init_state, 
+	std::function<void(Scene &)> render_extras, std::unique_ptr<ImGuiState> init_state, 
 	std::shared_ptr<camera> free_cam) :
 	cam{cam}, objects{objects}, render_extras{render_extras}, state{std::move(init_state)}, free_cam{free_cam} { }
 
 void Scene::render() {
+	ImGui::Begin("Scene-controls");
+	ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
+	ImGui::End();
 	Object &current = *objects[state->current_indx];
 
 	ImGui::Begin("Time+Cam");
@@ -38,11 +41,7 @@ void Scene::render() {
 	util::control_point_edit3(*current.pos_curve, state->indx_pos, ImVec2(-state->range_pos, state->range_pos));
 	ImGui::End();
 
-	render_extras(current, state);
-
-	*current.curves[0] = current.pos_curve->derive(1);
-	cam.curves[0] = current.pos_curve;
-	cam.curves[1] = current.time_curve;
+	render_extras(*this);
 
 	if (state->play)
 		state->time = (util::getTimeDelta(state->start_time) % 5000)/5000.0f;
@@ -54,7 +53,7 @@ void Scene::render() {
 		proj_view_mat *= cam.get_view_mat(state->time);
 	}
 
-	for (size_t i = 0; i != objects.size(); ++i) {
+	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
 		if (i != state->current_indx)
 			o.curve_color = inactive_color;
