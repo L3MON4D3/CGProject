@@ -15,14 +15,14 @@ Scene::Scene(
 void Scene::render() {
 	ImGui::Begin("Scene-controls");
 	ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
-	ImGui::End();
-	Object &current = *objects[state->current_indx];
-
-	ImGui::Begin("Time+Cam");
 	if (ImGui::Checkbox("play", &state->play) && state->play)
 		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
 	ImGui::Checkbox("freecam", &state->view_cam);
+	ImGui::End();
 
+	Object &current = *objects[state->current_indx];
+
+	ImGui::Begin("Time+Cam");
 	if(ImGui::SliderFloat("time", &state->time, 0, 1))
 		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
 
