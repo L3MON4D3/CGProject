@@ -187,7 +187,6 @@ namespace util {
 		std::vector<std::shared_ptr<tinyspline::BSpline>> splines {};
 		std::string temp;
 		while (std::getline(stream, temp, delim)) {
-			//std::cout << temp << std::endl;
 			auto spl = std::make_shared<tinyspline::BSpline>(tinyspline::BSpline::parseJson(temp));
 			splines.push_back(spl);
 		}
