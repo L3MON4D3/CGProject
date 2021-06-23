@@ -12,15 +12,12 @@
 
 class Camera {
 private:
-	std::vector<unsigned int> shader_programs;
-	std::vector<int> view_locs;
 	std::function<glm::mat4(float, std::vector<std::shared_ptr<tinyspline::BSpline>>)> cam_func;
 	
 public:
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves;
 	Camera(
 		std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
-		std::vector<unsigned int> shader,
 		std::function<glm::mat4(float, std::vector<std::shared_ptr<tinyspline::BSpline>>)> cam_func =
 			[](float t, auto curves) {
 				t = util::eval_timespline(*curves[1], t);
