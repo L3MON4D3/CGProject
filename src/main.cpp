@@ -10,6 +10,7 @@
 #include "Curve.hpp"
 #include "Camera.hpp"
 #include "Scene.hpp"
+#include "Loader.hpp"
 
 #include <tinysplinecxx.h>
 #include <imgui.hpp>
@@ -39,133 +40,11 @@ main(int, char**) {
 
     init_imgui(window);
 
-    // load and compile shaders and link program
-    unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
-    unsigned int fragmentShaderObj = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
-    unsigned int shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
-    glDeleteShader(vertexShaderObj);
-    glDeleteShader(fragmentShaderObj);
-
-	unsigned int vertexShaderCurve = compileShader("curve_render.vert", GL_VERTEX_SHADER);
-	unsigned int fragmentShaderCurve = compileShader("curve_render.frag", GL_FRAGMENT_SHADER);
-    unsigned int shaderProgramCurve = linkProgram(vertexShaderCurve, fragmentShaderCurve);
-    glDeleteShader(vertexShaderCurve);
-    glDeleteShader(fragmentShaderCurve);
-
-    geometry sun = util::load_scene_full_mesh("craft_cargoA.obj", false)[0];
-    sun.transform = glm::translate(glm::vec3(0, -.4, 0));
-
-    glUseProgram(shaderProgramObj);
-    int light_dir_loc = glGetUniformLocation(shaderProgramObj, "light_dir");
-
-    glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
-    glUniform3fv(light_dir_loc, 1, &light_dir[0]);
-
     glEnable(GL_DEPTH_TEST);
 
-	auto pos_spline1 = std::make_shared<tinyspline::BSpline>(5, 3);
-	pos_spline1->setControlPoints({
-        -10.078,
-        -7.937,
-        12.548,
-
-        -3.015,
-        1.653,
-        7.937,
-
-        3.078,
-        4.315,
-        1.016,
-
-        -8.829,
-        0.512,
-        -14.713,
-
-        18.335,
-        -2.174,
-        -5.515,
-	});
-
-	auto rot_spline1 = std::make_shared<tinyspline::BSpline>(7, 2);
-	rot_spline1->setControlPoints({
-		0,
-		0,
-
-		.2,
-		0,
-
-		.5,
-		0,
-
-		.5,
-		0,
-
-		.5,
-		0,
-
-		.7,
-		0,
-
-		1,
-		0
-	});
-
-	auto time_spline1 = std::make_shared<tinyspline::BSpline>(5, 1);
-	time_spline1->setControlPoints({
-		0,
-		.3,
-		.4,
-		.6,
-		1
-	});
-
-	auto pos_spline2 = std::make_shared<tinyspline::BSpline>(*pos_spline1);
-	auto rot_spline2 = std::make_shared<tinyspline::BSpline>(*rot_spline1);
-	auto time_spline2 = std::make_shared<tinyspline::BSpline>(*time_spline1);
-
-	Camera d = Camera{{pos_spline1, time_spline1}, {shaderProgramObj, shaderProgramCurve}};
-	auto o1 = std::make_unique<Object>(
-		sun,
-		pos_spline1, time_spline1, std::vector{
-			std::make_shared<tinyspline::BSpline>(pos_spline1->derive(1)),
-			rot_spline1
-		},
-		shaderProgramObj
-	);
-	auto o2 = std::make_unique<Object>(
-		sun,
-		pos_spline2, time_spline2, std::vector{
-			std::make_shared<tinyspline::BSpline>(pos_spline2->derive(1)),
-			rot_spline2
-		},
-		shaderProgramObj
-	);
-
-	struct state1 : public ImGuiState {
-		int indx_rot;
-		int range_rot = 1;
-		double rot_offset[2] {0, 0};
-
-		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
-	};
-
-	Scene s = Scene{{std::move(o2), std::move(o1)}, d, [](Scene &scene) {
-		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
-		Object &o = *scene.objects[state_cast->current_indx];
-		tinyspline::BSpline &time_curve = *o.time_curve;
-		ImGui::Begin("Curves2");
-		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
-			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
-		});
-		ImGui::SliderInt("point", &state_cast->indx_rot, 0, o.curves[1]->numControlPoints()-1);
-		util::control_point_edit(*o.curves[1],
-			state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
-		ImGui::End();
-
-		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
-		scene.cam.curves[0] = scene.objects[0]->pos_curve;
-		scene.cam.curves[1] = scene.objects[0]->time_curve;
-	}, std::make_unique<state1>(0,3), cam};
+	load_models();
+	load_shader();
+	std::unique_ptr<Scene> s = load_scene1("lel", cam);
 
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
@@ -181,7 +60,7 @@ main(int, char**) {
         // define UI
 		imgui_new_frame(400, 200);
 
-        s.render();
+        s->render();
 
 		imgui_render();
         // swap buffers == show rendered content
@@ -189,6 +68,8 @@ main(int, char**) {
         // process window events
         glfwPollEvents();
     }
+
+    store_scene1(std::move(s), "lel");
 
 	cleanup_imgui();
     glfwTerminate();
