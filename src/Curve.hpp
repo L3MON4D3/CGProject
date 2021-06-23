@@ -1,3 +1,5 @@
+#pragma once
+
 #include <tinysplinecxx.h>
 #include <glm/glm.hpp>
 #include "Renderable.hpp"
