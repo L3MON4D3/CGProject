@@ -182,4 +182,21 @@ namespace util {
 		auto now = std::chrono::system_clock::now();
 		return std::chrono::duration_cast<std::chrono::milliseconds>(now-start_time).count();
 	}
+
+	std::vector<std::shared_ptr<tinyspline::BSpline>> read_splines(std::istream &stream, char delim) {
+		std::vector<std::shared_ptr<tinyspline::BSpline>> splines {};
+		std::string temp;
+		while (std::getline(stream, temp, delim)) {
+			//std::cout << temp << std::endl;
+			auto spl = std::make_shared<tinyspline::BSpline>(tinyspline::BSpline::parseJson(temp));
+			splines.push_back(spl);
+		}
+
+		return splines;
+	}
+
+	void write_splines(std::vector<std::shared_ptr<tinyspline::BSpline>> &vec, std::ostream &stream, char delim) {
+		for (auto spline : vec)
+			stream << spline->toJson() << delim;
+	}
 }
