@@ -44,7 +44,7 @@ main(int, char**) {
 
 	load_models();
 	load_shader();
-	std::unique_ptr<Scene> s = load_scene1("lel", cam);
+	std::unique_ptr<Scene> s = load_scene1("scene1", cam);
 
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
@@ -69,7 +69,7 @@ main(int, char**) {
         glfwPollEvents();
     }
 
-    store_scene1(std::move(s), "lel");
+    store_scene1(std::move(s), "scene1");
 
 	cleanup_imgui();
     glfwTerminate();
