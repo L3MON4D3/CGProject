@@ -33,8 +33,8 @@ private:
 
 public:
 	Camera cam;
-	std::vector<std::shared_ptr<Object>> objects;
+	std::vector<std::unique_ptr<Object>> objects;
 	std::unique_ptr<ImGuiState> state;
-	Scene(std::vector<std::shared_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, std::shared_ptr<camera>);
+	Scene(std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, std::shared_ptr<camera>);
 	void render();
 };
