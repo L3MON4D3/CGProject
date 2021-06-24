@@ -29,6 +29,10 @@ struct ImGuiState {
 	int range_look_c = 20;
 	double offset_look_c[3] {0,0,0};
 
+	int indx_zoom_c = 0;
+	int range_zoom_c = 1;
+	double offset_zoom_c[2] {0,0};
+
 	int indx_time = 0;
 	int range_time = 3;
 	double offset_time = 0;

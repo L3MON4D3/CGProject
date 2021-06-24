@@ -69,7 +69,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[8], splines[9], splines[10], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[8], splines[9], splines[10], splines[11], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
 		tinyspline::BSpline &time_curve = *o.time_curve;
@@ -95,6 +95,7 @@ void store_scene1(Scene &scene, std::string filename) {
 	splines.push_back(scene.cam.pos_curve);
 	splines.push_back(scene.cam.time_curve);
 	splines.push_back(scene.cam.look_curve);
+	splines.push_back(scene.cam.zoom_curve);
 	splines.insert(splines.end(), scene.cam.curves.begin(), scene.cam.curves.end());
 
 	std::ofstream file;

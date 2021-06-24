@@ -42,15 +42,23 @@ void Scene::render() {
 	ImGui::End();
 
 	ImGui::Begin("Obj_Pos");
-	util::control_point_edit(&current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
+		util::control_point_edit(&current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Pos");
-	util::control_point_edit(&cam.pos_curve, &state->indx_pos_c, &state->range_pos_c, state->offset_pos_c);
+		util::control_point_edit(&cam.pos_curve, &state->indx_pos_c, &state->range_pos_c, state->offset_pos_c);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Look");
-	util::control_point_edit(&cam.look_curve, &state->indx_look_c, &state->range_look_c, state->offset_look_c);
+		util::control_point_edit(&cam.look_curve, &state->indx_look_c, &state->range_look_c, state->offset_look_c);
+	ImGui::End();
+
+	tinyspline::BSpline &cam_time = *cam.time_curve;
+	ImGui::Begin("Cam_Zoom");
+		util::plot_spline(*cam.zoom_curve, "rot", [cam_time](const tinyspline::BSpline &spline, float t) {
+			return spline.bisect(util::eval_timespline(cam_time, t)).result()[1];
+		});
+		util::control_point_edit(&cam.zoom_curve, &state->indx_zoom_c, &state->range_zoom_c, state->offset_zoom_c);
 	ImGui::End();
 
 	render_extras(*this);
