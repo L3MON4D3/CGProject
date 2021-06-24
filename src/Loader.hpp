@@ -80,14 +80,13 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
 			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
 		});
-		ImGui::SliderInt("point", &state_cast->indx_rot, 0, o.curves[1]->numControlPoints()-1);
 		util::control_point_edit(*o.curves[1],
-			state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
+			&state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
 		ImGui::End();
 
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
-		scene.cam.look_curve = scene.objects[0]->pos_curve;
-		scene.cam.time_curve = scene.objects[0]->time_curve;
+		//scene.cam.look_curve = scene.objects[0]->pos_curve;
+		//scene.cam.time_curve = scene.objects[0]->time_curve;
 	}, std::make_unique<state1>(0,3), cam);
 }
 

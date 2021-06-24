@@ -155,8 +155,10 @@ namespace util {
 			ImVec2(280, 100));
 	}
 
-	void control_point_edit(tinyspline::BSpline &spline, int indx, int *range, double *offset) {
-		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(indx);
+	void control_point_edit(tinyspline::BSpline &spline, int *indx, int *range, double *offset) {
+		ImGui::SliderInt("point", indx, 0, spline.numControlPoints()-1);
+
+		std::vector<tinyspline::real> ctrl_point = spline.controlPointAt(*indx);
 		int dim = spline.dimension();
 
 		if (ImGui::InputInt("range", range))
@@ -171,7 +173,7 @@ namespace util {
 			maxs[i] = offset[i]+*range;
 			ImGui::SliderScalar(std::to_string(i).c_str(), ImGuiDataType_Double, &ctrl_point[i], &mins[i], &maxs[i]);	
 		}
-        spline.setControlPointAt(indx, ctrl_point);
+        spline.setControlPointAt(*indx, ctrl_point);
 	}
 
 	float eval_timespline(const tinyspline::BSpline &spline, float t) {

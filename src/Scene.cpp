@@ -33,9 +33,7 @@ void Scene::render() {
 		return util::eval_timespline(spline, t);
 	});
 
-	ImGui::SliderInt("point", &state->indx_time, 0, current.time_curve->numControlPoints()-1);
-
-	util::control_point_edit(*current.time_curve, state->indx_time, &state->range_time, &state->offset_time);
+	util::control_point_edit(*current.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Time");
@@ -43,16 +41,13 @@ void Scene::render() {
 		return util::eval_timespline(spline, t);
 	});
 
-	ImGui::SliderInt("point", &state->indx_time, 0, current.time_curve->numControlPoints()-1);
-
-	util::control_point_edit(*current.time_curve, state->indx_time, &state->range_time, &state->offset_time);
+	util::control_point_edit(*current.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
 	ImGui::Begin("Pos");
-	ImGui::SliderInt("point", &state->indx_pos, 0, current.pos_curve->numControlPoints()-1);
 	//ImGui::InputInt("range", &state->range_pos);
 
-	util::control_point_edit(*current.pos_curve, state->indx_pos, &state->range_pos, state->offset_pos);
+	util::control_point_edit(*current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
 	ImGui::End();
 
 	render_extras(*this);
