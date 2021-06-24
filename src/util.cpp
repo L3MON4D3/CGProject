@@ -164,8 +164,8 @@ namespace util {
 			std::vector<double> point{};
 			point.insert(point.begin(), ctrl.begin()+*indx*dim, ctrl.begin()+(*indx+1)*dim);
 			ctrl.insert(ctrl.begin()+*indx*dim, point.begin(), point.end());
-			std::fflush(0);
-			*spline = std::make_shared<tinyspline::BSpline>((*spline)->numControlPoints()+1, dim, (*spline)->degree());
+			unsigned int deg = (*spline)->degree();
+			*spline = std::make_shared<tinyspline::BSpline>((*spline)->numControlPoints()+1, dim, deg < 3 ? deg+1 : deg);
 			(*spline)->setControlPoints(ctrl);
 		}
 
