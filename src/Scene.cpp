@@ -6,11 +6,12 @@ const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
 const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
 
 Scene::Scene(
+	std::string name,
 	std::vector<std::unique_ptr<Object>> objects,
 	Camera cam,
 	std::function<void(Scene &)> render_extras, std::unique_ptr<ImGuiState> init_state, 
 	std::shared_ptr<camera> free_cam) :
-	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)} { }
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name} { }
 
 void Scene::render() {
 	ImGui::Begin("Scene-controls");
