@@ -36,6 +36,5 @@ void Object::render(float time, glm::mat4 proj_view) {
 
 	glDrawElements(GL_TRIANGLES, model->vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
-	Curve c = Curve(*pos_curve, curve_color);
-	c.render(0, proj_view);
+	Curve(*pos_curve, curve_color).render(0, proj_view);
 }
