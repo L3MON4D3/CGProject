@@ -18,12 +18,14 @@ void Scene::render() {
 	ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
 	if (ImGui::Checkbox("play", &state->play) && state->play)
 		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
+	if(ImGui::SliderFloat("time", &state->time, 0, 1))
+		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
 	ImGui::Checkbox("freecam", &state->view_cam);
 	ImGui::End();
 
 	Object &current = *objects[state->current_indx];
 
-	ImGui::Begin("Time+Cam");
+	ImGui::Begin("Obj_Time");
 	if(ImGui::SliderFloat("time", &state->time, 0, 1))
 		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
 
@@ -36,7 +38,17 @@ void Scene::render() {
 	util::control_point_edit(*current.time_curve, state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
-	ImGui::Begin("Curves1");
+	ImGui::Begin("Cam_Time");
+	util::plot_spline(*cam.time_curve, "time", [](const tinyspline::BSpline &spline, float t) {
+		return util::eval_timespline(spline, t);
+	});
+
+	ImGui::SliderInt("point", &state->indx_time, 0, current.time_curve->numControlPoints()-1);
+
+	util::control_point_edit(*current.time_curve, state->indx_time, &state->range_time, &state->offset_time);
+	ImGui::End();
+
+	ImGui::Begin("Pos");
 	ImGui::SliderInt("point", &state->indx_pos, 0, current.pos_curve->numControlPoints()-1);
 	//ImGui::InputInt("range", &state->range_pos);
 

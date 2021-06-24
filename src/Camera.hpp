@@ -12,26 +12,29 @@
 
 class Camera {
 private:
-	std::function<glm::mat4(float, std::vector<std::shared_ptr<tinyspline::BSpline>>)> cam_func;
+	std::function<glm::mat4(float, Camera)> cam_func;
 	
 public:
+	std::shared_ptr<tinyspline::BSpline> pos_curve;
+	std::shared_ptr<tinyspline::BSpline> time_curve;
+	std::shared_ptr<tinyspline::BSpline> look_curve;
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves;
 	Camera(
+		std::shared_ptr<tinyspline::BSpline> pos_curve,
+		std::shared_ptr<tinyspline::BSpline> time_curve,
+		std::shared_ptr<tinyspline::BSpline> look_curve,
 		std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
-		std::function<glm::mat4(float, std::vector<std::shared_ptr<tinyspline::BSpline>>)> cam_func =
-			[](float t, auto curves) {
-				t = util::eval_timespline(*curves[1], t);
+		std::function<glm::mat4(float, Camera)> cam_func =
+			[](float t, Camera c) {
+				t = util::eval_timespline(*c.time_curve, t);
 
-				glm::vec3 a = glm::vec3(20,20,20);
+				glm::vec3 a = util::std2glm(c.pos_curve->eval(t).result());
 				//look along negative z.
-				glm::vec3 forw = -glm::normalize(util::std2glm(curves[0]->eval(t).result())-a);
+				glm::vec3 forw = -glm::normalize(util::std2glm(c.look_curve->eval(t).result())-a);
 				// get vector that points up and is orthogonal to forw.
 				glm::vec3 up = util::gs1(forw, util::up);
 				// Third vector for complete base.
 				glm::vec3 x = glm::normalize(glm::cross(forw, up));
-
-				// Camera position.
-				//glm::vec3 a = -util::std2glm(curves[0].eval(t).result());
 
 				// cgintro-07:7.
 				return glm::mat4{
