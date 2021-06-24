@@ -69,10 +69,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	auto cam_pos = std::make_shared<tinyspline::BSpline>(1, 3, 0);
-	cam_pos->setControlPoints({20,20,20});
-
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{cam_pos, splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[8], splines[9], splines[10], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
 		tinyspline::BSpline &time_curve = *o.time_curve;
