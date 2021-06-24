@@ -35,32 +35,40 @@ int
 main(int, char**) {
     GLFWwindow* window = initOpenGL(WINDOW_WIDTH, WINDOW_HEIGHT, "glfw");
     glfwSetFramebufferSizeCallback(window, resizeCallback);
-
     auto cam = std::make_shared<camera>(window);
-
     init_imgui(window);
 
-    glEnable(GL_DEPTH_TEST);
+	std::vector<std::unique_ptr<Scene>> scenes;
 
 	load_models();
 	load_shader();
-	std::unique_ptr<Scene> s = load_scene1("scene1", cam);
+	scenes.push_back(load_scene1("scene1", cam));
+	scenes.push_back(load_scene1("scene1", cam));
 
 	// Set before rendering!!!!
 	Curve::shader_program = shaderProgramCurve;
 	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
 	Curve::proj_view_loc = glGetUniformLocation(shaderProgramCurve, "proj_view_mat");
 
+    glEnable(GL_DEPTH_TEST);
+    int scene_indx = 0;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // define UI
 		imgui_new_frame(400, 200);
 
-        s->render();
+		ImGui::Begin("Global");
+		ImGui::SliderInt("Scene", &scene_indx, 0, scenes.size()-1);
+		Scene &current_scene = *scenes[scene_indx];
+
+		if (ImGui::Button("Store"))
+			store_scene1(current_scene, current_scene.name);
+		ImGui::End();
+
+        current_scene.render();
 
 		imgui_render();
         // swap buffers == show rendered content
@@ -69,7 +77,6 @@ main(int, char**) {
         glfwPollEvents();
     }
 
-    store_scene1(std::move(s), "scene1");
 
 	cleanup_imgui();
     glfwTerminate();
