@@ -73,7 +73,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
 		tinyspline::BSpline &time_curve = *o.time_curve;
-		ImGui::Begin("Rotation");
+		ImGui::Begin("Obj_Rotation");
 		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
 			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
 		});
