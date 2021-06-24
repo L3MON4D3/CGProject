@@ -41,7 +41,7 @@ void Scene::render() {
 		return util::eval_timespline(spline, t);
 	});
 
-	util::control_point_edit(*current.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
+	util::control_point_edit(*cam.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
 	ImGui::Begin("Pos");
