@@ -22,7 +22,7 @@ namespace util {
 			return spline.eval(t).result()[0];
 		});
 
-	void control_point_edit(tinyspline::BSpline &spline, int *indx, int *range, double *offset);
+	void control_point_edit(std::shared_ptr<tinyspline::BSpline> *spline, int *indx, int *range, double *offset);
 	float eval_timespline(const tinyspline::BSpline &spline, float t);
 	int getTimeDelta(std::chrono::time_point<std::chrono::system_clock>);
 

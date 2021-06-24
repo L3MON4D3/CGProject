@@ -77,7 +77,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
 			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
 		});
-		util::control_point_edit(*o.curves[1],
+		util::control_point_edit(&o.curves[1],
 			&state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
 		ImGui::End();
 
