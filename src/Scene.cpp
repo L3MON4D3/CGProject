@@ -45,6 +45,14 @@ void Scene::render() {
 	util::control_point_edit(*current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
 	ImGui::End();
 
+	ImGui::Begin("Cam_Pos");
+	util::control_point_edit(*cam.pos_curve, &state->indx_pos_c, &state->range_pos_c, state->offset_pos_c);
+	ImGui::End();
+
+	ImGui::Begin("Cam_Look");
+	util::control_point_edit(*cam.look_curve, &state->indx_look_c, &state->range_look_c, state->offset_look_c);
+	ImGui::End();
+
 	render_extras(*this);
 
 	if (state->play)
@@ -57,6 +65,8 @@ void Scene::render() {
 		proj_view_mat *= cam.get_view_mat(state->time);
 	}
 
+	Curve(*cam.pos_curve, glm::vec4(0,0,1,1)).render(0, proj_view_mat);
+	Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
 		if (i != state->current_indx)

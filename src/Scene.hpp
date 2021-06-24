@@ -5,6 +5,7 @@
 #include <chrono>
 #include "Object.hpp"
 #include "Camera.hpp"
+#include "Curve.hpp"
 #include "Renderable.hpp"
 #include <functional>
 
@@ -19,6 +20,15 @@ struct ImGuiState {
 	int indx_pos = 0;
 	int range_pos = 20;
 	double offset_pos[3] {0,0,0};
+
+	int indx_pos_c = 0;
+	int range_pos_c = 20;
+	double offset_pos_c[3] {0,0,0};
+
+	int indx_look_c = 0;
+	int range_look_c = 20;
+	double offset_look_c[3] {0,0,0};
+
 	int indx_time = 0;
 	int range_time = 3;
 	double offset_time = 0;
