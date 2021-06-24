@@ -69,7 +69,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	auto cam_pos = std::make_shared<tinyspline::BSpline>(1, 3);
+	auto cam_pos = std::make_shared<tinyspline::BSpline>(1, 3, 0);
 	cam_pos->setControlPoints({20,20,20});
 
 	return std::make_unique<Scene>(filename, std::move(objs), Camera{cam_pos, splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
@@ -86,8 +86,8 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		ImGui::End();
 
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
-		scene.cam.curves[0] = scene.objects[0]->pos_curve;
-		scene.cam.curves[1] = scene.objects[0]->time_curve;
+		scene.cam.look_curve = scene.objects[0]->pos_curve;
+		scene.cam.time_curve = scene.objects[0]->time_curve;
 	}, std::make_unique<state1>(0,3), cam);
 }
 
@@ -98,6 +98,9 @@ void store_scene1(Scene &scene, std::string filename) {
 		splines.push_back(obj->time_curve);
 		splines.insert(splines.end(), obj->curves.begin(), obj->curves.end());
 	}
+	splines.push_back(scene.cam.pos_curve);
+	splines.push_back(scene.cam.time_curve);
+	splines.push_back(scene.cam.look_curve);
 	splines.insert(splines.end(), scene.cam.curves.begin(), scene.cam.curves.end());
 
 	std::ofstream file;
