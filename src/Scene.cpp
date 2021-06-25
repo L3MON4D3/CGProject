@@ -34,11 +34,18 @@ void Scene::render() {
 		util::control_point_edit(&current.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
-	ImGui::Begin("Cam_Time");
-		util::plot_spline(*cam.time_curve, "time", [](const tinyspline::BSpline &spline, float t) {
+	ImGui::Begin("Cam_Pos_Time");
+		util::plot_spline(*cam.time_pos_curve, "time", [](const tinyspline::BSpline &spline, float t) {
 			return util::eval_timespline(spline, t);
 		});
-		util::control_point_edit(&cam.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
+		util::control_point_edit(&cam.time_pos_curve, &state->indx_time, &state->range_time, &state->offset_time);
+	ImGui::End();
+
+	ImGui::Begin("Cam_Look_Time");
+		util::plot_spline(*cam.time_look_curve, "time", [](const tinyspline::BSpline &spline, float t) {
+			return util::eval_timespline(spline, t);
+		});
+		util::control_point_edit(&cam.time_look_curve, &state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
 	ImGui::Begin("Obj_Pos");
@@ -53,7 +60,7 @@ void Scene::render() {
 		util::control_point_edit(&cam.look_curve, &state->indx_look_c, &state->range_look_c, state->offset_look_c);
 	ImGui::End();
 
-	tinyspline::BSpline &cam_time = *cam.time_curve;
+	tinyspline::BSpline &cam_time = *cam.time_look_curve;
 	ImGui::Begin("Cam_Zoom");
 		util::plot_spline(*cam.zoom_curve, "rot", [cam_time](const tinyspline::BSpline &spline, float t) {
 			return spline.bisect(util::eval_timespline(cam_time, t)).result()[1];
