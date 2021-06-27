@@ -12,12 +12,12 @@ Object::Object(
 	unsigned int shader_program,
 	std::function<glm::mat4(float, Object &)> model_func
 ) : model{model},
-	model_func{model_func},
 	shader_program{shader_program},
 	model_mat_loc{glGetUniformLocation(shader_program, "model_mat")},
 	pvm_mat_loc{glGetUniformLocation(shader_program, "proj_view_model_mat")},
 	todo{std::move(actions)},
 	done{std::vector<std::unique_ptr<ObjectAction>>()},
+	model_func{model_func},
 	curves{curves},
 	pos_curve{pos_curve},
 	time_curve{time_curve},
@@ -44,7 +44,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 	auto end_iter = todo.end();
 	for (auto act = todo.begin(); act != end_iter; ++act)
 		if ((*act)->start_time >= time) {
-			(*act)->activate(*this);
+			(*act)->activate(time, *this);
 			done.push_back(std::move(*act));
 			act = todo.erase(act);
 			end_iter = todo.end();

@@ -3,6 +3,8 @@
 class LaserAction : public ObjectAction {
 private:
 	static geometry ray;
+	static unsigned int shader_program;
+	static int pvm_mat_loc;
 	glm::mat4 model_transform;
 	glm::mat4 active_transform;
 
