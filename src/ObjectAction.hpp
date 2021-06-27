@@ -11,6 +11,7 @@ public:
 	float start_time;
 	ObjectAction(float t);
 	// "Initialize" with o.
-	void activate(float t, Object &o);
-	void render(float, glm::mat4);
+	
+	virtual void activate(float t, Object &o);
+	virtual void render(float, glm::mat4);
 };
