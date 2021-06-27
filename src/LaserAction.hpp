@@ -4,6 +4,7 @@ class LaserAction : public ObjectAction {
 private:
 	glm::mat4 model_transform;
 	glm::mat4 active_transform;
+	float actual_start;
 
 public:
 	static std::shared_ptr<geometry> ray;
