@@ -52,6 +52,11 @@ void Scene::render() {
 		util::control_point_edit(&current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
 	ImGui::End();
 
+	ImGui::Begin("Obj_Actions");
+		for (unsigned int i = 0; i != current.todo.size(); ++i)
+			ImGui::SliderFloat(std::to_string(i).c_str(), &current.todo[i]->start_time, 0, 1);
+	ImGui::End();
+
 	ImGui::Begin("Cam_Pos");
 		util::control_point_edit(&cam.pos_curve, &state->indx_pos_c, &state->range_pos_c, state->offset_pos_c);
 	ImGui::End();

@@ -20,10 +20,10 @@ private:
 	unsigned int shader_program;
 	int model_mat_loc;
 	int pvm_mat_loc;
-	std::vector<std::shared_ptr<ObjectAction>> todo;
-	std::vector<std::shared_ptr<ObjectAction>> done;
 	
 public:
+	std::vector<std::shared_ptr<ObjectAction>> todo;
+	std::vector<std::shared_ptr<ObjectAction>> done;
 	std::function<glm::mat4(float, Object &o)> model_func;
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves;
 	std::shared_ptr<tinyspline::BSpline> pos_curve;
