@@ -49,6 +49,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[2],
 			splines[3]
 		},
+		std::vector<std::unique_ptr<ObjectAction>>(),
 		shaderProgramObj
 	));
 
@@ -58,6 +59,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[6],
 			splines[7]
 		},
+		std::vector<std::unique_ptr<ObjectAction>>(),
 		shaderProgramObj
 	));
 

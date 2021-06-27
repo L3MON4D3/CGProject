@@ -4,6 +4,7 @@
 #include "util.hpp"
 #include "camera.hpp"
 #include "Renderable.hpp"
+#include "ObjectAction.hpp"
 #include <cmath>
 
 #include <glm/gtx/transform.hpp>
@@ -18,6 +19,8 @@ private:
 	unsigned int shader_program;
 	int model_mat_loc;
 	int pvm_mat_loc;
+	std::vector<std::unique_ptr<ObjectAction>> todo;
+	std::vector<std::unique_ptr<ObjectAction>> done;
 	
 public:
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves;
@@ -29,6 +32,7 @@ public:
 		std::shared_ptr<tinyspline::BSpline> pos_curve,
 		std::shared_ptr<tinyspline::BSpline> time_curve,
 		std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
+		std::vector<std::unique_ptr<ObjectAction>> actions,
 		unsigned int shader_program,
 		std::function<glm::mat4(float, Object &o)> model_func =
 			[](float t, Object &o) {
