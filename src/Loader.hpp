@@ -1,5 +1,6 @@
 #include "util.hpp"
 #include "Scene.hpp"
+#include "LaserAction.hpp"
 
 #include "shader.hpp"
 
@@ -10,6 +11,7 @@ unsigned int shaderProgramObj;
 unsigned int shaderProgramCurve;
 
 std::shared_ptr<geometry> cargo_A;
+std::shared_ptr<geometry> laser_missile;
 
 void load_shader() {
     unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
@@ -34,6 +36,9 @@ void load_shader() {
 void load_models() {
     cargo_A = std::make_shared<geometry>(util::load_scene_full_mesh("craft_cargoA.obj", false)[0]);
     cargo_A->transform = glm::translate(glm::vec3(0, -.4, 0));
+
+    laser_missile = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
+	laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
@@ -49,7 +54,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[2],
 			splines[3]
 		},
-		std::vector<std::unique_ptr<ObjectAction>>(),
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>())},
 		shaderProgramObj
 	));
 
@@ -59,7 +64,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[6],
 			splines[7]
 		},
-		std::vector<std::unique_ptr<ObjectAction>>(),
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>())},
 		shaderProgramObj
 	));
 

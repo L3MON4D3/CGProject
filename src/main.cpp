@@ -50,6 +50,11 @@ main(int, char**) {
 	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
 	Curve::proj_view_loc = glGetUniformLocation(shaderProgramCurve, "proj_view_mat");
 
+	LaserAction::ray = laser_missile;
+	LaserAction::shader_program = shaderProgramCurve;
+	LaserAction::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
+	LaserAction::pvm_mat_loc = glGetUniformLocation(shaderProgramCurve, "proj_view_mat");
+
     glEnable(GL_DEPTH_TEST);
     int scene_indx = 0;
     while (glfwWindowShouldClose(window) == false) {

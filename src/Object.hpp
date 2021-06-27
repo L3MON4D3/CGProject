@@ -12,14 +12,16 @@
 #include <functional>
 #include <memory>
 
+class ObjectAction;
+
 class Object : public Renderable{
 private:
 	std::shared_ptr<geometry> model;
 	unsigned int shader_program;
 	int model_mat_loc;
 	int pvm_mat_loc;
-	std::vector<std::unique_ptr<ObjectAction>> todo;
-	std::vector<std::unique_ptr<ObjectAction>> done;
+	std::vector<std::shared_ptr<ObjectAction>> todo;
+	std::vector<std::shared_ptr<ObjectAction>> done;
 	
 public:
 	std::function<glm::mat4(float, Object &o)> model_func;
@@ -32,7 +34,7 @@ public:
 		std::shared_ptr<tinyspline::BSpline> pos_curve,
 		std::shared_ptr<tinyspline::BSpline> time_curve,
 		std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
-		std::vector<std::unique_ptr<ObjectAction>> actions,
+		std::vector<std::shared_ptr<ObjectAction>> actions,
 		unsigned int shader_program,
 		std::function<glm::mat4(float, Object &o)> model_func =
 			[](float t, Object &o) {

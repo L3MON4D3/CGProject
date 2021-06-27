@@ -8,15 +8,15 @@ Object::Object(
 	std::shared_ptr<tinyspline::BSpline> pos_curve,
 	std::shared_ptr<tinyspline::BSpline> time_curve,
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
-	std::vector<std::unique_ptr<ObjectAction>> actions,
+	std::vector<std::shared_ptr<ObjectAction>> actions,
 	unsigned int shader_program,
 	std::function<glm::mat4(float, Object &)> model_func
 ) : model{model},
 	shader_program{shader_program},
 	model_mat_loc{glGetUniformLocation(shader_program, "model_mat")},
 	pvm_mat_loc{glGetUniformLocation(shader_program, "proj_view_model_mat")},
-	todo{std::move(actions)},
-	done{std::vector<std::unique_ptr<ObjectAction>>()},
+	todo{actions},
+	done{std::vector<std::shared_ptr<ObjectAction>>()},
 	model_func{model_func},
 	curves{curves},
 	pos_curve{pos_curve},
@@ -41,23 +41,23 @@ void Object::render(float time, glm::mat4 proj_view) {
 
 	Curve(*pos_curve, curve_color).render(0, proj_view);
 
-	auto end_iter = todo.end();
-	for (auto act = todo.begin(); act != end_iter; ++act)
-		if ((*act)->start_time >= time) {
+	for (auto act = todo.begin(); act != todo.end();) {
+		if ((*act)->start_time <= time) {
 			(*act)->activate(time, *this);
 			done.push_back(std::move(*act));
 			act = todo.erase(act);
-			end_iter = todo.end();
-		}
+		} else
+			++act;
+	}
 
-	end_iter = done.end();
-	for (auto act = done.begin(); act != end_iter; ++act) {
-		if ((*act)->start_time < time) {
+	for (auto act = done.begin(); act != done.end();) {
+		if ((*act)->start_time > time) {
 			todo.push_back(std::move(*act));
 			act = done.erase(act);
-			end_iter = done.end();
+		} else {
+			(*act)->render(time, proj_view);
+			++act;
 		}
-		(*act)->render(time, proj_view);
 	}
 
 }
