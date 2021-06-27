@@ -31,7 +31,8 @@ void Object::render(float time, glm::mat4 proj_view) {
 	glUseProgram(shader_program);
 	glBindVertexArray(model->vao);
 
-	glm::mat4 model_mat = get_model_mat(util::eval_timespline(*time_curve, time));
+	time = util::eval_timespline(*time_curve, time);
+	glm::mat4 model_mat = get_model_mat(time);
 	glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &model_mat[0][0]);
 
 	glm::mat4 proj_view_trans = proj_view * model_mat;
@@ -42,7 +43,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 	Curve(*pos_curve, curve_color).render(0, proj_view);
 
 	for (auto act = todo.begin(); act != todo.end();) {
-		if ((*act)->start_time <= time) {
+		if (time >= (*act)->start_time) {
 			(*act)->activate(time, *this);
 			done.push_back(std::move(*act));
 			act = todo.erase(act);
@@ -51,7 +52,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 	}
 
 	for (auto act = done.begin(); act != done.end();) {
-		if ((*act)->start_time > time) {
+		if  (time < (*act)->start_time) {
 			todo.push_back(std::move(*act));
 			act = done.erase(act);
 		} else {
@@ -59,5 +60,4 @@ void Object::render(float time, glm::mat4 proj_view) {
 			++act;
 		}
 	}
-
 }
