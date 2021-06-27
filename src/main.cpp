@@ -40,20 +40,20 @@ main(int, char**) {
 
 	std::vector<std::unique_ptr<Scene>> scenes;
 
-	load_models();
-	load_shader();
-	scenes.push_back(load_scene1("scene1", cam));
-	scenes.push_back(load_scene1("scene1", cam));
+	Loader::load_models();
+	Loader::load_shader();
+	scenes.push_back(Loader::load_scene1("scene1", cam));
+	scenes.push_back(Loader::load_scene1("scene1", cam));
 
 	// Set before rendering!!!!
-	Curve::shader_program = shaderProgramCurve;
-	Curve::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
-	Curve::proj_view_loc = glGetUniformLocation(shaderProgramCurve, "proj_view_mat");
+	Curve::shader_program = Loader::shaderProgramCurve;
+	Curve::color_loc = glGetUniformLocation(Loader::shaderProgramCurve, "color");
+	Curve::proj_view_loc = glGetUniformLocation(Loader::shaderProgramCurve, "proj_view_mat");
 
-	LaserAction::ray = laser_missile;
-	LaserAction::shader_program = shaderProgramCurve;
-	LaserAction::color_loc = glGetUniformLocation(shaderProgramCurve, "color");
-	LaserAction::pvm_mat_loc = glGetUniformLocation(shaderProgramCurve, "proj_view_mat");
+	LaserAction::ray = Loader::laser_missile;
+	LaserAction::shader_program = Loader::shaderProgramCurve;
+	LaserAction::color_loc = glGetUniformLocation(Loader::shaderProgramCurve, "color");
+	LaserAction::pvm_mat_loc = glGetUniformLocation(Loader::shaderProgramCurve, "proj_view_mat");
 
     glEnable(GL_DEPTH_TEST);
     int scene_indx = 0;
@@ -70,7 +70,7 @@ main(int, char**) {
 		Scene &current_scene = *scenes[scene_indx];
 
 		if (ImGui::Button("Store"))
-			store_scene1(current_scene, current_scene.name);
+			Loader::store_scene1(current_scene, current_scene.name);
 		ImGui::End();
 
         current_scene.render();
@@ -81,7 +81,6 @@ main(int, char**) {
         // process window events
         glfwPollEvents();
     }
-
 
 	cleanup_imgui();
     glfwTerminate();

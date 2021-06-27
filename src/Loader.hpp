@@ -7,6 +7,8 @@
 #include <memory>
 #include <fstream>
 
+namespace Loader {
+
 unsigned int shaderProgramObj;
 unsigned int shaderProgramCurve;
 
@@ -118,4 +120,6 @@ void store_scene1(Scene &scene, std::string filename) {
 	file.open(filename);
 	util::write_splines(splines, file, '#');
 	file.close();
+}
+
 }
