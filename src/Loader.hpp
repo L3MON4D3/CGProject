@@ -47,6 +47,9 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines = util::read_splines(file, '#');
 	file.close();
 
+	glm::vec4 c1 = glm::vec4(1,0,0,1);
+	glm::vec4 c2 = glm::vec4(0,1,0,1);
+
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
 		cargo_A,
@@ -54,7 +57,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[2],
 			splines[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>())},
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>(), c1)},
 		shaderProgramObj
 	));
 
@@ -64,7 +67,12 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[6],
 			splines[7]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>())},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>(), c2),
+			std::make_shared<LaserAction>(0.52, glm::identity<glm::mat4>(), c2),
+			std::make_shared<LaserAction>(0.54, glm::identity<glm::mat4>(), c2),
+			std::make_shared<LaserAction>(0.56, glm::identity<glm::mat4>(), c2)
+		},
 		shaderProgramObj
 	));
 

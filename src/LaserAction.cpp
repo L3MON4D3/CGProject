@@ -1,17 +1,17 @@
 #include "LaserAction.hpp"
 
 const float ray_speed = 300;
-const glm::vec4 color = glm::vec4(1,1,1,1);
 
 unsigned int LaserAction::shader_program;
 int LaserAction::pvm_mat_loc;
 int LaserAction::color_loc;
 std::shared_ptr<geometry> LaserAction::ray;
 
-LaserAction::LaserAction(float start, glm::mat4 model_transform) :
+LaserAction::LaserAction(float start, glm::mat4 model_transform, glm::vec4 color) :
 	ObjectAction{start},
 	model_transform{model_transform},
-	active_transform{glm::identity<glm::mat4>()} { }
+	active_transform{glm::identity<glm::mat4>()},
+	color{color} { }
 
 void LaserAction::activate(float t, Object &o) {
 	active_transform = o.model_func(t, o);
