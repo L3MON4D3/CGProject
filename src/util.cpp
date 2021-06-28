@@ -220,4 +220,19 @@ namespace util {
 		for (unsigned int i = 0; i != vec.size(); ++i)
 			ImGui::Checkbox(std::to_string(i).c_str(), (bool *) &vec[i]);
 	}
+
+	void write_floats(std::vector<float> &vec, std::ostream &str, char delim) {
+		for (float f : vec)
+			 str << f << delim;
+	}
+
+	std::vector<float> read_floats(std::istream &str, char delim) {
+		std::vector<float> floats{};
+		std::string temp;
+		while (std::getline(str, temp, delim)) {
+			floats.push_back(std::stof(temp));
+		}
+
+		return floats;
+	}
 }

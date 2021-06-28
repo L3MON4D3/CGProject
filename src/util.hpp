@@ -31,4 +31,6 @@ namespace util {
 	void write_splines(std::vector<std::shared_ptr<tinyspline::BSpline>> &, std::ostream &, char);
 	void action_edit(std::vector<std::shared_ptr<ObjectAction>> &actions);
 	void edit_boolvec(std::vector<char> &vec);
+	void write_floats(std::vector<float> &vec, std::ostream &, char);
+	std::vector<float> read_floats(std::istream &str, char delim);
 }

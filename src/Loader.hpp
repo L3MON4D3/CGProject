@@ -15,6 +15,10 @@ unsigned int shaderProgramCurve;
 std::shared_ptr<geometry> cargo_A;
 std::shared_ptr<geometry> laser_missile;
 
+const auto action_to_timepoint{ [](std::shared_ptr<ObjectAction> &a){
+	return a->start_time;
+}};
+
 void load_shader() {
     unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
     unsigned int fragmentShaderObj = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
@@ -45,8 +49,12 @@ void load_models() {
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
 	std::ifstream file;
-	file.open(filename);
+	file.open(filename + ".curves");
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + ".actions");
+	std::vector<float> action_times = util::read_floats(file, '#');
 	file.close();
 
 	glm::vec4 c1 = glm::vec4(1,0,0,1);
@@ -59,7 +67,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[2],
 			splines[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>(), c1)},
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], glm::identity<glm::mat4>(), c1)},
 		shaderProgramObj
 	));
 
@@ -70,10 +78,10 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[7]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(0.5, glm::identity<glm::mat4>(), c2),
-			std::make_shared<LaserAction>(0.52, glm::identity<glm::mat4>(), c2),
-			std::make_shared<LaserAction>(0.54, glm::identity<glm::mat4>(), c2),
-			std::make_shared<LaserAction>(0.56, glm::identity<glm::mat4>(), c2)
+			std::make_shared<LaserAction>(action_times[1], glm::identity<glm::mat4>(), c2),
+			std::make_shared<LaserAction>(action_times[2], glm::identity<glm::mat4>(), c2),
+			std::make_shared<LaserAction>(action_times[3], glm::identity<glm::mat4>(), c2),
+			std::make_shared<LaserAction>(action_times[4], glm::identity<glm::mat4>(), c2)
 		},
 		shaderProgramObj
 	));
@@ -104,10 +112,14 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 
 void store_scene1(Scene &scene, std::string filename) {
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines;
+	std::vector<float> actions;
 	for (auto &obj : scene.objects) {
 		splines.push_back(obj->pos_curve);
 		splines.push_back(obj->time_curve);
 		splines.insert(splines.end(), obj->curves.begin(), obj->curves.end());
+
+		std::transform(obj->todo.begin(), obj->todo.end(), std::back_inserter(actions), action_to_timepoint);
+		std::transform(obj->done.begin(), obj->done.end(), std::back_inserter(actions), action_to_timepoint);
 	}
 	splines.push_back(scene.cam.pos_curve);
 	splines.push_back(scene.cam.time_pos_curve);
@@ -117,8 +129,12 @@ void store_scene1(Scene &scene, std::string filename) {
 	splines.insert(splines.end(), scene.cam.curves.begin(), scene.cam.curves.end());
 
 	std::ofstream file;
-	file.open(filename);
+	file.open(filename + ".curves");
 	util::write_splines(splines, file, '#');
+	file.close();
+
+	file.open(filename + ".actions");
+	util::write_floats(actions, file, '#');
 	file.close();
 }
 
