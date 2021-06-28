@@ -12,8 +12,6 @@
 #include <functional>
 #include <memory>
 
-class ObjectAction;
-
 class Object : public Renderable{
 private:
 	std::shared_ptr<geometry> model;

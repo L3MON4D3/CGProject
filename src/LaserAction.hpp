@@ -15,5 +15,5 @@ public:
 
 	LaserAction(float t, glm::mat4 model_transform, glm::vec4 color);
 	void render(float t, glm::mat4 vp_mat);
-	void activate(float t, Object &o);
+	void activate(float t, glm::mat4 obj_transform);
 };

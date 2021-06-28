@@ -13,8 +13,8 @@ LaserAction::LaserAction(float start, glm::mat4 model_transform, glm::vec4 color
 	active_transform{glm::identity<glm::mat4>()},
 	color{color} { }
 
-void LaserAction::activate(float t, Object &o) {
-	active_transform = o.model_func(t, o);
+void LaserAction::activate(float t, glm::mat4 obj_transform) {
+	active_transform = obj_transform;
 	actual_start = t;
 }
 
