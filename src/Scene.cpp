@@ -53,8 +53,7 @@ void Scene::render() {
 	ImGui::End();
 
 	ImGui::Begin("Obj_Actions");
-		for (unsigned int i = 0; i != current.todo.size(); ++i)
-			ImGui::SliderFloat(std::to_string(i).c_str(), &current.todo[i]->start_time, 0, 1);
+		util::action_edit(current.todo);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Pos");

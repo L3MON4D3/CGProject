@@ -210,4 +210,8 @@ namespace util {
 		for (auto spline : vec)
 			stream << spline->toJson() << delim;
 	}
+	void action_edit(std::vector<std::shared_ptr<ObjectAction>>& actions) {
+		for (unsigned int i = 0; i != actions.size(); ++i)
+			ImGui::SliderFloat(std::to_string(i).c_str(), &actions[i]->start_time, 0, 1);
+	}
 }
