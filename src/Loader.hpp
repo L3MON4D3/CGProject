@@ -14,6 +14,7 @@ unsigned int shaderProgramCurve;
 
 std::shared_ptr<geometry> cargo_A;
 std::shared_ptr<geometry> laser_missile;
+std::shared_ptr<geometry> sphere;
 
 glm::mat4 cargo_A_laser_origin_left = glm::translate(glm::vec3(-0.604, 0.297, -0.399));
 glm::mat4 cargo_A_laser_origin_right = glm::translate(glm::vec3(0.604, 0.297, -0.399));
@@ -48,6 +49,8 @@ void load_models() {
 
     laser_missile = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
 	laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
+
+	sphere = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
@@ -111,6 +114,25 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
 	}, std::make_unique<state1>(0,3, std::vector<char>{1, 1, 1, 1}), cam);
+}
+
+std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera> cam) {
+	std::ifstream file;
+	file.open(filename + ".curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines = util::read_splines(file, '#');
+	file.close();
+
+	auto objs = std::vector<std::unique_ptr<Object>>();
+	objs.emplace_back(std::make_unique<Object>(
+		sphere,
+		splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{},
+		std::vector<std::shared_ptr<ObjectAction>>{},
+		shaderProgramObj, [](float, Object &) {
+			return glm::identity<glm::mat4>();
+		}
+	));
+
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[2], splines[3], splines[4], splines[5], splines[6], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>{1, 1, 1, 1}), cam);
 }
 
 void store_scene1(Scene &scene, std::string filename) {
