@@ -15,6 +15,9 @@ unsigned int shaderProgramCurve;
 std::shared_ptr<geometry> cargo_A;
 std::shared_ptr<geometry> laser_missile;
 
+glm::mat4 cargo_A_laser_origin_left = glm::translate(glm::vec3(-0.604, 0.297, -0.399));
+glm::mat4 cargo_A_laser_origin_right = glm::translate(glm::vec3(0.604, 0.297, -0.399));
+
 const auto action_to_timepoint{ [](std::shared_ptr<ObjectAction> &a){
 	return a->start_time;
 }};
@@ -78,10 +81,10 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[7]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(action_times[1], glm::identity<glm::mat4>(), c2),
-			std::make_shared<LaserAction>(action_times[2], glm::identity<glm::mat4>(), c2),
-			std::make_shared<LaserAction>(action_times[3], glm::identity<glm::mat4>(), c2),
-			std::make_shared<LaserAction>(action_times[4], glm::identity<glm::mat4>(), c2)
+			std::make_shared<LaserAction>(action_times[1], cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[2], cargo_A_laser_origin_right, c2),
+			std::make_shared<LaserAction>(action_times[3], cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[4], cargo_A_laser_origin_right, c2)
 		},
 		shaderProgramObj
 	));

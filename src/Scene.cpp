@@ -1,4 +1,5 @@
 #include "Scene.hpp"
+#include "LaserAction.hpp"
 
 const glm::vec4   active_color = glm::vec4(0,1,0,1);
 const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
@@ -75,6 +76,15 @@ void Scene::render() {
 		});
 		util::control_point_edit(&cam.zoom_curve, &state->indx_zoom_c, &state->range_zoom_c, state->offset_zoom_c);
 	ImGui::End();
+
+	//ImGui::Begin("Misc");
+	//	if (current.done.size() > 0) {
+	//		glm::mat4 &miss_translate = dynamic_cast<LaserAction *>(current.done[0].get())->model_transform;
+	//		ImGui::SliderFloat("x", &miss_translate[3][0], -3, 3);
+	//		ImGui::SliderFloat("y", &miss_translate[3][1], -3, 3);
+	//		ImGui::SliderFloat("z", &miss_translate[3][2], -3, 3);
+	//	}
+	//ImGui::End();
 
 	render_extras(*this);
 
