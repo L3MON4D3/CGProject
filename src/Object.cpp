@@ -40,8 +40,6 @@ void Object::render(float time, glm::mat4 proj_view) {
 
 	glDrawElements(GL_TRIANGLES, model->vertex_count, GL_UNSIGNED_INT, (void*) 0);
 
-	Curve(*pos_curve, curve_color).render(0, proj_view);
-
 	for (auto act = todo.begin(); act != todo.end();) {
 		if (time >= (*act)->start_time) {
 			(*act)->activate(time, model_mat);

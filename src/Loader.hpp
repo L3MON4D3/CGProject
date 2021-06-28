@@ -83,7 +83,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		int range_rot = 1;
 		double rot_offset[2] {0, 0};
 
-		state1(int i_r, int r_r) : indx_rot{i_r}, range_rot{r_r} { }
+		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
 	};
 
 	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[8], splines[9], splines[10], splines[11], splines[12], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
@@ -99,7 +99,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		ImGui::End();
 
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
-	}, std::make_unique<state1>(0,3), cam);
+	}, std::make_unique<state1>(0,3, std::vector<char>{1, 1, 1, 1}), cam);
 }
 
 void store_scene1(Scene &scene, std::string filename) {

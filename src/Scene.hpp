@@ -37,6 +37,8 @@ struct ImGuiState {
 	int range_time = 3;
 	double offset_time = 0;
 
+	std::vector<char> render_curves{};
+	ImGuiState(std::vector<char> render_curves) : render_curves{render_curves} { }
 	virtual ~ImGuiState() = default;
 };
 

@@ -16,11 +16,15 @@ Scene::Scene(
 void Scene::render() {
 	ImGui::Begin("Scene_Control");
 		ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
+
 		if (ImGui::Checkbox("play", &state->play) && state->play)
 			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
+
 		if(ImGui::SliderFloat("time", &state->time, 0, 1))
 			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
+
 		ImGui::Checkbox("freecam", &state->view_cam);
+		util::edit_boolvec(state->render_curves);
 	ImGui::End();
 
 	Object &current = *objects[state->current_indx];
@@ -84,14 +88,17 @@ void Scene::render() {
 		proj_view_mat *= cam.get_view_mat(state->time);
 	}
 
-	Curve(*cam.pos_curve, glm::vec4(0,0,1,1)).render(0, proj_view_mat);
-	Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
+	if (state->render_curves[0])
+		Curve(*cam.pos_curve, glm::vec4(0,0,1,1)).render(0, proj_view_mat);
+
+	if (state->render_curves[1])
+		Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
+
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
-		if (i != state->current_indx)
-			o.curve_color = inactive_color;
-		else
-			o.curve_color = active_color;
+
+		if (state->render_curves[i+2])
+			Curve(*o.pos_curve, i == state->current_indx ? active_color : inactive_color).render(0, proj_view_mat);
 
 		o.render(state->time, proj_view_mat);
 	}
