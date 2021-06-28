@@ -34,6 +34,14 @@ void Scene::render() {
 		util::control_point_edit(&current.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
 	ImGui::End();
 
+	ImGui::Begin("Obj_Pos");
+		util::control_point_edit(&current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
+	ImGui::End();
+
+	ImGui::Begin("Obj_Actions");
+		util::action_edit(current.todo);
+	ImGui::End();
+
 	ImGui::Begin("Cam_Pos_Time");
 		util::plot_spline(*cam.time_pos_curve, "time", [](const tinyspline::BSpline &spline, float t) {
 			return util::eval_timespline(spline, t);
@@ -46,14 +54,6 @@ void Scene::render() {
 			return util::eval_timespline(spline, t);
 		});
 		util::control_point_edit(&cam.time_look_curve, &state->indx_time, &state->range_time, &state->offset_time);
-	ImGui::End();
-
-	ImGui::Begin("Obj_Pos");
-		util::control_point_edit(&current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
-	ImGui::End();
-
-	ImGui::Begin("Obj_Actions");
-		util::action_edit(current.todo);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Pos");
