@@ -60,7 +60,8 @@ add_subdirectory("libs/tinyspline")
 add_executable(space ${PROJECT_SOURCES} ${PROJECT_HEADERS} ${PROJECT_CONFIGS}
                      ${LIBRARY_SOURCES} ${VENDORS_SOURCES})
 
-target_link_libraries(space assimp glfw tinysplinecxx -fsanitize=address
+find_package(CGAL)
+target_link_libraries(space assimp glfw tinysplinecxx CGAL::CGAL -fsanitize=address
 					  ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
 
 #foreach(PROJECT_SOURCE_FILE ${PROJECT_SOURCES})
