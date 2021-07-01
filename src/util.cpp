@@ -4,6 +4,18 @@
 #include <algorithm>
 #include <memory>
 
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Point_set_3.h>
+#include <CGAL/poisson_surface_reconstruction.h>
+#include <CGAL/Advancing_front_surface_reconstruction.h>
+#include <CGAL/Surface_mesh.h>
+#include <CGAL/Simple_cartesian.h>
+
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+typedef Kernel::Point_3 Point;
+typedef Kernel::Vector_3 Vector;
+typedef CGAL::Point_set_3<Point, Vector> Point_set;
+
 namespace util {
 	glm::vec3 std2glm(std::vector<double> vec) {
 		return glm::vec3(vec[0], vec[1], vec[2]);
@@ -133,6 +145,65 @@ namespace util {
 
 		traverse(scene->mRootNode, glm::identity<glm::mat4>());
 		return objects;
+	}
+
+	std::shared_ptr<geometry> create_asteroid() {
+		std::srand(std::time(nullptr));
+		Point_set points;
+		CGAL::Random_points_on_sphere_3<Point> gen(1);
+
+		float col[4] = {.5,.5,.5};
+		
+		const size_t count = 60; 
+		float v[count*10];
+		points.reserve(count);
+		for (size_t i = 0; i != count; ++i, ++gen) {
+			// normal = position.
+			points.insert(*gen);
+			v[10 * i + 0] = (*gen).x();
+			v[10 * i + 1] = (*gen).y();
+			v[10 * i + 2] = (*gen).z();
+			v[10 * i + 3] = (*gen).x();
+			v[10 * i + 4] = (*gen).y();
+			v[10 * i + 5] = (*gen).z();
+			v[10 * i + 6] = col[0];
+			v[10 * i + 7] = col[1];
+			v[10 * i + 8] = col[2];
+			v[10 * i + 9] = col[3];
+		}
+
+		std::vector<std::array<size_t, 3>> faces;
+		CGAL::advancing_front_surface_reconstruction(
+			points.points().begin(),
+			points.points().end(),
+			std::back_inserter(faces));
+
+		auto i = std::make_unique<unsigned int[]>(faces.size()*3);
+		unsigned int *it = &i[0];
+		std::for_each(faces.begin(), faces.end(), [&it](const std::array<size_t, 3> &face){
+			*(it++) = face[0];
+			*(it++) = face[1];
+			*(it++) = face[2];
+		});
+
+		auto m = std::make_shared<geometry>();
+        glGenVertexArrays(1, &(m->vao));
+        glBindVertexArray(m->vao);
+        m->vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, count * 10 * sizeof(float), v);
+        m->ibo = makeBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW, faces.size() * 3 * sizeof(unsigned int), i.get());
+        glBindBuffer(GL_ARRAY_BUFFER, m->vbo);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(3*sizeof(float)));
+        glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(6*sizeof(float)));
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m->ibo);
+
+		m->transform = glm::identity<glm::mat4>();
+		m->vertex_count = faces.size()*3;
+
+        return m;
 	}
 
 	glm::vec3 gs1(glm::vec3 a, glm::vec3 b) {
