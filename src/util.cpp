@@ -186,6 +186,15 @@ namespace util {
 			*(it++) = face[2];
 		});
 
+		std::srand(std::time(nullptr));
+		for (auto it{v}; it != v + count*10; it += 10) {
+			//values between 0.6, 1.4.
+			float val = (std::rand() % 800) / 1000.f+.6f;
+			it[0] *= val;
+			it[1] *= val;
+			it[2] *= val;
+		}
+
 		auto m = std::make_shared<geometry>();
         glGenVertexArrays(1, &(m->vao));
         glBindVertexArray(m->vao);
