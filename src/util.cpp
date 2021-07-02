@@ -45,9 +45,15 @@ struct Construct{
 	operator++(int) { return *this; }
 };
 
+glm::vec3 rand_max {RAND_MAX, RAND_MAX, RAND_MAX};
+
 namespace util {
 	glm::vec3 std2glm(std::vector<double> vec) {
 		return glm::vec3(vec[0], vec[1], vec[2]);
+	}
+
+	std::vector<float> glm2std(glm::vec3 v) {
+		return {v.x, v.y, v.z};
 	}
 
 	std::vector<geometry> load_scene_full_mesh(const char* filename, bool smooth) {
@@ -176,8 +182,11 @@ namespace util {
 		return objects;
 	}
 
+	glm::vec3 v3_rand() {
+		return glm::vec3(std::rand(), std::rand(), std::rand())/rand_max;
+	}
+
 	std::shared_ptr<geometry> create_asteroid() {
-		std::srand(std::time(nullptr));
 		Mesh mesh;
 		std::vector<Point> points;
 		CGAL::Random_points_on_sphere_3<Point> gen(1);
@@ -201,16 +210,11 @@ namespace util {
 			c
 		);
 
-		std::srand(std::time(nullptr));
 		for (auto it{mesh.points().begin()}; it != mesh.points().end(); ++it) {
 			//values between 0.6, 1.4.
 			float val = (std::rand() % 400) / 1000.f+.9f;
 			*it = it->transform(CGAL::Aff_transformation_3<Kernel>(CGAL::SCALING, val));
 		}
-
-		std::vector<Mesh::Vertex_index> new_points;
-		std::vector<Mesh::Face_index> new_facets;
-		CGAL::Polygon_mesh_processing::refine(mesh, mesh.faces(), std::back_inserter(new_facets), std::back_inserter(new_points));
 
 		auto p_it = mesh.points().begin();
 		for (int i = 0; i != count; ++i, ++p_it) {
