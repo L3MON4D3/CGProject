@@ -128,7 +128,6 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 
 	auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
 	rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
-	std::cout << rot_speed->controlPointAt(0)[0] << std::endl;
 
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
@@ -140,7 +139,7 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 		}
 	));
 
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[3], splines[4], splines[5], splines[6], splines[7], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>{1, 1, 1, 1}), cam);
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[4], splines[5], splines[6], splines[7], splines[8], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>{1, 1, 1, 1}), cam);
 }
 
 void store_scene1(Scene &scene, std::string filename) {
