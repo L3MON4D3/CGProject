@@ -37,6 +37,7 @@ main(int, char**) {
     glfwSetFramebufferSizeCallback(window, resizeCallback);
     auto cam = std::make_shared<camera>(window);
     init_imgui(window);
+	std::srand(std::time(nullptr));
 
 	std::vector<std::unique_ptr<Scene>> scenes;
 

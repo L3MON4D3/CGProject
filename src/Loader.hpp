@@ -126,13 +126,17 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 	auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
 	rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
 
+	auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
+	rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
+	std::cout << rot_speed->controlPointAt(0)[0] << std::endl;
+
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
 		sphere,
-		splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec},
+		splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
 		std::vector<std::shared_ptr<ObjectAction>>{},
 		shaderProgramObj, [](float t, Object &o) {
-			return glm::rotate(t*3, util::std2glm(o.curves[0]->eval(0).result()));
+			return glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
 		}
 	));
 
