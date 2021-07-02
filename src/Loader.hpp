@@ -123,17 +123,20 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines = util::read_splines(file, '#');
 	file.close();
 
+	auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
+	rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
+
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
 		sphere,
-		splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{},
+		splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec},
 		std::vector<std::shared_ptr<ObjectAction>>{},
-		shaderProgramObj, [](float, Object &) {
-			return glm::identity<glm::mat4>();
+		shaderProgramObj, [](float t, Object &o) {
+			return glm::rotate(t*3, util::std2glm(o.curves[0]->eval(0).result()));
 		}
 	));
 
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[2], splines[3], splines[4], splines[5], splines[6], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>{1, 1, 1, 1}), cam);
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[3], splines[4], splines[5], splines[6], splines[7], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>{1, 1, 1, 1}), cam);
 }
 
 void store_scene1(Scene &scene, std::string filename) {

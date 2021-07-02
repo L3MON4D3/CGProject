@@ -52,7 +52,7 @@ namespace util {
 		return glm::vec3(vec[0], vec[1], vec[2]);
 	}
 
-	std::vector<float> glm2std(glm::vec3 v) {
+	std::vector<double> glm2std(glm::vec3 v) {
 		return {v.x, v.y, v.z};
 	}
 
