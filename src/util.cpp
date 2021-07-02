@@ -192,7 +192,7 @@ namespace util {
 
 		float col[4] = {.5,.5,.5};
 	
-		const size_t count = 100; 
+		const size_t count = 40; 
 		float v[count*10];
 		points.reserve(count);
 
@@ -209,24 +209,16 @@ namespace util {
 			c
 		);
 
-		auto i = std::make_unique<unsigned int[]>(mesh.faces().size()*3);
-
-		unsigned int *it = &i[0];
-		std::for_each(mesh.faces().begin(), mesh.faces().end(), [&mesh, &it](Mesh::Face_index &face){
-			vert_iter face_it {mesh.halfedge(face), mesh};
-			*(it++) = *(face_it++);
-			*(it++) = *(face_it++);
-			*(it++) = *(face_it++);
-		});
-
 		std::srand(std::time(nullptr));
-		for (auto it{v}; it != v + count*10; it += 10) {
+		for (auto it{mesh.points().begin()}; it != mesh.points().end(); ++it) {
 			//values between 0.6, 1.4.
-			float val = (std::rand() % 800) / 1000.f+.6f;
-			it[0] *= val;
-			it[1] *= val;
-			it[2] *= val;
+			float val = (std::rand() % 400) / 1000.f+.9f;
+			*it = it->transform(CGAL::Aff_transformation_3<Kernel>(CGAL::SCALING, val));
 		}
+
+		//std::vector<Mesh::Vertex_index> new_points;
+		//std::vector<Mesh::Face_index> new_facets;
+		//CGAL::Polygon_mesh_processing::refine(mesh, mesh.faces(), std::back_inserter(new_facets), std::back_inserter(new_points));
 
 		auto p_it = mesh.points().begin();
 		for (int i = 0; i != count; ++i, ++p_it) {
@@ -241,6 +233,16 @@ namespace util {
 			v[10 * i + 8] = col[2];
 			v[10 * i + 9] = col[3];
 		}
+
+		auto i = std::make_unique<unsigned int[]>(mesh.faces().size()*3);
+		unsigned int *it = &i[0];
+		std::for_each(mesh.faces().begin(), mesh.faces().end(), [&mesh, &it](Mesh::Face_index &face){
+			vert_iter face_it {mesh.halfedge(face), mesh};
+			*(it++) = *(face_it++);
+			*(it++) = *(face_it++);
+			*(it++) = *(face_it++);
+		});
+
 
 		auto m = std::make_shared<geometry>();
         glGenVertexArrays(1, &(m->vao));
