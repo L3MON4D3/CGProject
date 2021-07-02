@@ -26,16 +26,8 @@ typedef CGAL::Surface_mesh<Point> Mesh;
 
 struct Construct{
 	Mesh& mesh;
-	template < typename PointIterator>
-	Construct(Mesh& mesh,PointIterator b, PointIterator e)
-	  : mesh(mesh)
-	{
-	  for(; b!=e; ++b){
-	    boost::graph_traits<Mesh>::vertex_descriptor v;
-	    v = add_vertex(mesh);
-	    mesh.point(v) = *b;
-	  }
-	}
+	Construct(Mesh& mesh)
+	  : mesh(mesh) { }
 	Construct& operator=(const Facet f)
 	{
 	  typedef boost::graph_traits<Mesh>::vertex_descriptor vertex_descriptor;
@@ -198,14 +190,14 @@ namespace util {
 
 		for (size_t i = 0; i != count; ++i, ++gen) {
 			// normal = position.
-			points.push_back(*gen);
+			mesh.add_vertex(*gen);
 		}
 
 		mesh.reserve(count, 0, 0);
-		Construct c {mesh, points.begin(), points.end()};
+		Construct c{mesh};
 		CGAL::advancing_front_surface_reconstruction(
-			points.begin(),
-			points.end(),
+			mesh.points().begin(),
+			mesh.points().end(),
 			c
 		);
 
@@ -216,9 +208,9 @@ namespace util {
 			*it = it->transform(CGAL::Aff_transformation_3<Kernel>(CGAL::SCALING, val));
 		}
 
-		//std::vector<Mesh::Vertex_index> new_points;
-		//std::vector<Mesh::Face_index> new_facets;
-		//CGAL::Polygon_mesh_processing::refine(mesh, mesh.faces(), std::back_inserter(new_facets), std::back_inserter(new_points));
+		std::vector<Mesh::Vertex_index> new_points;
+		std::vector<Mesh::Face_index> new_facets;
+		CGAL::Polygon_mesh_processing::refine(mesh, mesh.faces(), std::back_inserter(new_facets), std::back_inserter(new_points));
 
 		auto p_it = mesh.points().begin();
 		for (int i = 0; i != count; ++i, ++p_it) {
