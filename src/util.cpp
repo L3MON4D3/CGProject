@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <memory>
 
+#define CGAL_EIGEN_3_ENABLED
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Point_set_3.h>
 #include <CGAL/poisson_surface_reconstruction.h>
