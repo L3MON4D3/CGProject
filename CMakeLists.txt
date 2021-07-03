@@ -62,9 +62,6 @@ add_executable(space ${PROJECT_SOURCES} ${PROJECT_HEADERS} ${PROJECT_CONFIGS}
 
 find_package(CGAL)
 
-find_package(Eigen3)
-include(${EIGEN3_USE_FILE})
-
 target_link_libraries(space assimp glfw tinysplinecxx CGAL::CGAL -fsanitize=address
 					  ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
 
