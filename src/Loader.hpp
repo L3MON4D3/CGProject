@@ -50,6 +50,11 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 	std::vector<float> action_times = util::read_floats(file, '#');
 	file.close();
 
+	file.open(filename + ".light");
+	std::vector<float> light = util::read_floats(file, '#');
+	glm::vec3 light_glm {light[0], light[1], light[2]};
+	file.close();
+
 	glm::vec4 c1 = glm::vec4(1,0,0,1);
 	glm::vec4 c2 = glm::vec4(0,1,0,1);
 
@@ -100,7 +105,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		ImGui::End();
 
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
-	}, std::make_unique<state1>(0,3, std::vector<char>{1, 1, 1, 1}), cam);
+	}, std::make_unique<state1>(0,3, std::vector<char>{1, 1, 1, 1}), cam, light_glm);
 }
 
 std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera> cam) {
@@ -172,6 +177,11 @@ void store_scene1(Scene &scene, std::string filename) {
 
 	file.open(filename + ".actions");
 	util::write_floats(actions, file, '#');
+	file.close();
+
+	file.open(filename + ".light");
+	std::vector<float> light_std{scene.light_dir.x,scene.light_dir.y,scene.light_dir.z};
+	util::write_floats(light_std, file, '#');
 	file.close();
 }
 
