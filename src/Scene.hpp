@@ -52,6 +52,7 @@ public:
 	std::vector<std::unique_ptr<Object>> objects;
 	std::unique_ptr<ImGuiState> state;
 	std::string name;
-	Scene(std::string, std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, std::shared_ptr<camera>);
+	glm::vec3 light_dir;
+	Scene(std::string, std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, std::shared_ptr<camera>, glm::vec3 light_dir = glm::vec3(1,0,0));
 	void render();
 };

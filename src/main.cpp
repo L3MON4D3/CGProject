@@ -47,14 +47,14 @@ main(int, char**) {
 	scenes.push_back(Loader::load_scene2("sceneTest", cam));
 
 	// Set before rendering!!!!
-	Curve::shader_program = Loader::shaderProgramCurve;
-	Curve::color_loc = glGetUniformLocation(Loader::shaderProgramCurve, "color");
-	Curve::proj_view_loc = glGetUniformLocation(Loader::shaderProgramCurve, "proj_view_mat");
+	Curve::shader_program = Globals::shaderProgramCurve;
+	Curve::color_loc = glGetUniformLocation(Globals::shaderProgramCurve, "color");
+	Curve::proj_view_loc = glGetUniformLocation(Globals::shaderProgramCurve, "proj_view_mat");
 
-	LaserAction::ray = Loader::laser_missile;
-	LaserAction::shader_program = Loader::shaderProgramCurve;
-	LaserAction::color_loc = glGetUniformLocation(Loader::shaderProgramCurve, "color");
-	LaserAction::pvm_mat_loc = glGetUniformLocation(Loader::shaderProgramCurve, "proj_view_mat");
+	LaserAction::ray = Globals::laser_missile;
+	LaserAction::shader_program = Globals::shaderProgramCurve;
+	LaserAction::color_loc = glGetUniformLocation(Globals::shaderProgramCurve, "color");
+	LaserAction::pvm_mat_loc = glGetUniformLocation(Globals::shaderProgramCurve, "proj_view_mat");
 
     glEnable(GL_DEPTH_TEST);
     int scene_indx = 0;

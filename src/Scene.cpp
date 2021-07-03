@@ -1,5 +1,6 @@
 #include "Scene.hpp"
 #include "LaserAction.hpp"
+#include "Globals.hpp"
 
 const glm::vec4   active_color = glm::vec4(0,1,0,1);
 const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
@@ -11,8 +12,9 @@ Scene::Scene(
 	std::vector<std::unique_ptr<Object>> objects,
 	Camera cam,
 	std::function<void(Scene &)> render_extras, std::unique_ptr<ImGuiState> init_state, 
-	std::shared_ptr<camera> free_cam) :
-	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name} { }
+	std::shared_ptr<camera> free_cam,
+	glm::vec3 light_dir) :
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name}, light_dir{light_dir} { }
 
 void Scene::render() {
 	ImGui::Begin("Scene_Control");
@@ -110,6 +112,12 @@ void Scene::render() {
 	if (state->render_curves[1])
 		Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
 
+	glm::vec3 norm_l = glm::normalize(light_dir);
+	for (int i = 0; i != Globals::light_size; ++i) {
+		glUseProgram(Globals::shader_lights[i].first);
+		glUniform3fv(Globals::shader_lights[i].second, 1, &norm_l.x);
+	}
+	
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
 

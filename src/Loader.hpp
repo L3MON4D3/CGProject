@@ -1,6 +1,7 @@
 #include "util.hpp"
 #include "Scene.hpp"
 #include "LaserAction.hpp"
+#include "Globals.hpp"
 
 #include "shader.hpp"
 
@@ -8,17 +9,6 @@
 #include <fstream>
 
 namespace Loader {
-
-unsigned int shaderProgramObj;
-unsigned int shaderProgramCurve;
-
-std::shared_ptr<geometry> cargo_A;
-std::shared_ptr<geometry> laser_missile;
-std::shared_ptr<geometry> sphere;
-
-glm::mat4 cargo_A_laser_origin_left = glm::translate(glm::vec3(-0.604, 0.297, -0.399));
-glm::mat4 cargo_A_laser_origin_right = glm::translate(glm::vec3(0.604, 0.297, -0.399));
-
 const auto action_to_timepoint{ [](std::shared_ptr<ObjectAction> &a){
 	return a->start_time;
 }};
@@ -26,32 +16,28 @@ const auto action_to_timepoint{ [](std::shared_ptr<ObjectAction> &a){
 void load_shader() {
     unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
     unsigned int fragmentShaderObj = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
-    shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
+	Globals::shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
     glDeleteShader(vertexShaderObj);
     glDeleteShader(fragmentShaderObj);
 
 	unsigned int vertexShaderCurve = compileShader("curve_render.vert", GL_VERTEX_SHADER);
 	unsigned int fragmentShaderCurve = compileShader("curve_render.frag", GL_FRAGMENT_SHADER);
-    shaderProgramCurve = linkProgram(vertexShaderCurve, fragmentShaderCurve);
+	Globals::shaderProgramCurve = linkProgram(vertexShaderCurve, fragmentShaderCurve);
     glDeleteShader(vertexShaderCurve);
     glDeleteShader(fragmentShaderCurve);
 
-    glUseProgram(shaderProgramObj);
-    int light_dir_loc = glGetUniformLocation(shaderProgramObj, "light_dir");
-
-    glm::vec3 light_dir = glm::normalize(glm::vec3(1.0, 1.0, 1.0));
-    glUniform3fv(light_dir_loc, 1, &light_dir[0]);
+	Globals::shader_lights[0] = {Globals::shaderProgramObj, glGetUniformLocation(Globals::shaderProgramObj, "light_dir")};
 }
 
 void load_models() {
-    cargo_A = std::make_shared<geometry>(util::load_scene_full_mesh("craft_cargoA.obj", false)[0]);
-    cargo_A->transform = glm::translate(glm::vec3(0, -.4, 0));
+	Globals::cargo_A = std::make_shared<geometry>(util::load_scene_full_mesh("craft_cargoA.obj", false)[0]);
+	Globals::cargo_A->transform = glm::translate(glm::vec3(0, -.4, 0));
 
-    laser_missile = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
-	laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
+	Globals::laser_missile = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
+	Globals::laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
 
 	//sphere = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
-	sphere = util::create_asteroid();
+	Globals::sphere = util::create_asteroid();
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
@@ -69,28 +55,28 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
-		cargo_A,
+		Globals::cargo_A,
 		splines[0], splines[1], std::vector{
 			splines[2],
 			splines[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], glm::identity<glm::mat4>(), c1)},
-		shaderProgramObj
+		Globals::shaderProgramObj
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
-		cargo_A,
+		Globals::cargo_A,
 		splines[4], splines[5], std::vector{
 			splines[6],
 			splines[7]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(action_times[1], cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[2], cargo_A_laser_origin_right, c2),
-			std::make_shared<LaserAction>(action_times[3], cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[4], cargo_A_laser_origin_right, c2)
+			std::make_shared<LaserAction>(action_times[1], Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[2], Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<LaserAction>(action_times[3], Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[4], Globals::cargo_A_laser_origin_right, c2)
 		},
-		shaderProgramObj
+		Globals::shaderProgramObj
 	));
 
 	struct state1 : public ImGuiState {
@@ -151,7 +137,7 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 			asteroid,
 			pos_spline, splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
 			std::vector<std::shared_ptr<ObjectAction>>{},
-			shaderProgramObj, [](float t, Object &o) {
+			Globals::shaderProgramObj, [](float t, Object &o) {
 				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
 					*glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
 			}
