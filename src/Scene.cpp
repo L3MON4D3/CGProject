@@ -23,8 +23,14 @@ void Scene::render() {
 
 		if(ImGui::SliderFloat("time", &state->time, 0, 1))
 			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
-
 		ImGui::Checkbox("freecam", &state->view_cam);
+
+		if (ImGui::Button("Show all"))
+			for (char &c : state->render_curves)
+				c = 1;
+		if (ImGui::Button("Hide all"))
+			for (char &c : state->render_curves)
+				c = 0;
 		util::edit_boolvec(state->render_curves);
 	ImGui::End();
 

@@ -123,9 +123,9 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines = util::read_splines(file, '#');
 	file.close();
 
-	glm::vec3 zone {200,200,200};
+	glm::vec3 zone {30,30,30};
 	auto objs = std::vector<std::unique_ptr<Object>>();
-	for (int i = 0; i != 500; ++i) {
+	for (int i = 0; i != 20; ++i) {
 		auto asteroid = util::create_asteroid();
 		float f = std::rand()/float(RAND_MAX)*2.5+0.8;
 		asteroid->transform = glm::scale(glm::vec3{f,f,f});
