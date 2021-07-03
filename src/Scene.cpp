@@ -25,7 +25,7 @@ void Scene::render() {
 
 		if(ImGui::SliderFloat("time", &state->time, 0, 1))
 			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
-		ImGui::Checkbox("freecam", &state->view_cam);
+		ImGui::Checkbox("freecam", &state->free_cam);
 
 		if (ImGui::Button("Show all"))
 			for (char &c : state->render_curves)
@@ -107,7 +107,7 @@ void Scene::render() {
 		state->time = (util::getTimeDelta(state->start_time) % 5000)/5000.0f;
 
     glm::mat4 proj_view_mat = proj_mat;
-    if (state->view_cam) {
+    if (state->free_cam) {
 		proj_view_mat = proj_mat * free_cam->view_matrix();
 	} else {
 		proj_view_mat *= cam.get_view_mat(state->time);
