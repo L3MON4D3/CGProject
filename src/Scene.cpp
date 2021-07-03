@@ -85,6 +85,13 @@ void Scene::render() {
 		util::control_point_edit(&cam.zoom_curve, &state->indx_zoom_c, &state->range_zoom_c, state->offset_zoom_c);
 	ImGui::End();
 
+	ImGui::Begin("Light_Dir");
+		ImGui::SliderFloat("x", &light_dir.x, -1, 1);
+		ImGui::SliderFloat("y", &light_dir.y, -1, 1);
+		ImGui::SliderFloat("z", &light_dir.z, -1, 1);
+		light_dir = glm::normalize(light_dir);
+	ImGui::End();
+
 	//ImGui::Begin("Misc");
 	//	if (current.done.size() > 0) {
 	//		glm::mat4 &miss_translate = dynamic_cast<LaserAction *>(current.done[0].get())->model_transform;
