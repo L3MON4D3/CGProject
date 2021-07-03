@@ -158,7 +158,7 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 		));
 	}
 
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[4], splines[5], splines[6], splines[7], splines[8], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>(objs.size())), cam);
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[4], splines[5], splines[6], splines[7], splines[8], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>(objs.size()+2)), cam);
 }
 
 void store_scene1(Scene &scene, std::string filename) {
