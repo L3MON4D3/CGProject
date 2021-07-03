@@ -2,17 +2,17 @@
 
 #include <glad/glad.h>
 #include "buffer.hpp"
-
-const int res = 1000;
+#include <memory>
 
 unsigned int Curve::shader_program;
 unsigned int Curve::proj_view_loc;
 int Curve::color_loc;
 
 Curve::Curve(tinyspline::BSpline spline, glm::vec4 color) {
-	float vertices[res*3];
-	for (int i=0; i != res; i++) {
-		auto vert = spline.eval(float(i)/(res-1)).result();
+	verts = spline.degree() > 1 ? 1000 : 2;
+	auto vertices = std::make_unique<float[]>(verts*3);
+	for (size_t i=0; i != verts; i++) {
+		auto vert = spline.eval(float(i)/(verts-1)).result();
 		vertices[3*i  ] = vert[0];
 		vertices[3*i+1] = vert[1];
 		vertices[3*i+2] = vert[2];
@@ -20,7 +20,7 @@ Curve::Curve(tinyspline::BSpline spline, glm::vec4 color) {
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-	unsigned int vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, res * 3 * sizeof(float), vertices);
+	unsigned int vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, verts * 3 * sizeof(float), &(vertices[0]));
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -38,5 +38,5 @@ void Curve::render(float, glm::mat4 proj_view) {
 	glUniformMatrix4fv(proj_view_loc, 1, GL_FALSE, &proj_view[0][0]);
 
 	glBindVertexArray(vao);
-	glDrawArrays(GL_LINE_STRIP, 0, res);
+	glDrawArrays(GL_LINE_STRIP, 0, verts);
 }

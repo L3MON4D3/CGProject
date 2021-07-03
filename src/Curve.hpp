@@ -7,6 +7,7 @@
 class Curve : public Renderable {
 private:
 	unsigned int vao;
+	size_t verts;
 
 public:
 	static unsigned int shader_program;
