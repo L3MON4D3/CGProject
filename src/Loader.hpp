@@ -123,23 +123,42 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines = util::read_splines(file, '#');
 	file.close();
 
-	auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
-	rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
-
-	auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
-	rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
-
+	glm::vec3 zone {200,200,200};
 	auto objs = std::vector<std::unique_ptr<Object>>();
-	objs.emplace_back(std::make_unique<Object>(
-		sphere,
-		splines[0], splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
-		std::vector<std::shared_ptr<ObjectAction>>{},
-		shaderProgramObj, [](float t, Object &o) {
-			return glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
-		}
-	));
+	for (int i = 0; i != 500; ++i) {
+		auto asteroid = util::create_asteroid();
+		float f = std::rand()/float(RAND_MAX)*2.5+0.8;
+		asteroid->transform = glm::scale(glm::vec3{f,f,f});
+		auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
+		glm::vec3 p_1 = util::v3_rand()*zone;
+		glm::vec3 p_2 = p_1+util::v3_rand()*glm::vec3(20,20,20);
+		pos_spline->setControlPoints({
+			p_1.x,
+			p_1.y,
+			p_1.z,
+			p_2.x,
+			p_2.y,
+			p_2.z
+		});
 
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[4], splines[5], splines[6], splines[7], splines[8], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>{1, 1, 1, 1}), cam);
+		auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
+		rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
+
+		auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
+		rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
+
+		objs.emplace_back(std::make_unique<Object>(
+			asteroid,
+			pos_spline, splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
+			std::vector<std::shared_ptr<ObjectAction>>{},
+			shaderProgramObj, [](float t, Object &o) {
+				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
+					*glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
+			}
+		));
+	}
+
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[4], splines[5], splines[6], splines[7], splines[8], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &) { }, std::make_unique<ImGuiState>(std::vector<char>(objs.size())), cam);
 }
 
 void store_scene1(Scene &scene, std::string filename) {

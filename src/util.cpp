@@ -44,7 +44,8 @@ struct Construct{
 	operator++(int) { return *this; }
 };
 
-glm::vec3 rand_max {RAND_MAX, RAND_MAX, RAND_MAX};
+const float half_rand_max = float(RAND_MAX)/2;
+glm::vec3 hrm_vec {RAND_MAX, RAND_MAX, RAND_MAX};
 
 namespace util {
 	glm::vec3 std2glm(std::vector<double> vec) {
@@ -182,7 +183,7 @@ namespace util {
 	}
 
 	glm::vec3 v3_rand() {
-		return glm::vec3(std::rand(), std::rand(), std::rand())/rand_max;
+		return glm::vec3(std::rand()-half_rand_max, std::rand()-half_rand_max, std::rand()-half_rand_max)/hrm_vec;
 	}
 
 	std::shared_ptr<geometry> create_asteroid() {
