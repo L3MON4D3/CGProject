@@ -6,8 +6,8 @@ uniform vec3 light_dir;
 
 out vec4 frag_color;
 
-float roughness = .3; // sigma
-float refractionIndex = .1;
+uniform float roughness;
+uniform float refractionIndex;
 vec4 diffuse = interp_color;
 vec4 specular = vec4(1,1,1,1);
 
@@ -89,12 +89,12 @@ float orennayarTerm(float lambert, vec3 n, vec3 l) {
 }
 
 void main() {
-	float diffuseTerm = orennayarTerm(cdot(interp_normal, light_dir), interp_normal, light_dir);
+	vec3 norm = interp_normal;
+	float diffuseTerm = orennayarTerm(cdot(norm, light_dir), norm, light_dir);
 	// lowest possbile value = ambient fake light term
 	diffuseTerm = max(diffuseTerm, 0.1);
 	// as specular part we compute the Cook-Torrance term
 	float specularTerm = cooktorranceTerm(interp_normal, light_dir);
-	specularTerm = 0;
 	// combine both terms (diffuse+specular) using our material properties (colors)
 	frag_color = vec4(vec3(clamp(diffuse * diffuseTerm + specular * specularTerm, 0.0, 1.0)), 1);
 }
