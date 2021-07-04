@@ -13,6 +13,7 @@
 #include <CGAL/boost/graph/iterator.h>
 #include <CGAL/Polygon_mesh_processing/fair.h>
 #include <CGAL/Polygon_mesh_processing/refine.h>
+#include <CGAL/Polygon_mesh_processing/compute_normal.h>
 
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::Point_3 Point;
@@ -22,6 +23,7 @@ typedef CGAL::Surface_mesh<Point> Mesh;
 typedef std::array<std::size_t,3> Facet;
 typedef CGAL::Vertex_around_face_iterator<Mesh> vert_iter;
 typedef CGAL::Surface_mesh<Point> Mesh;
+typedef boost::graph_traits<Mesh>::vertex_descriptor vertex_descriptor;
 
 struct Construct{
 	Mesh& mesh;
@@ -210,20 +212,34 @@ namespace util {
 			c
 		);
 
+		auto normals = mesh.add_property_map<vertex_descriptor, Vector>("v:normals", CGAL::NULL_VECTOR).first;
+		CGAL::Polygon_mesh_processing::compute_vertex_normals(mesh, normals);
+
 		for (auto it{mesh.points().begin()}; it != mesh.points().end(); ++it) {
 			//values between 0.6, 1.4.
 			float val = (std::rand() % 400) / 1000.f+.9f;
 			*it = it->transform(CGAL::Aff_transformation_3<Kernel>(CGAL::SCALING, val));
 		}
 
-		auto p_it = mesh.points().begin();
-		for (int i = 0; i != count; ++i, ++p_it) {
-			v[10 * i + 0] = p_it->x();
-			v[10 * i + 1] = p_it->y();
-			v[10 * i + 2] = p_it->z();
-			v[10 * i + 3] = p_it->x();
-			v[10 * i + 4] = p_it->y();
-			v[10 * i + 5] = p_it->z();
+		auto m_p = mesh.points();
+		auto v_it = vertices(mesh).begin();
+		for (int i = 0; i != count; ++i, ++v_it) {
+			auto norm = normals[*v_it];
+			auto pos = m_p[*v_it];
+			if (
+				norm.x() * pos.x() +
+				norm.y() * pos.y() +
+				norm.z() * pos.z() < 0
+			) {
+				norm = -norm;
+			}
+			
+			v[10 * i + 0] = pos.x();
+			v[10 * i + 1] = pos.y();
+			v[10 * i + 2] = pos.z();
+			v[10 * i + 3] = norm.x();
+			v[10 * i + 4] = norm.y();
+			v[10 * i + 5] = norm.z();
 			v[10 * i + 6] = col[0];
 			v[10 * i + 7] = col[1];
 			v[10 * i + 8] = col[2];
