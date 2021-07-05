@@ -2,7 +2,10 @@
 
 in vec4 interp_color;
 in vec3 interp_normal;
+in vec3 pos;
+
 uniform vec3 light_dir;
+uniform vec3 cam_pos; 
 
 out vec4 frag_color;
 
@@ -13,6 +16,8 @@ vec4 specular = vec4(1,1,1,1);
 
 const float pi = 3.14159265359;
 
+vec3 v = vec3(0,0,1);
+
 // Syntatic sugar. Make sure dot products only map to hemisphere
 float cdot(vec3 a, vec3 b) {
 	return clamp(dot(a,b), 0.0, 1.0);
@@ -22,7 +27,7 @@ float cdot(vec3 a, vec3 b) {
 float beckmannDistribution(float dotNH) {
 	float sigma2 = roughness * roughness;
 	float alpha = acos(dotNH);
-	return exp(-1*pow(tan(alpha), 2)/sigma2)/(pi*sigma2*pow(dotNH, 4));
+	return exp(-1*pow(tan(alpha)/roughness, 2))/(4*sigma2*pow(dotNH, 4));
 }
 
 // F
@@ -43,7 +48,6 @@ float geometricAttenuation(float dotNH, float dotVN, float dotVH, float dotNL) {
 }
 
 float cooktorranceTerm(vec3 n, vec3 l) {
-	vec3 v = vec3(0.0, 0.0, 1.0); // in eye space direction towards viewer simply is the Z axis
 	vec3 h = normalize(l + v); // half-vector between V and L
 
 	// precompute to avoid redundant computation
@@ -65,7 +69,6 @@ vec3 gs1(vec3 a, vec3 b) {
 }
 
 float orennayarTerm(float lambert, vec3 n, vec3 l) {
-	vec3 v = vec3(0.0, 0.0, 1.0); // Im eye space ist die Richtung zum Betrachter schlicht die Z-Achse
 	float sigma2 = roughness * roughness; // sigma^2
 
 	float A = 1 - .5*sigma2/(sigma2+.33);

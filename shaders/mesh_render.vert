@@ -8,10 +8,12 @@ uniform mat4 model_mat;
 
 out vec4 interp_color;
 out vec3 interp_normal;
+out vec3 pos;
 
 void main()
 {
     gl_Position = proj_view_model_mat * vec4(position.x, position.y, position.z, 1.0);
+	pos = position;
     interp_color = color;
     interp_normal = normalize((transpose(inverse(model_mat)) * vec4(normal, 0.0)).xyz);
 }
