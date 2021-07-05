@@ -17,7 +17,7 @@ vec4 specular = vec4(1,1,1,1);
 
 const float pi = 3.14159265359;
 
-vec3 v = cam_pos - pos;
+vec3 v = normalize(cam_pos - pos);
 
 // Syntatic sugar. Make sure dot products only map to hemisphere
 float cdot(vec3 a, vec3 b) {
@@ -93,8 +93,7 @@ float orennayarTerm(float lambert, vec3 n, vec3 l) {
 }
 
 void main() {
-	vec3 norm = interp_normal;
-	float diffuseTerm = orennayarTerm(cdot(norm, light_dir), norm, light_dir);
+	float diffuseTerm = orennayarTerm(cdot(interp_normal, light_dir), interp_normal, light_dir);
 	// lowest possbile value = ambient fake light term
 	diffuseTerm = max(diffuseTerm, 0.1);
 	// as specular part we compute the Cook-Torrance term
