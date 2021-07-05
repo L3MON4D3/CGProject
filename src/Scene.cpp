@@ -7,8 +7,7 @@ const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
 
 const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
 
-float rough = .3;
-float refr = .5;
+int mat_indx = 0;
 
 Scene::Scene(
 	std::string name,
@@ -96,11 +95,18 @@ void Scene::render() {
 	ImGui::End();
 
 	ImGui::Begin("Shader");
-	ImGui::SliderFloat("rough", &rough, 0, 1);
-	ImGui::SliderFloat("refr", &refr, 0, 1);
-	glUseProgram(Globals::shaderProgramObj);
-	glUniform1f(glGetUniformLocation(Globals::shaderProgramObj, "roughness"),  rough);
-	glUniform1f(glGetUniformLocation(Globals::shaderProgramObj, "refractionIndex"),  refr);
+	ImGui::SliderInt("current", &mat_indx, 0, Globals::mat_sz-1);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[mat_indx]);
+	float vals[2];
+	glGetBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &vals[0]);
+	glGetBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &vals[1]);
+
+	ImGui::SliderFloat("rough", &vals[0], 0, 1);
+	ImGui::SliderFloat("refr", &vals[1], 0, 1);
+
+	glBufferData(GL_UNIFORM_BUFFER, 8, vals, GL_STATIC_DRAW);
+
 	ImGui::End();
 
 	//ImGui::Begin("Misc");

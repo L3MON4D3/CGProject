@@ -1,5 +1,6 @@
 #include "Object.hpp"
 #include "Curve.hpp"
+#include "Globals.hpp"
 
 const glm::vec4 initial_curve_color = glm::vec4(1,0,0,1);
 
@@ -10,11 +11,13 @@ Object::Object(
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
 	std::vector<std::shared_ptr<ObjectAction>> actions,
 	unsigned int shader_program,
+	const unsigned int *materials,
 	std::function<glm::mat4(float, Object &)> model_func
 ) : model{model},
 	shader_program{shader_program},
 	model_mat_loc{glGetUniformLocation(shader_program, "model_mat")},
 	pvm_mat_loc{glGetUniformLocation(shader_program, "proj_view_model_mat")},
+	materials{materials},
 	todo{actions},
 	done{std::vector<std::shared_ptr<ObjectAction>>()},
 	model_func{model_func},
@@ -37,6 +40,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 	glUniformMatrix4fv(pvm_mat_loc, 1, GL_FALSE, &proj_view_trans[0][0]);
 
 	for (unsigned int i = 0; i != model->size(); ++i) {
+		glBindBufferBase(GL_UNIFORM_BUFFER, Globals::material_binding, Globals::mat2ubo[materials[i]]);
 		glBindVertexArray((*model)[i].vao);
 		glDrawElements(GL_TRIANGLES, (*model)[i].vertex_count, GL_UNSIGNED_INT, (void*) 0);
 	}

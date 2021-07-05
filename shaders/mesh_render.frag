@@ -9,8 +9,10 @@ uniform vec3 cam_pos;
 
 out vec4 frag_color;
 
-uniform float roughness;
-uniform float refractionIndex;
+layout (std140) uniform material {
+	uniform float roughness;
+	uniform float refractionIndex;
+};
 
 vec4 diffuse = interp_color;
 vec4 specular = vec4(1,1,1,1);

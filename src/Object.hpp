@@ -18,6 +18,7 @@ private:
 	unsigned int shader_program;
 	int model_mat_loc;
 	int pvm_mat_loc;
+	const unsigned int *materials;
 	
 public:
 	std::vector<std::shared_ptr<ObjectAction>> todo;
@@ -34,6 +35,7 @@ public:
 		std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
 		std::vector<std::shared_ptr<ObjectAction>> actions,
 		unsigned int shader_program,
+		const unsigned int *materials,
 		std::function<glm::mat4(float, Object &o)> model_func =
 			[](float t, Object &o) {
 				// Calculate correct forward from derived func.

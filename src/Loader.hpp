@@ -19,6 +19,10 @@ void load_shader() {
 	Globals::shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
     glDeleteShader(vertexShaderObj);
     glDeleteShader(fragmentShaderObj);
+    glUniformBlockBinding(
+		Globals::shaderProgramObj,
+    	glGetUniformBlockIndex(Globals::shaderProgramObj, "material"),
+    	Globals::material_binding);
 
 	unsigned int vertexShaderCurve = compileShader("curve_render.vert", GL_VERTEX_SHADER);
 	unsigned int fragmentShaderCurve = compileShader("curve_render.frag", GL_FRAGMENT_SHADER);
@@ -40,6 +44,17 @@ void load_models() {
 	Globals::laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
 
 	Globals::sphere = std::make_shared<geometry>(loadScene("sphere_fine.obj", false)[0]);
+}
+
+void load_materials() {
+	glGenBuffers(4, Globals::mat2ubo);
+	for (unsigned int i = 0; i != Globals::mat_sz; ++i) {
+		glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[i]);
+		// space for 2 floats, 4-aligned, init with values stored in Globals.
+		glBufferData(GL_UNIFORM_BUFFER, 8, Globals::material_values[i], GL_STATIC_DRAW);
+		glBindBufferBase(GL_UNIFORM_BUFFER, i, Globals::mat2ubo[i]);
+	}
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
@@ -68,7 +83,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], glm::identity<glm::mat4>(), c1)},
-		Globals::shaderProgramObj
+		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
@@ -83,7 +98,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<LaserAction>(action_times[3], Globals::cargo_A_laser_origin_left, c2),
 			std::make_shared<LaserAction>(action_times[4], Globals::cargo_A_laser_origin_right, c2)
 		},
-		Globals::shaderProgramObj
+		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));
 
 	struct state1 : public ImGuiState {
@@ -145,7 +160,7 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 			asteroid,
 			pos_spline, splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
 			std::vector<std::shared_ptr<ObjectAction>>{},
-			Globals::shaderProgramObj, [](float t, Object &o) {
+			Globals::shaderProgramObj, Globals::asteroid_ubos, [](float t, Object &o) {
 				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
 					*glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
 			}

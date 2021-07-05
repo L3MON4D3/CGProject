@@ -43,6 +43,7 @@ main(int, char**) {
 
 	Loader::load_models();
 	Loader::load_shader();
+	Loader::load_materials();
 	scenes.push_back(Loader::load_scene1("scene1", cam));
 	scenes.push_back(Loader::load_scene2("sceneTest", cam));
 
