@@ -11,12 +11,13 @@ out vec4 frag_color;
 
 uniform float roughness;
 uniform float refractionIndex;
+
 vec4 diffuse = interp_color;
 vec4 specular = vec4(1,1,1,1);
 
 const float pi = 3.14159265359;
 
-vec3 v = vec3(0,0,1);
+vec3 v = cam_pos - pos;
 
 // Syntatic sugar. Make sure dot products only map to hemisphere
 float cdot(vec3 a, vec3 b) {

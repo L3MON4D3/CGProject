@@ -36,8 +36,7 @@ void load_models() {
 	Globals::laser_missile = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
 	Globals::laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
 
-	//sphere = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
-	Globals::sphere = util::create_asteroid();
+	Globals::sphere = std::make_shared<geometry>(util::load_scene_full_mesh("sphere_fine.obj", false)[0]);
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {

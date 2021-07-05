@@ -7,6 +7,9 @@ const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
 
 const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
 
+float rough = .3;
+float refr = .5;
+
 Scene::Scene(
 	std::string name,
 	std::vector<std::unique_ptr<Object>> objects,
@@ -92,6 +95,14 @@ void Scene::render() {
 		light_dir = glm::normalize(light_dir);
 	ImGui::End();
 
+	ImGui::Begin("Shader");
+	ImGui::SliderFloat("rough", &rough, 0, 1);
+	ImGui::SliderFloat("refr", &refr, 0, 1);
+	glUseProgram(Globals::shaderProgramObj);
+	glUniform1f(glGetUniformLocation(Globals::shaderProgramObj, "roughness"),  rough);
+	glUniform1f(glGetUniformLocation(Globals::shaderProgramObj, "refractionIndex"),  refr);
+	ImGui::End();
+
 	//ImGui::Begin("Misc");
 	//	if (current.done.size() > 0) {
 	//		glm::mat4 &miss_translate = dynamic_cast<LaserAction *>(current.done[0].get())->model_transform;
@@ -107,11 +118,17 @@ void Scene::render() {
 		state->time = (util::getTimeDelta(state->start_time) % 5000)/5000.0f;
 
     glm::mat4 proj_view_mat = proj_mat;
+	glm::vec3 cam_pos;
     if (state->free_cam) {
 		proj_view_mat = proj_mat * free_cam->view_matrix();
+		cam_pos = free_cam->position(); 
 	} else {
 		proj_view_mat *= cam.get_view_mat(state->time);
+		cam_pos = util::std2glm(cam.pos_curve->eval(util::eval_timespline(*cam.time_pos_curve, state->time)).result());
 	}
+
+	glUseProgram(Globals::shaderProgramObj);
+	glUniform3fv(glGetUniformLocation(Globals::shaderProgramObj, "cam_pos"), 1, &cam_pos.x);
 
 	if (state->render_curves[0])
 		Curve(*cam.pos_curve, glm::vec4(0,0,1,1)).render(0, proj_view_mat);
@@ -124,7 +141,7 @@ void Scene::render() {
 		glUseProgram(Globals::shader_lights[i].first);
 		glUniform3fv(Globals::shader_lights[i].second, 1, &norm_l.x);
 	}
-	
+
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
 
