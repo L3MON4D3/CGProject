@@ -127,9 +127,6 @@ void Scene::render() {
 		cam_pos = util::std2glm(cam.pos_curve->eval(util::eval_timespline(*cam.time_pos_curve, state->time)).result());
 	}
 
-	glUseProgram(Globals::shaderProgramObj);
-	glUniform3fv(glGetUniformLocation(Globals::shaderProgramObj, "cam_pos"), 1, &cam_pos.x);
-
 	if (state->render_curves[0])
 		Curve(*cam.pos_curve, glm::vec4(0,0,1,1)).render(0, proj_view_mat);
 
@@ -139,7 +136,8 @@ void Scene::render() {
 	glm::vec3 norm_l = glm::normalize(light_dir);
 	for (int i = 0; i != Globals::light_size; ++i) {
 		glUseProgram(Globals::shader_lights[i].first);
-		glUniform3fv(Globals::shader_lights[i].second, 1, &norm_l.x);
+		glUniform3fv(Globals::shader_lights[i].second.first, 1, &norm_l.x);
+		glUniform3fv(Globals::shader_lights[i].second.second, 1, &cam_pos.x);
 	}
 
 	for (int i = 0; i != int(objects.size()); ++i) {

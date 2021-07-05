@@ -5,7 +5,7 @@ namespace Globals {
 unsigned int shaderProgramObj;
 unsigned int shaderProgramCurve;
 
-std::pair<unsigned int, int> shader_lights[light_size];
+std::pair<unsigned int, std::pair<int, int>> shader_lights[light_size];
 
 std::shared_ptr<geometry> cargo_A;
 std::shared_ptr<geometry> laser_missile;

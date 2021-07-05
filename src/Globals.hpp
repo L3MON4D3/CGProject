@@ -10,7 +10,7 @@ extern unsigned int shaderProgramObj;
 extern unsigned int shaderProgramCurve;
 
 const size_t light_size = 1;
-extern std::pair<unsigned int, int> shader_lights[light_size];
+extern std::pair<unsigned int, std::pair<int, int>> shader_lights[light_size];
 
 extern std::shared_ptr<geometry> cargo_A;
 extern std::shared_ptr<geometry> laser_missile;

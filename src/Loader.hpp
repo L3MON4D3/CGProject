@@ -26,7 +26,10 @@ void load_shader() {
     glDeleteShader(vertexShaderCurve);
     glDeleteShader(fragmentShaderCurve);
 
-	Globals::shader_lights[0] = {Globals::shaderProgramObj, glGetUniformLocation(Globals::shaderProgramObj, "light_dir")};
+	Globals::shader_lights[0] = {Globals::shaderProgramObj, {
+		glGetUniformLocation(Globals::shaderProgramObj, "light_dir"),
+		glGetUniformLocation(Globals::shaderProgramObj, "cam_pos")
+	}};
 }
 
 void load_models() {
