@@ -95,18 +95,17 @@ void Scene::render() {
 	ImGui::End();
 
 	ImGui::Begin("Shader");
-	ImGui::SliderInt("current", &mat_indx, 0, Globals::mat_sz-1);
+		ImGui::SliderInt("current", &mat_indx, 0, Globals::mat_sz-1);
 
-	glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[mat_indx]);
-	float vals[2];
-	glGetBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &vals[0]);
-	glGetBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &vals[1]);
+		glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[mat_indx]);
+		float vals[2];
+		glGetBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &vals[0]);
+		glGetBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &vals[1]);
 
-	ImGui::SliderFloat("rough", &vals[0], 0, 1);
-	ImGui::SliderFloat("refr", &vals[1], 0, 1);
+		ImGui::SliderFloat("rough", &vals[0], 0, 1);
+		ImGui::SliderFloat("refr", &vals[1], 0, 1);
 
-	glBufferData(GL_UNIFORM_BUFFER, 8, vals, GL_STATIC_DRAW);
-
+		glBufferData(GL_UNIFORM_BUFFER, 8, vals, GL_STATIC_DRAW);
 	ImGui::End();
 
 	//ImGui::Begin("Misc");
