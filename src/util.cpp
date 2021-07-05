@@ -193,7 +193,7 @@ namespace util {
 		std::vector<Point> points;
 		CGAL::Random_points_on_sphere_3<Point> gen(1);
 
-		float col[4] = {.5,.5,.5};
+		const float col[4] = {.3,.3,.3};
 	
 		const size_t count = 40; 
 		float v[count*10];

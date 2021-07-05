@@ -26,10 +26,10 @@ const unsigned int mat_asteroid = 3;
 
 // roughness and refractionIndex of material.
 const float material_values[mat_sz][2] = {
-	{.5, 10},
-	{0, 0},
-	{.5, 1},
-	{.5, .5}
+	{.322, .092},
+	{.032, .885},
+	{.058, 0},
+	{.356, 1}
 };
 
 // mat_metal-ubo is stored at mat_ubos[mat_metal]...
