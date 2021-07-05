@@ -13,20 +13,22 @@ Scene::Scene(
 	std::string name,
 	std::vector<std::unique_ptr<Object>> objects,
 	Camera cam,
-	std::function<void(Scene &)> render_extras, std::unique_ptr<ImGuiState> init_state, 
+	std::function<void(Scene &)> render_extras,
+	std::unique_ptr<ImGuiState> init_state, 
+	unsigned int length,
 	std::shared_ptr<camera> free_cam,
 	glm::vec3 light_dir) :
-	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name}, light_dir{light_dir} { }
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name}, light_dir{light_dir}, length{length} { }
 
 void Scene::render() {
 	ImGui::Begin("Scene_Control");
 		ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
 
 		if (ImGui::Checkbox("play", &state->play) && state->play)
-			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
+			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*length));
 
 		if(ImGui::SliderFloat("time", &state->time, 0, 1))
-			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
+			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*length));
 		ImGui::Checkbox("freecam", &state->free_cam);
 
 		if (ImGui::Button("Show all"))
@@ -120,7 +122,7 @@ void Scene::render() {
 	render_extras(*this);
 
 	if (state->play)
-		state->time = (util::getTimeDelta(state->start_time) % 5000)/5000.0f;
+		state->time = (util::getTimeDelta(state->start_time) % length)/float(length);
 
     glm::mat4 proj_view_mat = proj_mat;
 	glm::vec3 cam_pos;
