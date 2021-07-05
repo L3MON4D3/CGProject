@@ -14,7 +14,7 @@
 
 class Object : public Renderable{
 private:
-	std::shared_ptr<geometry> model;
+	std::shared_ptr<std::vector<geometry>> model;
 	unsigned int shader_program;
 	int model_mat_loc;
 	int pvm_mat_loc;
@@ -28,7 +28,7 @@ public:
 	std::shared_ptr<tinyspline::BSpline> time_curve;
 	glm::vec4 curve_color;
 	Object(
-		std::shared_ptr<geometry> model,
+		std::shared_ptr<std::vector<geometry>> model,
 		std::shared_ptr<tinyspline::BSpline> pos_curve,
 		std::shared_ptr<tinyspline::BSpline> time_curve,
 		std::vector<std::shared_ptr<tinyspline::BSpline>> curves,

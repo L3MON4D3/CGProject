@@ -33,13 +33,13 @@ void load_shader() {
 }
 
 void load_models() {
-	Globals::cargo_A = std::make_shared<geometry>(util::load_scene_full_mesh("craft_cargoA.obj", false)[0]);
-	Globals::cargo_A->transform = glm::translate(glm::vec3(0, -.4, 0));
+	Globals::cargo_A = std::make_shared<std::vector<geometry>>(loadScene("craft_cargoA.obj", false));
+	(*Globals::cargo_A)[0].transform = glm::translate(glm::vec3(0, -.4, 0));
 
-	Globals::laser_missile = std::make_shared<geometry>(util::load_scene_full_mesh("sphere.obj", false)[0]);
+	Globals::laser_missile = std::make_shared<geometry>(loadScene("sphere.obj", false)[0]);
 	Globals::laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
 
-	Globals::sphere = std::make_shared<geometry>(util::load_scene_full_mesh("sphere_fine.obj", false)[0]);
+	Globals::sphere = std::make_shared<geometry>(loadScene("sphere_fine.obj", false)[0]);
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
@@ -119,9 +119,10 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 	glm::vec3 zone {30,30,30};
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	for (int i = 0; i != 20; ++i) {
-		auto asteroid = util::create_asteroid();
+		std::shared_ptr<std::vector<geometry>> asteroid = std::make_shared<std::vector<geometry>>();
+		asteroid->emplace_back(*util::create_asteroid());
 		float f = std::rand()/float(RAND_MAX)*2.5+0.8;
-		asteroid->transform = glm::scale(glm::vec3{f,f,f});
+		(*asteroid)[0].transform = glm::scale(glm::vec3{f,f,f});
 		auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
 		glm::vec3 p_1 = util::v3_rand()*zone;
 		glm::vec3 p_2 = p_1+util::v3_rand()*glm::vec3(20,20,20);
