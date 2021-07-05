@@ -19,6 +19,8 @@ const float pi = 3.14159265359;
 
 vec3 v = normalize(cam_pos - pos);
 
+float r_d_pi = 3/pi;
+
 // Syntatic sugar. Make sure dot products only map to hemisphere
 float cdot(vec3 a, vec3 b) {
 	return clamp(dot(a,b), 0.0, 1.0);
@@ -28,7 +30,7 @@ float cdot(vec3 a, vec3 b) {
 float beckmannDistribution(float dotNH) {
 	float sigma2 = roughness * roughness;
 	float alpha = acos(dotNH);
-	return exp(-1*pow(tan(alpha)/roughness, 2))/(4*sigma2*pow(dotNH, 4));
+	return exp(-1*pow(tan(alpha)/roughness, 2))/(pi*sigma2*pow(dotNH, 4));
 }
 
 // F
@@ -93,11 +95,11 @@ float orennayarTerm(float lambert, vec3 n, vec3 l) {
 }
 
 void main() {
-	float diffuseTerm = orennayarTerm(cdot(interp_normal, light_dir), interp_normal, light_dir);
+	float diffuseTerm = orennayarTerm(r_d_pi, interp_normal, light_dir);
 	// lowest possbile value = ambient fake light term
 	diffuseTerm = max(diffuseTerm, 0.1);
 	// as specular part we compute the Cook-Torrance term
 	float specularTerm = cooktorranceTerm(interp_normal, light_dir);
 	// combine both terms (diffuse+specular) using our material properties (colors)
-	frag_color = vec4(vec3(clamp(diffuse * diffuseTerm + specular * specularTerm, 0.0, 1.0)), 1);
+	frag_color = vec4(vec3(clamp(diffuse * diffuseTerm + specular * specularTerm, 0.0, 1.0)*cdot(interp_normal, light_dir)), 1);
 }
