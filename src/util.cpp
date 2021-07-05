@@ -371,7 +371,8 @@ namespace util {
 		std::vector<float> floats{};
 		std::string temp;
 		while (std::getline(str, temp, delim)) {
-			floats.push_back(std::stof(temp));
+			if (temp != "\n")
+				floats.push_back(std::stof(temp));
 		}
 
 		return floats;

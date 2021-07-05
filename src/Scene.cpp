@@ -15,7 +15,7 @@ Scene::Scene(
 	Camera cam,
 	std::function<void(Scene &)> render_extras,
 	std::unique_ptr<ImGuiState> init_state, 
-	unsigned int length,
+	int length,
 	std::shared_ptr<camera> free_cam,
 	glm::vec3 light_dir) :
 	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name}, light_dir{light_dir}, length{length} { }
@@ -23,6 +23,9 @@ Scene::Scene(
 void Scene::render() {
 	ImGui::Begin("Scene_Control");
 		ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
+		ImGui::InputInt("Length", &length);
+		if (length < 1)
+			length = 1;
 
 		if (ImGui::Checkbox("play", &state->play) && state->play)
 			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*length));
