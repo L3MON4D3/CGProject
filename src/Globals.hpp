@@ -8,6 +8,7 @@ namespace Globals {
 
 extern unsigned int shaderProgramObj;
 extern unsigned int shaderProgramCurve;
+extern unsigned int shaderProgramEmote;
 
 const size_t light_size = 1;
 extern std::pair<unsigned int, std::pair<int, int>> shader_lights[light_size];

@@ -4,6 +4,7 @@ namespace Globals {
 
 unsigned int shaderProgramObj;
 unsigned int shaderProgramCurve;
+unsigned int shaderProgramEmote;
 
 std::pair<unsigned int, std::pair<int, int>> shader_lights[light_size];
 

@@ -1,6 +1,7 @@
 #include "util.hpp"
 #include "Scene.hpp"
 #include "LaserAction.hpp"
+#include "EmoteAction.hpp"
 #include "Globals.hpp"
 
 #include "shader.hpp"
@@ -34,6 +35,12 @@ void load_shader() {
 		glGetUniformLocation(Globals::shaderProgramObj, "light_dir"),
 		glGetUniformLocation(Globals::shaderProgramObj, "cam_pos")
 	}};
+
+	unsigned int vertexShaderEmote = compileShader("emote.vert", GL_VERTEX_SHADER);
+	unsigned int fragmentShaderEmote = compileShader("emote.frag", GL_FRAGMENT_SHADER);
+	Globals::shaderProgramEmote = linkProgram(vertexShaderEmote, fragmentShaderEmote);
+    glDeleteShader(vertexShaderEmote);
+    glDeleteShader(fragmentShaderEmote);
 }
 
 void load_models() {
@@ -100,7 +107,8 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<LaserAction>(action_times[1], Globals::cargo_A_laser_origin_left, c2),
 			std::make_shared<LaserAction>(action_times[2], Globals::cargo_A_laser_origin_right, c2),
 			std::make_shared<LaserAction>(action_times[3], Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[4], Globals::cargo_A_laser_origin_right, c2)
+			std::make_shared<LaserAction>(action_times[4], Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<EmoteAction>(.1f, splines[4], splines[5]),
 		},
 		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));

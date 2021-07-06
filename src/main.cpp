@@ -52,6 +52,9 @@ main(int, char**) {
 	Curve::color_loc = glGetUniformLocation(Globals::shaderProgramCurve, "color");
 	Curve::proj_view_loc = glGetUniformLocation(Globals::shaderProgramCurve, "proj_view_mat");
 
+	EmoteAction::shader = Globals::shaderProgramCurve;
+	EmoteAction::pvm_loc = glGetUniformLocation(Globals::shaderProgramEmote, "pvm");
+
 	LaserAction::ray = Globals::laser_missile;
 	LaserAction::shader_program = Globals::shaderProgramCurve;
 	LaserAction::color_loc = glGetUniformLocation(Globals::shaderProgramCurve, "color");

@@ -5,7 +5,7 @@
 #include <memory>
 
 unsigned int Curve::shader_program;
-unsigned int Curve::proj_view_loc;
+int Curve::proj_view_loc;
 int Curve::color_loc;
 
 Curve::Curve(tinyspline::BSpline spline, glm::vec4 color) {

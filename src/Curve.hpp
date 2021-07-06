@@ -11,7 +11,7 @@ private:
 
 public:
 	static unsigned int shader_program;
-	static unsigned int proj_view_loc;
+	static int proj_view_loc;
 	static int color_loc;
 	Curve(
 		tinyspline::BSpline,
