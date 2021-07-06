@@ -309,6 +309,18 @@ namespace util {
 			*spline = std::make_shared<tinyspline::BSpline>((*spline)->numControlPoints()+1, dim, deg < 3 ? deg+1 : deg);
 			(*spline)->setControlPoints(ctrl);
 		}
+		if (ImGui::Button("Delete")) {
+			std::vector<double> ctrl = (*spline)->controlPoints();
+			// Don't delete last controlPoint.
+			if (ctrl.size() > (*spline)->dimension()*1) {
+				// Copy controlpoint at indx.
+				std::vector<double> point{};
+				ctrl.erase(ctrl.begin()+*indx*dim, ctrl.begin()+(*indx+1)*dim);
+				unsigned int deg = (*spline)->degree();
+				*spline = std::make_shared<tinyspline::BSpline>((*spline)->numControlPoints()-1, dim, deg >= ctrl.size()/3 ? deg-1 : deg);
+				(*spline)->setControlPoints(ctrl);
+			}
+		}
 
 		std::vector<tinyspline::real> ctrl_point = (*spline)->controlPointAt(*indx);
 
