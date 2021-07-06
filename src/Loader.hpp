@@ -108,7 +108,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<LaserAction>(action_times[2], Globals::cargo_A_laser_origin_right, c2),
 			std::make_shared<LaserAction>(action_times[3], Globals::cargo_A_laser_origin_left, c2),
 			std::make_shared<LaserAction>(action_times[4], Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<EmoteAction>(.1f, splines[4], splines[5]),
+			std::make_shared<EmoteAction>(.1f, splines[4]),
 		},
 		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));

@@ -16,9 +16,8 @@ int EmoteAction::pvm_loc;
 
 EmoteAction::EmoteAction(
 	float t,
-	std::shared_ptr<tinyspline::BSpline> pos_curve,
-	std::shared_ptr<tinyspline::BSpline> time_curve) :
-	ObjectAction{t}, pos_curve{pos_curve}, time_curve{time_curve} {
+	std::shared_ptr<tinyspline::BSpline> pos_curve) :
+	ObjectAction{t}, pos_curve{pos_curve} {
 	
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -33,12 +32,12 @@ EmoteAction::EmoteAction(
 }
 
 void EmoteAction::render(float t, glm::mat4 mat) {
-	glm::vec3 pos = util::std2glm(pos_curve->eval(util::eval_timespline(*time_curve, t)).result());
-	glm::mat4 pvm_mat = mat * glm::translate(pos);
+	glm::vec3 pos = util::std2glm(pos_curve->eval(t).result());
+	glm::mat4 pvm_mat = mat * glm::translate(pos) * glm::translate(2.0f*util::up);
+	// remove rotations.
 	pvm_mat[0] = glm::vec4{1,0,0,0};
 	pvm_mat[1] = glm::vec4{0,1,0,0};
 	pvm_mat[2] = glm::vec4{0,0,1,0};
-	std::cout << pvm_mat[3][1] << std::endl;
 
 	glUseProgram(Globals::shaderProgramEmote);
 	glUniformMatrix4fv(pvm_loc, 1, GL_FALSE, &pvm_mat[0][0]);
