@@ -13,7 +13,8 @@ out vec3 pos;
 void main()
 {
     gl_Position = proj_view_model_mat * vec4(position.x, position.y, position.z, 1.0);
-	pos = position;
+	vec4 pos_ = model_mat * vec4(position, 1);
+	pos = vec3(pos_/pos_.w);
     interp_color = color;
     interp_normal = normalize((transpose(inverse(model_mat)) * vec4(normal, 0.0)).xyz);
 }
