@@ -15,10 +15,8 @@
 class Object : public Renderable{
 private:
 	std::shared_ptr<std::vector<geometry>> model;
-	unsigned int shader_program;
-	int model_mat_loc;
-	int pvm_mat_loc;
 	const unsigned int *materials;
+	const unsigned int *shaders;
 	
 public:
 	std::vector<std::shared_ptr<ObjectAction>> todo;
@@ -34,7 +32,7 @@ public:
 		std::shared_ptr<tinyspline::BSpline> time_curve,
 		std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
 		std::vector<std::shared_ptr<ObjectAction>> actions,
-		unsigned int shader_program,
+		const unsigned int *shader_program,
 		const unsigned int *materials,
 		std::function<glm::mat4(float, Object &o)> model_func =
 			[](float t, Object &o) {

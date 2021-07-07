@@ -10,15 +10,14 @@ Object::Object(
 	std::shared_ptr<tinyspline::BSpline> time_curve,
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves,
 	std::vector<std::shared_ptr<ObjectAction>> actions,
-	unsigned int shader_program,
+	const unsigned int *shaders,
 	const unsigned int *materials,
 	std::function<glm::mat4(float, Object &)> model_func
 ) : model{model},
-	shader_program{shader_program},
-	model_mat_loc{glGetUniformLocation(shader_program, "model_mat")},
-	pvm_mat_loc{glGetUniformLocation(shader_program, "proj_view_model_mat")},
 	materials{materials},
+	shaders{shaders},
 	todo{actions},
+	// can be removed.
 	done{std::vector<std::shared_ptr<ObjectAction>>()},
 	model_func{model_func},
 	curves{curves},
@@ -35,11 +34,13 @@ void Object::render(float time, glm::mat4 proj_view) {
 	glm::mat4 model_mat = get_model_mat(time);
 	glm::mat4 proj_view_trans = proj_view * model_mat;
 
-	glUseProgram(shader_program);
-	glUniformMatrix4fv(model_mat_loc, 1, GL_FALSE, &model_mat[0][0]);
-	glUniformMatrix4fv(pvm_mat_loc, 1, GL_FALSE, &proj_view_trans[0][0]);
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(proj_view_trans));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(model_mat));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	for (unsigned int i = 0; i != model->size(); ++i) {
+		glUseProgram(shaders[i]);
 		glBindBufferBase(GL_UNIFORM_BUFFER, Globals::material_binding, Globals::mat2ubo[materials[i]]);
 		glBindVertexArray((*model)[i].vao);
 		glDrawElements(GL_TRIANGLES, (*model)[i].vertex_count, GL_UNSIGNED_INT, (void*) 0);

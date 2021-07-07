@@ -43,22 +43,20 @@ main(int, char**) {
 
 	Loader::load_models();
 	Loader::load_shader();
-	Loader::load_materials();
+	Loader::load_ubos();
 	scenes.push_back(Loader::load_scene1("scene1", cam));
 	scenes.push_back(Loader::load_scene2("sceneTest", cam));
 
 	// Set before rendering!!!!
-	Curve::shader_program = Globals::shaderProgramCurve;
-	Curve::color_loc = glGetUniformLocation(Globals::shaderProgramCurve, "color");
-	Curve::proj_view_loc = glGetUniformLocation(Globals::shaderProgramCurve, "proj_view_mat");
+	Curve::shader_program = Globals::shaders[Globals::shader_Curve];
+	Curve::color_loc = glGetUniformLocation(Curve::shader_program, "color");
+	Curve::proj_view_loc = glGetUniformLocation(Curve::shader_program, "proj_view_mat");
 
-	EmoteAction::shader = Globals::shaderProgramCurve;
-	EmoteAction::pvm_loc = glGetUniformLocation(Globals::shaderProgramEmote, "pvm");
+	EmoteAction::shader = Globals::shaders[Globals::shader_Emote];
 
 	LaserAction::ray = Globals::laser_missile;
-	LaserAction::shader_program = Globals::shaderProgramCurve;
-	LaserAction::color_loc = glGetUniformLocation(Globals::shaderProgramCurve, "color");
-	LaserAction::pvm_mat_loc = glGetUniformLocation(Globals::shaderProgramCurve, "proj_view_mat");
+	LaserAction::shader_program = Globals::shaders[Globals::shader_Curve];
+	LaserAction::color_loc = glGetUniformLocation(LaserAction::shader_program, "color");
 
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

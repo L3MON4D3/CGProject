@@ -53,11 +53,13 @@ void EmoteAction::render(float t, glm::mat4 mat) {
 	pvm_mat[1] = glm::vec4{0,scale,0,0};
 	pvm_mat[2] = glm::vec4{0,0,scale,0};
 
-	glUseProgram(Globals::shaderProgramEmote);
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(pvm_mat));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	glUniformMatrix4fv(pvm_loc, 1, GL_FALSE, &pvm_mat[0][0]);
+	glUseProgram(Globals::shader_Emote);
+
 	glBindTexture(GL_TEXTURE_2D, texture);
-
 	glBindVertexArray(vao);
 	// Four vertices.
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

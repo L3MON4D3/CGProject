@@ -144,11 +144,10 @@ void Scene::render() {
 		Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
 
 	glm::vec3 norm_l = glm::normalize(light_dir);
-	for (int i = 0; i != Globals::light_size; ++i) {
-		glUseProgram(Globals::shader_lights[i].first);
-		glUniform3fv(Globals::shader_lights[i].second.first, 1, &norm_l.x);
-		glUniform3fv(Globals::shader_lights[i].second.second, 1, &cam_pos.x);
-	}
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::lighting_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(norm_l));
+	glBufferSubData(GL_UNIFORM_BUFFER, 16, sizeof(glm::vec3), glm::value_ptr(cam_pos));
+	glBindBuffer(GL_UNIFORM_BUFFER,	0);
 
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];

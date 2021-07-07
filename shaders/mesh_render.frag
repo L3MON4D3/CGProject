@@ -4,14 +4,16 @@ in vec4 interp_color;
 in vec3 interp_normal;
 in vec3 pos;
 
-uniform vec3 light_dir;
-uniform vec3 cam_pos; 
-
 out vec4 frag_color;
 
+layout (std140) uniform lighting {
+	vec3 light_dir;
+	vec3 cam_pos; 
+};
+
 layout (std140) uniform material {
-	uniform float roughness;
-	uniform float refractionIndex;
+	float roughness;
+	float refractionIndex;
 };
 
 vec4 diffuse = interp_color;

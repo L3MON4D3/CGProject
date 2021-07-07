@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include "buffer.hpp"
 #include <memory>
+#include "Globals.hpp"
 
 unsigned int Curve::shader_program;
 int Curve::proj_view_loc;
@@ -35,7 +36,10 @@ void Curve::set_color(glm::vec4 color) {
 
 void Curve::render(float, glm::mat4 proj_view) {
 	glUseProgram(shader_program);
-	glUniformMatrix4fv(proj_view_loc, 1, GL_FALSE, &proj_view[0][0]);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(proj_view));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	glBindVertexArray(vao);
 	glDrawArrays(GL_LINE_STRIP, 0, verts);

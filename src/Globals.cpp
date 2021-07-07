@@ -2,9 +2,7 @@
 
 namespace Globals {
 
-unsigned int shaderProgramObj;
-unsigned int shaderProgramCurve;
-unsigned int shaderProgramEmote;
+unsigned int shaders[shaders_sz];
 
 std::pair<unsigned int, std::pair<int, int>> shader_lights[light_size];
 
@@ -12,10 +10,8 @@ std::shared_ptr<std::vector<geometry>> cargo_A;
 std::shared_ptr<geometry> laser_missile;
 std::shared_ptr<geometry> sphere;
 
-unsigned int ubo_metal;
-unsigned int ubo_orange;
-unsigned int ubo_glass;
-unsigned int ubo_asteroid;
+unsigned int transform_ubo;
+unsigned int lighting_ubo;
 
 unsigned int mat2ubo[mat_sz];
 

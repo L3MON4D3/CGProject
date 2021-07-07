@@ -16,32 +16,26 @@ const std::string question = "data/PNG/Vector/Style 8/emote_question.png";
 namespace Loader {
 
 void load_shader() {
-    unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
-    unsigned int fragmentShaderObj = compileShader("mesh_render.frag", GL_FRAGMENT_SHADER);
-	Globals::shaderProgramObj = linkProgram(vertexShaderObj, fragmentShaderObj);
-    glDeleteShader(vertexShaderObj);
-    glDeleteShader(fragmentShaderObj);
-    glUniformBlockBinding(
-		Globals::shaderProgramObj,
-    	glGetUniformBlockIndex(Globals::shaderProgramObj, "material"),
-    	Globals::material_binding);
+	std::vector<std::string> files_base {"mesh_render", "curve_render", "emote", "mesh_render", "mesh_render"};
 
-	unsigned int vertexShaderCurve = compileShader("curve_render.vert", GL_VERTEX_SHADER);
-	unsigned int fragmentShaderCurve = compileShader("curve_render.frag", GL_FRAGMENT_SHADER);
-	Globals::shaderProgramCurve = linkProgram(vertexShaderCurve, fragmentShaderCurve);
-    glDeleteShader(vertexShaderCurve);
-    glDeleteShader(fragmentShaderCurve);
+	for (unsigned int i = 0; i != Globals::shaders_sz; ++i) {
+		unsigned int v = compileShader((files_base[i]+".vert").c_str(), GL_VERTEX_SHADER);
+		unsigned int f = compileShader((files_base[i]+".frag").c_str(), GL_FRAGMENT_SHADER);
+		Globals::shaders[i] = linkProgram(v, f);
+		glDeleteShader(v);
+		glDeleteShader(f);
+		unsigned int indx = glGetUniformBlockIndex(Globals::shaders[i], "material");
+		if (indx != GL_INVALID_INDEX)
+			glUniformBlockBinding(Globals::shaders[i], indx, Globals::material_binding);
 
-	Globals::shader_lights[0] = {Globals::shaderProgramObj, {
-		glGetUniformLocation(Globals::shaderProgramObj, "light_dir"),
-		glGetUniformLocation(Globals::shaderProgramObj, "cam_pos")
-	}};
+		indx = glGetUniformBlockIndex(Globals::shaders[i], "transforms");
+		if (indx != GL_INVALID_INDEX)
+			glUniformBlockBinding(Globals::shaders[i], indx, Globals::transforms_binding);
 
-	unsigned int vertexShaderEmote = compileShader("emote.vert", GL_VERTEX_SHADER);
-	unsigned int fragmentShaderEmote = compileShader("emote.frag", GL_FRAGMENT_SHADER);
-	Globals::shaderProgramEmote = linkProgram(vertexShaderEmote, fragmentShaderEmote);
-    glDeleteShader(vertexShaderEmote);
-    glDeleteShader(fragmentShaderEmote);
+		indx = glGetUniformBlockIndex(Globals::shaders[i], "lighting");
+		if (indx != GL_INVALID_INDEX)
+			glUniformBlockBinding(Globals::shaders[i], indx, Globals::lighting_binding);
+	}
 }
 
 void load_models() {
@@ -54,15 +48,30 @@ void load_models() {
 	Globals::sphere = std::make_shared<geometry>(loadScene("sphere_fine.obj", false)[0]);
 }
 
-void load_materials() {
-	glGenBuffers(4, Globals::mat2ubo);
+void load_ubos() {
+	glGenBuffers(Globals::mat_sz, Globals::mat2ubo);
 	for (unsigned int i = 0; i != Globals::mat_sz; ++i) {
 		glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[i]);
 		// space for 2 floats, 4-aligned, init with values stored in Globals.
 		glBufferData(GL_UNIFORM_BUFFER, 8, Globals::material_values[i], GL_STATIC_DRAW);
-		glBindBufferBase(GL_UNIFORM_BUFFER, i, Globals::mat2ubo[i]);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
+
+	glGenBuffers(1, &Globals::transform_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
+	// space for 2 4x4 matrices(float).
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), 0, GL_STATIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBufferBase(GL_UNIFORM_BUFFER, Globals::transforms_binding, Globals::transform_ubo);
+
+	glGenBuffers(1, &Globals::lighting_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::lighting_ubo);
+	// space for 2 vec3, each 4-word-aligned.
+	glBufferData(GL_UNIFORM_BUFFER, 2 * 4*4, 0, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBufferBase(GL_UNIFORM_BUFFER, Globals::lighting_binding, Globals::lighting_ubo);
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
@@ -95,7 +104,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], action_times[1], glm::identity<glm::mat4>(), c1)},
-		Globals::shaderProgramObj, Globals::cargo_A_ubos
+		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
@@ -113,7 +122,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<EmoteAction>(exclamation, action_times[12], action_times[13], splines[4]),
 			std::make_shared<EmoteAction>(exclamation, action_times[14], action_times[15], splines[4]),
 		},
-		Globals::shaderProgramObj, Globals::cargo_A_ubos
+		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
 
 	struct state1 : public ImGuiState {
@@ -179,7 +188,7 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 			asteroid,
 			pos_spline, splines[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
 			std::vector<std::shared_ptr<ObjectAction>>{},
-			Globals::shaderProgramObj, Globals::asteroid_ubos, [](float t, Object &o) {
+			Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, Object &o) {
 				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
 					*glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
 			}

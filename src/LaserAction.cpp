@@ -1,4 +1,5 @@
 #include "LaserAction.hpp"
+#include "Globals.hpp"
 
 const float ray_speed = 300;
 
@@ -19,9 +20,6 @@ void LaserAction::activate(float t, glm::mat4 obj_transform) {
 }
 
 void LaserAction::render(float t, glm::mat4 vp_mat) {
-	glUseProgram(shader_program);
-	glBindVertexArray(ray->vao);
-
 	// translate to "blaster", then move towards z (shooting direction),
 	// then apply craft-transforms from the moment of shooting.
 	glm::mat4 proj_view_trans = vp_mat
@@ -30,8 +28,14 @@ void LaserAction::render(float t, glm::mat4 vp_mat) {
 		* model_transform
 		* ray->transform;
 
-	glUniformMatrix4fv(pvm_mat_loc, 1, GL_FALSE, &proj_view_trans[0][0]);
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(proj_view_trans));
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(proj_view_trans));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glUseProgram(shader_program);
 	glUniform4fv(color_loc, 1, &color.x);
 
+	glBindVertexArray(ray->vao);
 	glDrawElements(GL_TRIANGLES, ray->vertex_count, GL_UNSIGNED_INT, (void*) 0);
 }	
