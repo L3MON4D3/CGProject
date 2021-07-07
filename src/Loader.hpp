@@ -11,7 +11,7 @@
 
 namespace Loader {
 const auto action_to_timepoint{ [](std::shared_ptr<ObjectAction> &a){
-	return a->start_time;
+	return a->from;
 }};
 
 void load_shader() {
@@ -93,7 +93,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[2],
 			splines[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], glm::identity<glm::mat4>(), c1)},
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], 1, glm::identity<glm::mat4>(), c1)},
 		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));
 
@@ -104,11 +104,13 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[7]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(action_times[1], Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[2], Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<LaserAction>(action_times[3], Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[4], Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<EmoteAction>(.1f, splines[4]),
+			std::make_shared<LaserAction>(action_times[1], 1, Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[2], 1, Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<LaserAction>(action_times[3], 1, Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[4], 1, Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<EmoteAction>(.1f, .14f, splines[4]),
+			std::make_shared<EmoteAction>(.18f, .22f, splines[4]),
+			std::make_shared<EmoteAction>(.26f, .3f, splines[4]),
 		},
 		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));

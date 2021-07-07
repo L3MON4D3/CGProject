@@ -46,7 +46,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 	}
 
 	for (auto act = todo.begin(); act != todo.end();) {
-		if (time >= (*act)->start_time) {
+		if ((*act)->active(time)) {
 			(*act)->activate(time, model_mat);
 			done.push_back(std::move(*act));
 			act = todo.erase(act);
@@ -55,7 +55,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 	}
 
 	for (auto act = done.begin(); act != done.end();) {
-		if  (time < (*act)->start_time) {
+		if  (!(*act)->active(time)) {
 			todo.push_back(std::move(*act));
 			act = done.erase(act);
 		} else {

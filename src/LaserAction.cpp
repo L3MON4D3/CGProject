@@ -7,8 +7,8 @@ int LaserAction::pvm_mat_loc;
 int LaserAction::color_loc;
 std::shared_ptr<geometry> LaserAction::ray;
 
-LaserAction::LaserAction(float start, glm::mat4 model_transform, glm::vec4 color) :
-	ObjectAction{start},
+LaserAction::LaserAction(float from, float until, glm::mat4 model_transform, glm::vec4 color) :
+	ObjectAction{from, until},
 	model_transform{model_transform},
 	active_transform{glm::identity<glm::mat4>()},
 	color{color} { }

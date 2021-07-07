@@ -18,9 +18,10 @@ unsigned int EmoteAction::shader;
 int EmoteAction::pvm_loc;
 
 EmoteAction::EmoteAction(
-	float t,
+	float from,
+	float until,
 	std::shared_ptr<tinyspline::BSpline> pos_curve) :
-	ObjectAction{t}, pos_curve{pos_curve} {
+	ObjectAction{from, until}, pos_curve{pos_curve} {
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
