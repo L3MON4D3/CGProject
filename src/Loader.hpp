@@ -9,6 +9,10 @@
 #include <memory>
 #include <fstream>
 
+const std::string exclamation = "data/PNG/Vector/Style 8/emote_exclamation.png";
+const std::string exclamations = "data/PNG/Vector/Style 8/emote_exclamations.png";
+const std::string question = "data/PNG/Vector/Style 8/emote_question.png";
+
 namespace Loader {
 
 void load_shader() {
@@ -105,9 +109,9 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<LaserAction>(action_times[4], action_times[5], Globals::cargo_A_laser_origin_right, c2),
 			std::make_shared<LaserAction>(action_times[6], action_times[7], Globals::cargo_A_laser_origin_left, c2),
 			std::make_shared<LaserAction>(action_times[8], action_times[9], Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<EmoteAction>("data/sos.png", action_times[10], action_times[11], splines[4]),
-			std::make_shared<EmoteAction>("data/blue_painted_planks.png", action_times[12], action_times[13], splines[4]),
-			std::make_shared<EmoteAction>("data/sos.png", action_times[14], action_times[15], splines[4]),
+			std::make_shared<EmoteAction>(question, action_times[10], action_times[11], splines[4]),
+			std::make_shared<EmoteAction>(exclamation, action_times[12], action_times[13], splines[4]),
+			std::make_shared<EmoteAction>(exclamation, action_times[14], action_times[15], splines[4]),
 		},
 		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));

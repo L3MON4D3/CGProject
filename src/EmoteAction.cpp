@@ -13,6 +13,7 @@ float quad_triStrip[] = {
 };
 
 const float scale = 2;
+const float height = 1.2;
 
 unsigned int EmoteAction::shader;
 int EmoteAction::pvm_loc;
@@ -46,7 +47,7 @@ EmoteAction::EmoteAction(
 
 void EmoteAction::render(float t, glm::mat4 mat) {
 	glm::vec3 pos = util::std2glm(pos_curve->eval(t).result());
-	glm::mat4 pvm_mat = mat * glm::translate(pos) * glm::translate(2.0f*util::up);
+	glm::mat4 pvm_mat = mat * glm::translate(pos) * glm::translate(height*util::up);
 	// remove rotations, apply scale only.
 	pvm_mat[0] = glm::vec4{scale,0,0,0};
 	pvm_mat[1] = glm::vec4{0,scale,0,0};
