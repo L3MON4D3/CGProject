@@ -5,6 +5,7 @@ class EmoteAction : public ObjectAction {
 private:
 	std::shared_ptr<tinyspline::BSpline> pos_curve;
 	unsigned int vao;
+	unsigned int texture;
 
 public:
 	static unsigned int shader;

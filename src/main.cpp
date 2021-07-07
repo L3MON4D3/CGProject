@@ -61,6 +61,8 @@ main(int, char**) {
 	LaserAction::pvm_mat_loc = glGetUniformLocation(Globals::shaderProgramCurve, "proj_view_mat");
 
     glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
     int scene_indx = 0;
     while (glfwWindowShouldClose(window) == false) {
         // set background color...
