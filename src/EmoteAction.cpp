@@ -18,10 +18,11 @@ unsigned int EmoteAction::shader;
 int EmoteAction::pvm_loc;
 
 EmoteAction::EmoteAction(
+	std::string image,
 	float from,
 	float until,
 	std::shared_ptr<tinyspline::BSpline> pos_curve) :
-	ObjectAction{from, until}, pos_curve{pos_curve} {
+	ObjectAction{from, until}, pos_curve{pos_curve}, image{image} {
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -38,7 +39,7 @@ EmoteAction::EmoteAction(
 
 	int width, height, channels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *data = stbi_load("data/sos.png", &width, &height, &channels, 4);
+	unsigned char *data = stbi_load(image.c_str(), &width, &height, &channels, 4);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	stbi_image_free(data);
 }

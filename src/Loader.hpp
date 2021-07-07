@@ -10,9 +10,6 @@
 #include <fstream>
 
 namespace Loader {
-const auto action_to_timepoint{ [](std::shared_ptr<ObjectAction> &a){
-	return a->from;
-}};
 
 void load_shader() {
     unsigned int vertexShaderObj = compileShader("mesh_render.vert", GL_VERTEX_SHADER);
@@ -93,7 +90,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[2],
 			splines[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], 1, glm::identity<glm::mat4>(), c1)},
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], action_times[1], glm::identity<glm::mat4>(), c1)},
 		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));
 
@@ -104,13 +101,13 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines[7]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(action_times[1], 1, Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[2], 1, Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<LaserAction>(action_times[3], 1, Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[4], 1, Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<EmoteAction>(.1f, .14f, splines[4]),
-			std::make_shared<EmoteAction>(.18f, .22f, splines[4]),
-			std::make_shared<EmoteAction>(.26f, .3f, splines[4]),
+			std::make_shared<LaserAction>(action_times[2], action_times[3], Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[4], action_times[5], Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<LaserAction>(action_times[6], action_times[7], Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(action_times[8], action_times[9], Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<EmoteAction>("data/sos.png", action_times[10], action_times[11], splines[4]),
+			std::make_shared<EmoteAction>("data/blue_painted_planks.png", action_times[12], action_times[13], splines[4]),
+			std::make_shared<EmoteAction>("data/sos.png", action_times[14], action_times[15], splines[4]),
 		},
 		Globals::shaderProgramObj, Globals::cargo_A_ubos
 	));
@@ -196,8 +193,12 @@ void store_scene1(Scene &scene, std::string filename) {
 		splines.push_back(obj->time_curve);
 		splines.insert(splines.end(), obj->curves.begin(), obj->curves.end());
 
-		std::transform(obj->todo.begin(), obj->todo.end(), std::back_inserter(actions), action_to_timepoint);
-		std::transform(obj->done.begin(), obj->done.end(), std::back_inserter(actions), action_to_timepoint);
+		auto action_to_timepoint = [&actions](std::shared_ptr<ObjectAction> &act) {
+			actions.push_back(act->from);
+			actions.push_back(act->until);
+		};
+		std::for_each(obj->todo.begin(), obj->todo.end(), action_to_timepoint);
+		std::for_each(obj->done.begin(), obj->done.end(), action_to_timepoint);
 	}
 	splines.push_back(scene.cam.pos_curve);
 	splines.push_back(scene.cam.time_pos_curve);

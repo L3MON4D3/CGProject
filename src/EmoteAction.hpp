@@ -10,7 +10,8 @@ private:
 public:
 	static unsigned int shader;
 	static int pvm_loc;
-	EmoteAction(float from, float until, std::shared_ptr<tinyspline::BSpline> pos_curve);
+	std::string image;
+	EmoteAction(std::string image, float from, float until, std::shared_ptr<tinyspline::BSpline> pos_curve);
 	void render(float t, glm::mat4 vp_mat);
 	void activate(float, glm::mat4) {};
 };
