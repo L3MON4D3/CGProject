@@ -58,6 +58,8 @@ main(int, char**) {
 	LaserAction::shader_program = Globals::shaders[Globals::shader_Curve];
 	LaserAction::color_loc = glGetUniformLocation(LaserAction::shader_program, "color");
 
+	Scene::light_shader = Globals::shaders[Globals::shader_Light];
+
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);

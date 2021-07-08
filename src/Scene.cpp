@@ -1,13 +1,15 @@
 #include "Scene.hpp"
 #include "LaserAction.hpp"
 #include "Globals.hpp"
+#include "buffer.hpp"
 
 const glm::vec4   active_color = glm::vec4(0,1,0,1);
 const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
 
 const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
 
-int mat_indx = 0;
+float light_verts = 0;
+unsigned int Scene::light_shader;
 
 Scene::Scene(
 	std::string name,
@@ -17,8 +19,17 @@ Scene::Scene(
 	std::unique_ptr<ImGuiState> init_state, 
 	int length,
 	std::shared_ptr<camera> free_cam,
-	glm::vec3 light_dir) :
-	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name}, light_dir{light_dir}, length{length} { }
+	glm::vec3 light_pos) :
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length}, light_pos{light_pos} {
+
+	glGenVertexArrays(1, &light_vao);
+	unsigned int vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(float), &light_verts);
+
+	glBindVertexArray(light_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+}
 
 void Scene::render() {
 	ImGui::Begin("Scene_Control");
@@ -104,9 +115,9 @@ void Scene::render() {
 	ImGui::End();
 
 	ImGui::Begin("Shader");
-		ImGui::SliderInt("current", &mat_indx, 0, Globals::mat_sz-1);
+		ImGui::SliderInt("current", &state->mat_indx, 0, Globals::mat_sz-1);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[mat_indx]);
+		glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[state->mat_indx]);
 		float vals[2];
 		glGetBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &vals[0]);
 		glGetBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &vals[1]);
@@ -160,4 +171,17 @@ void Scene::render() {
 
 		o.render(state->time, proj_view_mat);
 	}
+	render_light(proj_view_mat);
+}
+
+void Scene::render_light(glm::mat4 proj_view) {
+	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(proj_view));
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glUseProgram(light_shader);
+
+	glPointSize(3);
+	glBindVertexArray(light_vao);
+	glDrawArrays(GL_POINTS, 0, 1);
 }

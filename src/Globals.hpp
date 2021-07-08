@@ -11,8 +11,9 @@ const unsigned int shader_Curve = 1;
 const unsigned int shader_Quad = 2;
 const unsigned int shader_Glass = 3;
 const unsigned int shader_Exhaust = 4;
+const unsigned int shader_Light = 5;
 
-const unsigned int shaders_sz = 5;
+const unsigned int shaders_sz = 6;
 extern unsigned int shaders[shaders_sz];
 
 const unsigned int cargo_A_shaders[6] {shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Glass, shader_Exhaust};

@@ -40,6 +40,8 @@ struct ImGuiState {
 	int range_light = 10;
 	double offset_light[3] {0,0,0};
 
+	int mat_indx = 0;
+
 	std::vector<char> render_curves{};
 	ImGuiState(std::vector<char> render_curves) : render_curves{render_curves} { }
 	virtual ~ImGuiState() = default;
@@ -49,6 +51,7 @@ class Scene {
 private:
 	std::function<void(Scene &)> render_extras;
 	std::shared_ptr<camera> free_cam;
+	unsigned int light_vao;
 
 public:
 	Camera cam;
@@ -58,7 +61,9 @@ public:
 	glm::vec3 light_dir;
 	int length;
 	glm::vec3 light_pos;
+	static unsigned int light_shader;
 
 	Scene(std::string, std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, int length, std::shared_ptr<camera>, glm::vec3 light_pos = glm::vec3(1,0,0));
 	void render();
+	void render_light(glm::mat4 proj_view);
 };
