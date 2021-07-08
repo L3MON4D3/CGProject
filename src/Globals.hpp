@@ -15,8 +15,8 @@ const unsigned int shader_Exhaust = 4;
 const unsigned int shaders_sz = 5;
 extern unsigned int shaders[shaders_sz];
 
-const unsigned int cargo_A_shaders[6] {shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Obj};
-const unsigned int asteroid_shaders[1] {shader_Curve};
+const unsigned int cargo_A_shaders[6] {shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Glass, shader_Exhaust};
+const unsigned int asteroid_shaders[1] {shader_Obj};
 
 const size_t light_size = 1;
 extern std::pair<unsigned int, std::pair<int, int>> shader_lights[light_size];

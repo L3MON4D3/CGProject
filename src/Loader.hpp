@@ -16,7 +16,7 @@ const std::string question = "data/PNG/Vector/Style 8/emote_question.png";
 namespace Loader {
 
 void load_shader() {
-	std::vector<std::string> files_base {"mesh_render", "curve_render", "emote", "mesh_render", "mesh_render"};
+	std::vector<std::string> files_base {"mesh_render", "curve_render", "emote", "mesh_render", "exhaust"};
 
 	for (unsigned int i = 0; i != Globals::shaders_sz; ++i) {
 		unsigned int v = compileShader((files_base[i]+".vert").c_str(), GL_VERTEX_SHADER);
