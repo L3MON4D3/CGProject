@@ -37,6 +37,9 @@ struct ImGuiState {
 	int range_time = 3;
 	double offset_time = 0;
 
+	int range_light = 10;
+	double offset_light[3] {0,0,0};
+
 	std::vector<char> render_curves{};
 	ImGuiState(std::vector<char> render_curves) : render_curves{render_curves} { }
 	virtual ~ImGuiState() = default;
@@ -54,7 +57,8 @@ public:
 	std::string name;
 	glm::vec3 light_dir;
 	int length;
+	glm::vec3 light_pos;
 
-	Scene(std::string, std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, int length, std::shared_ptr<camera>, glm::vec3 light_dir = glm::vec3(1,0,0));
+	Scene(std::string, std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, int length, std::shared_ptr<camera>, glm::vec3 light_pos = glm::vec3(1,0,0));
 	void render();
 };

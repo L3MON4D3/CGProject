@@ -92,11 +92,15 @@ void Scene::render() {
 		util::control_point_edit(&cam.zoom_curve, &state->indx_zoom_c, &state->range_zoom_c, state->offset_zoom_c);
 	ImGui::End();
 
-	ImGui::Begin("Light_Dir");
-		ImGui::SliderFloat("x", &light_dir.x, -1, 1);
-		ImGui::SliderFloat("y", &light_dir.y, -1, 1);
-		ImGui::SliderFloat("z", &light_dir.z, -1, 1);
-		light_dir = glm::normalize(light_dir);
+	ImGui::Begin("Light_pos");
+		if (ImGui::InputInt("range", &state->range_light))
+			for (int i = 0; i != 3; ++i)
+				state->offset_light[i] = light_pos[i];
+
+		for (int i = 0; i != 3; ++i)
+			ImGui::SliderFloat(std::to_string(i).c_str(), &light_pos[i],
+				state->offset_light[i]-state->range_light,
+				state->offset_light[i]+state->range_light);	
 	ImGui::End();
 
 	ImGui::Begin("Shader");
@@ -143,9 +147,8 @@ void Scene::render() {
 	if (state->render_curves[1])
 		Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
 
-	glm::vec3 norm_l = glm::normalize(light_dir);
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::lighting_ubo);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(norm_l));
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(light_pos));
 	glBufferSubData(GL_UNIFORM_BUFFER, 16, sizeof(glm::vec3), glm::value_ptr(cam_pos));
 	glBindBuffer(GL_UNIFORM_BUFFER,	0);
 

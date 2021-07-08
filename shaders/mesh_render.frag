@@ -7,7 +7,7 @@ in vec3 pos;
 out vec4 frag_color;
 
 layout (std140) uniform lighting {
-	vec3 light_dir;
+	vec3 light_pos;
 	vec3 cam_pos; 
 };
 
@@ -22,6 +22,7 @@ vec4 specular = vec4(1,1,1,1);
 const float pi = 3.14159265359;
 
 vec3 v = normalize(cam_pos - pos);
+vec3 light_dir = normalize(light_pos - pos);
 
 float r_d_pi = 3/pi;
 
