@@ -35,12 +35,11 @@ void Curve::set_color(glm::vec4 color) {
 }
 
 void Curve::render(float, glm::mat4 proj_view) {
-	glUseProgram(shader_program);
-
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(proj_view));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+	glUseProgram(shader_program);
 	glBindVertexArray(vao);
 	glDrawArrays(GL_LINE_STRIP, 0, verts);
 }

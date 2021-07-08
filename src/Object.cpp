@@ -40,7 +40,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	for (unsigned int i = 0; i != model->size(); ++i) {
-		glUseProgram(shaders[i]);
+		glUseProgram(Globals::shaders[shaders[i]]);
 		glBindBufferBase(GL_UNIFORM_BUFFER, Globals::material_binding, Globals::mat2ubo[materials[i]]);
 		glBindVertexArray((*model)[i].vao);
 		glDrawElements(GL_TRIANGLES, (*model)[i].vertex_count, GL_UNSIGNED_INT, (void*) 0);

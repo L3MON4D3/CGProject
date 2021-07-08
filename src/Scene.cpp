@@ -130,7 +130,7 @@ void Scene::render() {
     glm::mat4 proj_view_mat = proj_mat;
 	glm::vec3 cam_pos;
     if (state->free_cam) {
-		proj_view_mat = proj_mat * free_cam->view_matrix();
+		proj_view_mat *= free_cam->view_matrix();
 		cam_pos = free_cam->position(); 
 	} else {
 		proj_view_mat *= cam.get_view_mat(state->time);
