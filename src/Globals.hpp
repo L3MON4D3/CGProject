@@ -8,7 +8,7 @@ namespace Globals {
 
 const unsigned int shader_Obj = 0;
 const unsigned int shader_Curve = 1;
-const unsigned int shader_Emote = 2;
+const unsigned int shader_Quad = 2;
 const unsigned int shader_Glass = 3;
 const unsigned int shader_Exhaust = 4;
 
