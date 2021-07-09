@@ -41,6 +41,7 @@ const unsigned int mat_metal2 = 2;
 const unsigned int mat_asteroid = 3;
 const unsigned int mat_glass = 4;
 const unsigned int mat_exhaust = 5;
+const std::string mat_names[6] = {"metal", "orange", "metal2", "asteroid", "glass", "exhaust"};
 
 // roughness and refractionIndex of material.
 const float material_values[mat_sz][2] = {

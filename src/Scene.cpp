@@ -122,6 +122,7 @@ void Scene::render() {
 		glGetBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &vals[0]);
 		glGetBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &vals[1]);
 
+		ImGui::Text("%s", Globals::mat_names[state->mat_indx].c_str());
 		ImGui::SliderFloat("rough", &vals[0], 0, 1);
 		ImGui::SliderFloat("refr", &vals[1], 0, 1);
 
