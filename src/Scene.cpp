@@ -2,6 +2,7 @@
 #include "LaserAction.hpp"
 #include "Globals.hpp"
 #include "buffer.hpp"
+#include "ExplodeAction.hpp"
 
 const glm::vec4   active_color = glm::vec4(0,1,0,1);
 const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
@@ -166,6 +167,9 @@ void Scene::render() {
 		o.render(state->time, proj_view_mat);
 	}
 	render_light(proj_view_mat);
+
+	ExplodeAction e {0,0};
+	e.render(0, proj_view_mat, glm::identity<glm::mat4>());
 }
 
 void Scene::render_light(glm::mat4 proj_view) {
