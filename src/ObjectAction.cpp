@@ -7,4 +7,4 @@ bool ObjectAction::active(float t) {
 	return t >= from && t <= until;
 }
 
-void ObjectAction::render(float, glm::mat4) {}
+void ObjectAction::render(float, glm::mat4, glm::mat4) {}

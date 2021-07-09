@@ -19,7 +19,7 @@ void LaserAction::activate(float t, glm::mat4 obj_transform) {
 	actual_start = t;
 }
 
-void LaserAction::render(float t, glm::mat4 vp_mat) {
+void LaserAction::render(float t, glm::mat4 vp_mat, glm::mat4) {
 	// translate to "blaster", then move towards z (shooting direction),
 	// then apply craft-transforms from the moment of shooting.
 	glm::mat4 proj_view_trans = vp_mat

@@ -14,6 +14,6 @@ public:
 	static int color_loc;
 
 	LaserAction(float from, float until, glm::mat4 model_transform, glm::vec4 color);
-	void render(float t, glm::mat4 vp_mat);
+	void render(float t, glm::mat4 vp_mat, glm::mat4);
 	void activate(float t, glm::mat4 obj_transform);
 };

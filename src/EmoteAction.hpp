@@ -12,6 +12,6 @@ public:
 	static int pvm_loc;
 	std::string image;
 	EmoteAction(std::string image, float from, float until, std::shared_ptr<tinyspline::BSpline> pos_curve);
-	void render(float t, glm::mat4 vp_mat);
+	void render(float t, glm::mat4 vp_mat, glm::mat4 model_mat);
 	void activate(float, glm::mat4) {};
 };

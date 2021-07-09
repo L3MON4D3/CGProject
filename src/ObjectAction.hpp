@@ -5,7 +5,7 @@
 #include "glm/gtx/transform.hpp"
 #include <memory>
 
-class ObjectAction : public Renderable {
+class ObjectAction {
 public:
 	float from;
 	float until;
@@ -14,5 +14,5 @@ public:
 	// "Initialize" for time-point.
 	virtual void activate(float t, glm::mat4 obj_transform);
 	bool active(float t);
-	virtual void render(float, glm::mat4);
+	virtual void render(float, glm::mat4, glm::mat4);
 };

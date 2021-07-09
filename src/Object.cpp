@@ -60,7 +60,7 @@ void Object::render(float time, glm::mat4 proj_view) {
 			todo.push_back(std::move(*act));
 			act = done.erase(act);
 		} else {
-			(*act)->render(time, proj_view);
+			(*act)->render(time, proj_view, model_mat);
 			++act;
 		}
 	}
