@@ -1,6 +1,4 @@
 #version 330 core
-layout (location = 0) in float _;
-
 layout (std140) uniform transforms {
 	mat4 proj_view_model_mat;
 	mat4 model_mat;

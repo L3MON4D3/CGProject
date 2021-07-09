@@ -21,14 +21,7 @@ Scene::Scene(
 	std::shared_ptr<camera> free_cam,
 	glm::vec3 light_pos) :
 	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length}, light_pos{light_pos} {
-
 	glGenVertexArrays(1, &light_vao);
-	unsigned int vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(float), &light_verts);
-
-	glBindVertexArray(light_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
 }
 
 void Scene::render() {
