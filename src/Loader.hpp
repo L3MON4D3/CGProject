@@ -96,31 +96,34 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 	glm::vec4 c1 = glm::vec4(1,0,0,1);
 	glm::vec4 c2 = glm::vec4(0,1,0,1);
 
+	auto spline_indx = splines.begin();
+	auto time_indx = action_times.begin();
+
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
 		Globals::cargo_A,
-		splines[0], splines[1], std::vector{
-			splines[2],
-			splines[3]
+		*spline_indx++, *spline_indx++, std::vector{
+			*spline_indx++,
+			*spline_indx++
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(action_times[0], action_times[1], glm::identity<glm::mat4>(), c1)},
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(*time_indx++, *time_indx++, glm::identity<glm::mat4>(), c1)},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
 		Globals::cargo_A,
-		splines[4], splines[5], std::vector{
-			splines[6],
-			splines[7]
+		*spline_indx++, *spline_indx++, std::vector{
+			*spline_indx++,
+			*spline_indx++
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(action_times[2], action_times[3], Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[4], action_times[5], Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<LaserAction>(action_times[6], action_times[7], Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(action_times[8], action_times[9], Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<EmoteAction>(question, action_times[10], action_times[11]),
-			std::make_shared<EmoteAction>(exclamation, action_times[12], action_times[13]),
-			std::make_shared<EmoteAction>(exclamation, action_times[14], action_times[15]),
+			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<EmoteAction>(question, *time_indx++, *time_indx++),
+			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
+			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
@@ -133,7 +136,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines[8], splines[9], splines[10], splines[11], splines[12], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{*spline_indx++, *spline_indx++, *spline_indx++, *spline_indx++, *spline_indx++, std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
 		tinyspline::BSpline &time_curve = *o.time_curve;
