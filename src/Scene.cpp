@@ -167,9 +167,6 @@ void Scene::render() {
 		o.render(state->time, proj_view_mat);
 	}
 	render_light(proj_view_mat);
-
-	ExplodeAction e {0,0};
-	e.render(0, proj_view_mat, glm::identity<glm::mat4>());
 }
 
 void Scene::render_light(glm::mat4 proj_view) {

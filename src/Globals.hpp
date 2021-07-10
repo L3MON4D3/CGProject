@@ -33,6 +33,7 @@ const unsigned int lighting_binding = 3;
 
 extern unsigned int transform_ubo;
 extern unsigned int lighting_ubo;
+extern unsigned int particle_texture;
 
 const size_t mat_sz = 6;
 // ubo-indices.

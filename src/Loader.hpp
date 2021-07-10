@@ -3,6 +3,7 @@
 #include "LaserAction.hpp"
 #include "EmoteAction.hpp"
 #include "Globals.hpp"
+#include "ExplodeAction.hpp"
 
 #include "shader.hpp"
 
@@ -12,6 +13,8 @@
 const std::string exclamation = "data/PNG/Vector/Style 8/emote_exclamation.png";
 const std::string exclamations = "data/PNG/Vector/Style 8/emote_exclamations.png";
 const std::string question = "data/PNG/Vector/Style 8/emote_question.png";
+
+const std::string particle = "data/particle.png";
 
 namespace Loader {
 
@@ -72,6 +75,18 @@ void load_ubos() {
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	glBindBufferBase(GL_UNIFORM_BUFFER, Globals::lighting_binding, Globals::lighting_ubo);
+
+	glGenTextures(1, &Globals::particle_texture);
+	glBindTexture(GL_TEXTURE_2D, Globals::particle_texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+	int width, height, channels;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char *data = stbi_load(particle.c_str(), &width, &height, &channels, 4);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	stbi_image_free(data);
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
@@ -124,6 +139,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<EmoteAction>(question, *time_indx++, *time_indx++),
 			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
 			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
+			std::make_shared<ExplodeAction>(.6, 1),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
