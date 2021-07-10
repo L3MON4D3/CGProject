@@ -20,9 +20,9 @@ void main()
 			0,0,1,0,
 			instance_position, 1);
 
-	pvm[0] = vec4(1,0,0,0);
-	pvm[1] = vec4(0,1,0,0);
-	pvm[2] = vec4(0,0,1,0);
+	pvm[0] = vec4(.1,0,0,0);
+	pvm[1] = vec4(0,.1,0,0);
+	pvm[2] = vec4(0,0,.1,0);
 
     gl_Position = pvm * vec4(vert_position.x, vert_position.y, 0, 1.0);
 }

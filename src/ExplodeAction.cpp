@@ -51,8 +51,10 @@ void ExplodeAction::activate(float t, glm::mat4 model) {
 }
 
 void ExplodeAction::render(float t, glm::mat4 pv, glm::mat4) {
+	float part_time = std::pow((t-actual_start)*500, .15);
+
 	for (Particle &p : particles)
-		p.update_pos((t-actual_start)*100);
+		p.update_pos(part_time);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
 	glBufferData(GL_ARRAY_BUFFER, particle_count*3*sizeof(float), positions, GL_STATIC_DRAW);
 	
@@ -61,7 +63,7 @@ void ExplodeAction::render(float t, glm::mat4 pv, glm::mat4) {
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(model_from));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
 	glBindTexture(GL_TEXTURE_2D, Globals::particle_texture);
 	glBindVertexArray(vao);
