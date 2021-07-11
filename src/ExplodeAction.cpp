@@ -38,9 +38,10 @@ ExplodeAction::ExplodeAction(float from, float to) : ObjectAction{from, to} {
 
 void ExplodeAction::init_particles() {
 	int indx = 0;
+	glm::vec3 obj_dir = glm::normalize(glm::vec3{0,0,1});
 	for (Particle &p : particles) {
-		auto v = std::rand()/f_rand_max*2*glm::normalize(util::v3_rand());
-		p.v = {v.x, v.y, v.z};
+		auto v = 1.5f*(std::rand()/f_rand_max+.1f)*glm::normalize(util::v3_rand());
+		p.v = std::pow(glm::dot(v, obj_dir), 6.0f) * glm::vec3{v.x, v.y, std::abs(v.z)} - 0.2f*obj_dir;
 		p.pos = &positions[indx++*3];
 	}
 }
@@ -51,7 +52,7 @@ void ExplodeAction::activate(float t, glm::mat4 model) {
 }
 
 void ExplodeAction::render(float t, glm::mat4 pv, glm::mat4) {
-	float part_time = std::pow((t-actual_start)*500, .15);
+	float part_time = std::pow((t-actual_start), .1);
 
 	for (Particle &p : particles)
 		p.update_pos(part_time);

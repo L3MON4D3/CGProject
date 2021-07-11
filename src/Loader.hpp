@@ -138,7 +138,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<EmoteAction>(question, *time_indx++, *time_indx++),
 			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
 			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
-			std::make_shared<ExplodeAction>(.6, 1),
+			std::make_shared<ExplodeAction>(.1, 1),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
