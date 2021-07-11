@@ -58,6 +58,13 @@ namespace util {
 		return {v.x, v.y, v.z};
 	}
 
+	float pdf_gaussian(float x, float m, float s) {
+		static const float inv_sqrt_2pi = 0.3989422804014327;
+		float a = (x - m) / s;
+
+		return inv_sqrt_2pi / s * std::exp(-0.5f * a * a);
+	}
+
 	std::vector<geometry> load_scene_full_mesh(const char* filename, bool smooth) {
 		Assimp::Importer importer;
 		int process = aiProcess_Triangulate | aiProcess_JoinIdenticalVertices;

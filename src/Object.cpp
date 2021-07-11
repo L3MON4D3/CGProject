@@ -16,9 +16,9 @@ Object::Object(
 ) : model{model},
 	materials{materials},
 	shaders{shaders},
-	todo{actions},
+	inactive{actions},
 	// can be removed.
-	done{std::vector<std::shared_ptr<ObjectAction>>()},
+	active{std::vector<std::shared_ptr<ObjectAction>>()},
 	model_func{model_func},
 	curves{curves},
 	pos_curve{pos_curve},
@@ -30,8 +30,8 @@ glm::mat4 Object::get_model_mat(float t) {
 }
 
 void Object::render(float time, glm::mat4 proj_view) {
-	time = util::eval_timespline(*time_curve, time);
-	glm::mat4 model_mat = get_model_mat(time);
+	float obj_time = util::eval_timespline(*time_curve, time);
+	glm::mat4 model_mat = get_model_mat(obj_time);
 	glm::mat4 proj_view_trans = proj_view * model_mat;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
@@ -46,19 +46,19 @@ void Object::render(float time, glm::mat4 proj_view) {
 		glDrawElements(GL_TRIANGLES, (*model)[i].vertex_count, GL_UNSIGNED_INT, (void*) 0);
 	}
 
-	for (auto act = todo.begin(); act != todo.end();) {
+	for (auto act = inactive.begin(); act != inactive.end();) {
 		if ((*act)->active(time)) {
 			(*act)->activate(time, model_mat);
-			done.push_back(std::move(*act));
-			act = todo.erase(act);
+			active.push_back(std::move(*act));
+			act = inactive.erase(act);
 		} else
 			++act;
 	}
 
-	for (auto act = done.begin(); act != done.end();) {
+	for (auto act = active.begin(); act != active.end();) {
 		if  (!(*act)->active(time)) {
-			todo.push_back(std::move(*act));
-			act = done.erase(act);
+			inactive.push_back(std::move(*act));
+			act = active.erase(act);
 		} else {
 			(*act)->render(time, proj_view, model_mat);
 			++act;

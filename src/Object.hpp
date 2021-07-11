@@ -19,8 +19,8 @@ private:
 	const unsigned int *shaders;
 	
 public:
-	std::vector<std::shared_ptr<ObjectAction>> todo;
-	std::vector<std::shared_ptr<ObjectAction>> done;
+	std::vector<std::shared_ptr<ObjectAction>> inactive;
+	std::vector<std::shared_ptr<ObjectAction>> active;
 	std::function<glm::mat4(float, Object &o)> model_func;
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves;
 	std::shared_ptr<tinyspline::BSpline> pos_curve;

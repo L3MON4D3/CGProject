@@ -64,7 +64,7 @@ void Scene::render() {
 	ImGui::End();
 
 	ImGui::Begin("Obj_Actions");
-		util::action_edit(current.todo);
+		util::action_edit(current.inactive);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Pos_Time");

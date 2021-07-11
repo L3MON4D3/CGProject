@@ -228,8 +228,8 @@ void store_scene1(Scene &scene, std::string filename) {
 			actions.push_back(act->from);
 			actions.push_back(act->until);
 		};
-		std::for_each(obj->todo.begin(), obj->todo.end(), action_to_timepoint);
-		std::for_each(obj->done.begin(), obj->done.end(), action_to_timepoint);
+		std::for_each(obj->inactive.begin(), obj->inactive.end(), action_to_timepoint);
+		std::for_each(obj->active.begin(), obj->active.end(), action_to_timepoint);
 	}
 	splines.push_back(scene.cam.pos_curve);
 	splines.push_back(scene.cam.time_pos_curve);

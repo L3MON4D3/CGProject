@@ -25,6 +25,7 @@ namespace util {
 		std::function<float(const tinyspline::BSpline &spline, float t)> eval_func = [](const tinyspline::BSpline &spline, float t){
 			return spline.eval(t).result()[0];
 		});
+	float pdf_gaussian(float x, float m, float s);
 
 	glm::vec3 v3_rand();
 	std::shared_ptr<geometry> create_asteroid();
