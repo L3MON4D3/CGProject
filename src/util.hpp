@@ -17,6 +17,7 @@ namespace util {
 	glm::vec3 std2glm(std::vector<double>);
 	std::vector<double> glm2std(glm::vec3 v);
 
+	unsigned int loadCubemap(std::vector<std::string> faces);
 	std::vector<geometry> load_scene_full_mesh(const char* filename, bool smooth);
 	glm::vec3 gs1(glm::vec3 a, glm::vec3 b);
 	void plot_spline(
