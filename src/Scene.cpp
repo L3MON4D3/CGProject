@@ -21,6 +21,7 @@ Scene::Scene(
 	int length,
 	std::shared_ptr<camera> free_cam,
 	glm::vec3 light_pos) :
+	skybox{},
 	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length}, light_pos{light_pos} {
 	glGenVertexArrays(1, &light_vao);
 }
@@ -167,6 +168,7 @@ void Scene::render() {
 		o.render(state->time, proj_view_mat);
 	}
 	render_light(proj_view_mat);
+	skybox.render(proj_view_mat);
 }
 
 void Scene::render_light(glm::mat4 proj_view) {

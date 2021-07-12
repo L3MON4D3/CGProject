@@ -1,18 +1,14 @@
 #pragma once
 
-//#include <glm/glm.hpp>
-#include "Renderable.hpp"
+#include <glm/glm.hpp>
 
-class Skybox : public Renderable {
+class Skybox {
 private:
-	unsigned int vao;
-
+	unsigned int skyboxVAO;
+    unsigned int cubemapTexture;
 
 public:
 	static unsigned int shader_program;
-	static int proj_view_loc;
-    static int proj_view_loc;
-
-//	Skybox()		
-    void render(float, glm::mat4);
+    Skybox();		
+    void render(glm::mat4);
 };

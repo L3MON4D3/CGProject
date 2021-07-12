@@ -7,6 +7,7 @@
 #include "mesh.hpp"
 
 #include "Object.hpp"
+#include "skybox.hpp"
 #include "Curve.hpp"
 #include "Camera.hpp"
 #include "Scene.hpp"
@@ -46,6 +47,8 @@ main(int, char**) {
 	Loader::load_ubos();
 	scenes.push_back(Loader::load_scene1("scene1", cam));
 	scenes.push_back(Loader::load_scene2("sceneTest", cam));
+
+	Skybox::shader_program = Globals::shaders[Globals::shader_Skybox];
 
 	// Set before rendering!!!!
 	Curve::shader_program = Globals::shaders[Globals::shader_Curve];

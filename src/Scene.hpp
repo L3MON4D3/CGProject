@@ -5,6 +5,7 @@
 #include <chrono>
 #include "Object.hpp"
 #include "Camera.hpp"
+#include "skybox.hpp"
 #include "Curve.hpp"
 #include "Renderable.hpp"
 #include <functional>
@@ -52,6 +53,7 @@ private:
 	std::function<void(Scene &)> render_extras;
 	std::shared_ptr<camera> free_cam;
 	unsigned int light_vao;
+	Skybox skybox;
 
 public:
 	Camera cam;

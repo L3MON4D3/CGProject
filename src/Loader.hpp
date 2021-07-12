@@ -19,14 +19,7 @@ const std::string particle = "data/particle.png";
 namespace Loader {
 
 void load_shader() {
-	
-	/*unsigned int vertexSkyboxShader = compileShader("skybox.vert", GL_VERTEX_SHADER);
-    unsigned int fragmentSkyboxShader = compileShader("skybox.frag", GL_FRAGMENT_SHADER);
-	Globals::shaderProgramObj = linkProgram(vertexSkyboxShader, fragmentSkyboxShader);
-    glDeleteShader(vertexSkyboxShader);
-    glDeleteShader(fragmentSkyboxShader);*/
-
-	std::vector<std::string> files_base {"skybox", "mesh_render", "curve_render", "quad_front", "mesh_render", "exhaust", "light", "particle"};
+	std::vector<std::string> files_base {"mesh_render", "curve_render", "quad_front", "mesh_render", "exhaust", "light", "particle", "skybox"};
 
 	for (unsigned int i = 0; i != Globals::shaders_sz; ++i) {
 		unsigned int v = compileShader((files_base[i]+".vert").c_str(), GL_VERTEX_SHADER);
