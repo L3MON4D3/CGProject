@@ -67,8 +67,8 @@ float skyboxVertices[] = {
         "data/left_1.png",
         "data/top_1.png",
         "data/bottom_1.png",
-        "data/front_1.png",
-        "data/back_1.png"
+        "data/back_1.png",
+        "data/front_1.png"
     };
     cubemapTexture = util::loadCubemap(faces);  
 }
