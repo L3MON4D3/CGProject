@@ -39,6 +39,9 @@ void Object::render(float time, glm::mat4 proj_view) {
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(model_mat));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
+    // Texture may be needed.
+    glBindTexture(GL_TEXTURE_CUBE_MAP, Globals::skybox);
+
 	for (unsigned int i = 0; i != model->size(); ++i) {
 		glUseProgram(Globals::shaders[shaders[i]]);
 		glBindBufferBase(GL_UNIFORM_BUFFER, Globals::material_binding, Globals::mat2ubo[materials[i]]);
