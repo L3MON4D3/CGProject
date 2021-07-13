@@ -159,6 +159,7 @@ void Scene::render() {
 	glBufferSubData(GL_UNIFORM_BUFFER, 16, sizeof(glm::vec3), glm::value_ptr(cam_pos));
 	glBindBuffer(GL_UNIFORM_BUFFER,	0);
 
+	skybox.render(proj_view_mat);
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
 
@@ -168,7 +169,6 @@ void Scene::render() {
 		o.render(state->time, proj_view_mat);
 	}
 	render_light(proj_view_mat);
-	skybox.render(proj_view_mat);
 }
 
 void Scene::render_light(glm::mat4 proj_view) {
