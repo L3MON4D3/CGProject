@@ -16,8 +16,8 @@ layout (std140) uniform material {
 	float refractionIndex;
 };
 
-vec4 diffuse = interp_color;
-vec4 specular = vec4(1,1,1,1);
+vec3 diffuse = vec3(interp_color);
+vec3 specular = vec3(1,1,1);
 
 const float pi = 3.14159265359;
 
@@ -106,5 +106,6 @@ void main() {
 	// as specular part we compute the Cook-Torrance term
 	float specularTerm = cooktorranceTerm(interp_normal, light_dir);
 	// combine both terms (diffuse+specular) using our material properties (colors)
-	frag_color = vec4(vec3(clamp(diffuse * diffuseTerm + specular * specularTerm, 0.1, 1.0)*cdot(interp_normal, light_dir)), 1);
+
+	frag_color = vec4((diffuse * diffuseTerm + specular * specularTerm) * cdot(interp_normal, light_dir), 1);
 }
