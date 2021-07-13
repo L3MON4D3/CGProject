@@ -90,12 +90,24 @@ void load_ubos() {
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
 	std::ifstream file;
-	file.open(filename + ".curves");
-	std::vector<std::shared_ptr<tinyspline::BSpline>> splines = util::read_splines(file, '#');
+	file.open(filename + "-0.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_0 = util::read_splines(file, '#');
 	file.close();
 
-	file.open(filename + ".actions");
-	std::vector<float> action_times = util::read_floats(file, '#');
+	file.open(filename + "-1.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_1 = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-cam.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_cam = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-0.actions");
+	std::vector<float> actions_0 = util::read_floats(file, '#');
+	file.close();
+
+	file.open(filename + "-1.actions");
+	std::vector<float> actions_1 = util::read_floats(file, '#');
 	file.close();
 
 	file.open(filename + ".light");
@@ -110,34 +122,31 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 	glm::vec4 c1 = glm::vec4(1,0,0,1);
 	glm::vec4 c2 = glm::vec4(0,1,0,1);
 
-	auto spline_indx = splines.begin();
-	auto time_indx = action_times.begin();
-
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
 		Globals::cargo_A,
-		*spline_indx++, *spline_indx++, std::vector{
-			*spline_indx++,
-			*spline_indx++
+		splines_0[0], splines_0[1], std::vector{
+			splines_0[2],
+			splines_0[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(*time_indx++, *time_indx++, glm::identity<glm::mat4>(), c1)},
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(actions_0[0], actions_0[1], glm::identity<glm::mat4>(), c1)},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
 		Globals::cargo_A,
-		*spline_indx++, *spline_indx++, std::vector{
-			*spline_indx++,
-			*spline_indx++
+		splines_1[0], splines_1[1], std::vector{
+			splines_1[2],
+			splines_1[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_left, c2),
-			std::make_shared<LaserAction>(*time_indx++, *time_indx++, Globals::cargo_A_laser_origin_right, c2),
-			std::make_shared<EmoteAction>(question, *time_indx++, *time_indx++),
-			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
-			std::make_shared<EmoteAction>(exclamation, *time_indx++, *time_indx++),
+			std::make_shared<LaserAction>(actions_1[0], actions_1[1], Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_1[2], actions_1[3], Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<LaserAction>(actions_1[4], actions_1[5], Globals::cargo_A_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_1[6], actions_1[7], Globals::cargo_A_laser_origin_right, c2),
+			std::make_shared<EmoteAction>(question, actions_1[8], actions_1[9]),
+			std::make_shared<EmoteAction>(exclamation, actions_1[10], actions_1[11]),
+			std::make_shared<EmoteAction>(exclamation, actions_1[12], actions_1[13]),
 			std::make_shared<ExplodeAction>(.1, 1),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
@@ -151,7 +160,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{*spline_indx++, *spline_indx++, *spline_indx++, *spline_indx++, *spline_indx++, std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
 		tinyspline::BSpline &time_curve = *o.time_curve;
@@ -217,34 +226,43 @@ std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera>
 }
 
 void store_scene1(Scene &scene, std::string filename) {
-	std::vector<std::shared_ptr<tinyspline::BSpline>> splines;
-	std::vector<float> actions;
+	std::ofstream file;
+	int indx = 0;
 	for (auto &obj : scene.objects) {
-		splines.push_back(obj->pos_curve);
-		splines.push_back(obj->time_curve);
-		splines.insert(splines.end(), obj->curves.begin(), obj->curves.end());
+		std::vector<std::shared_ptr<tinyspline::BSpline>> obj_splines;
+		obj_splines.push_back(obj->pos_curve);
+		obj_splines.push_back(obj->time_curve);
+		obj_splines.insert(obj_splines.end(), obj->curves.begin(), obj->curves.end());
 
+		std::vector<float> actions;
 		auto action_to_timepoint = [&actions](std::shared_ptr<ObjectAction> &act) {
 			actions.push_back(act->from);
 			actions.push_back(act->until);
 		};
 		std::for_each(obj->inactive.begin(), obj->inactive.end(), action_to_timepoint);
 		std::for_each(obj->active.begin(), obj->active.end(), action_to_timepoint);
+
+		std::string obj_base_fname = filename + "-" + std::to_string(indx++);
+		file.open(obj_base_fname + ".curves");
+		util::write_splines(obj_splines, file, '#');
+		file.close();
+
+		file.open(obj_base_fname + ".actions");
+		util::write_floats(actions, file, '#');
+		file.close();
 	}
-	splines.push_back(scene.cam.pos_curve);
-	splines.push_back(scene.cam.time_pos_curve);
-	splines.push_back(scene.cam.look_curve);
-	splines.push_back(scene.cam.time_look_curve);
-	splines.push_back(scene.cam.zoom_curve);
-	splines.insert(splines.end(), scene.cam.curves.begin(), scene.cam.curves.end());
 
-	std::ofstream file;
-	file.open(filename + ".curves");
-	util::write_splines(splines, file, '#');
-	file.close();
+	std::vector<std::shared_ptr<tinyspline::BSpline>> cam_splines;
+	cam_splines.push_back(scene.cam.pos_curve);
+	cam_splines.push_back(scene.cam.time_pos_curve);
+	cam_splines.push_back(scene.cam.look_curve);
+	cam_splines.push_back(scene.cam.time_look_curve);
+	cam_splines.push_back(scene.cam.zoom_curve);
+	cam_splines.insert(cam_splines.end(), scene.cam.curves.begin(), scene.cam.curves.end());
 
-	file.open(filename + ".actions");
-	util::write_floats(actions, file, '#');
+	std::string cam_base_fname = filename + "-cam";
+	file.open(cam_base_fname + ".curves");
+	util::write_splines(cam_splines, file, '#');
 	file.close();
 
 	file.open(filename + ".light");
