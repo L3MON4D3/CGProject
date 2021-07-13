@@ -6,7 +6,7 @@
 unsigned int Skybox::shader_program;
 
 Skybox::Skybox() {
-float skyboxVertices[] = {
+	float skyboxVertices[] = {
         // positions          
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
@@ -60,17 +60,6 @@ float skyboxVertices[] = {
     glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    
-    // load textures
-    std::vector<std::string> faces{
-        "data/right_1.png",
-        "data/left_1.png",
-        "data/top_1.png",
-        "data/bottom_1.png",
-        "data/back_1.png",
-        "data/front_1.png"
-    };
-    cubemapTexture = util::loadCubemap(faces);  
 }
 
 void Skybox::render(glm::mat4 proj_view) {
@@ -83,7 +72,7 @@ void Skybox::render(glm::mat4 proj_view) {
     glUseProgram(shader_program);
     // skybox cube
     glBindVertexArray(skyboxVAO);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, Globals::skybox);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS); // set depth function back to default

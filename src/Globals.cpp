@@ -13,6 +13,7 @@ std::shared_ptr<geometry> sphere;
 unsigned int transform_ubo;
 unsigned int lighting_ubo;
 unsigned int particle_texture;
+unsigned int skybox;
 
 unsigned int mat2ubo[mat_sz];
 

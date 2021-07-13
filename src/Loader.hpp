@@ -86,6 +86,17 @@ void load_ubos() {
 	unsigned char *data = stbi_load(particle.c_str(), &width, &height, &channels, 4);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	stbi_image_free(data);
+
+    // load textures
+    std::vector<std::string> faces{
+        "data/right_1.png",
+        "data/left_1.png",
+        "data/top_1.png",
+        "data/bottom_1.png",
+        "data/back_1.png",
+        "data/front_1.png"
+    };
+	Globals::skybox = util::loadCubemap(faces);  
 }
 
 std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera> cam) {
