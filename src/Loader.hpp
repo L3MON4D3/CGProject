@@ -250,8 +250,7 @@ void store_scene1(Scene &scene, std::string filename) {
 			actions.push_back(act->from);
 			actions.push_back(act->until);
 		};
-		std::for_each(obj->inactive.begin(), obj->inactive.end(), action_to_timepoint);
-		std::for_each(obj->active.begin(), obj->active.end(), action_to_timepoint);
+		std::for_each(obj->actions.begin(), obj->actions.end(), action_to_timepoint);
 
 		std::string obj_base_fname = filename + "-" + std::to_string(indx++);
 		file.open(obj_base_fname + ".curves");

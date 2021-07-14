@@ -16,8 +16,9 @@ Object::Object(
 ) : model{model},
 	materials{materials},
 	shaders{shaders},
-	inactive{actions},
 	// can be removed.
+	actions{actions},
+	inactive{actions},
 	active{std::vector<std::shared_ptr<ObjectAction>>()},
 	model_func{model_func},
 	curves{curves},

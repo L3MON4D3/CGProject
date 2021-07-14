@@ -19,6 +19,7 @@ private:
 	const unsigned int *shaders;
 	
 public:
+	std::vector<std::shared_ptr<ObjectAction>> actions;
 	std::vector<std::shared_ptr<ObjectAction>> inactive;
 	std::vector<std::shared_ptr<ObjectAction>> active;
 	std::function<glm::mat4(float, Object &o)> model_func;
