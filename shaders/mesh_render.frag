@@ -101,10 +101,10 @@ float orennayarTerm(float lambert, vec3 n, vec3 l) {
 
 void main() {
 	float diffuseTerm = orennayarTerm(r_d_pi, interp_normal, light_dir);
-	diffuseTerm = max(diffuseTerm, 0.1);
-
 	float specularTerm = cooktorranceTerm(interp_normal, light_dir);
 
 	vec3 color = (diffuse * diffuseTerm + specular * specularTerm) * cdot(interp_normal, light_dir);
-	frag_color = vec4(color, 1.0);
+	vec3 amb = diffuse*.04*orennayarTerm(r_d_pi, interp_normal, v);
+	//vec3 amb = vec3(0); 
+	frag_color = vec4(color+amb, 1.0);
 }

@@ -241,7 +241,7 @@ std::unique_ptr<Scene> load_station(std::string filename, std::shared_ptr<camera
 		std::vector<std::shared_ptr<ObjectAction>>{},
 		Globals::station_shaders, Globals::station_ubos, [](float t, Object &o) {
 			return glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
-				glm::rotate<float>(t, glm::vec3(0,1,0));
+				glm::rotate<float>(M_PI/2+t, glm::vec3(0,1,0));
 		}
 	));
 
