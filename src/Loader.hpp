@@ -45,6 +45,8 @@ void load_models() {
 	Globals::cargo_A = std::make_shared<std::vector<geometry>>(loadScene("craft_cargoA.obj", false));
 	(*Globals::cargo_A)[0].transform = glm::translate(glm::vec3(0, -.4, 0));
 
+	Globals::station = std::make_shared<std::vector<geometry>>(loadScene("station2.obj", false));
+
 	Globals::laser_missile = std::make_shared<geometry>(loadScene("sphere.obj", false)[0]);
 	Globals::laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
 
@@ -145,7 +147,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
-		Globals::cargo_A,
+		Globals::station,
 		splines_1[0], splines_1[1], std::vector{
 			splines_1[2],
 			splines_1[3]
@@ -160,7 +162,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<EmoteAction>(exclamation, actions_1[12], actions_1[13]),
 			std::make_shared<ExplodeAction>(.1, 1),
 		},
-		Globals::cargo_A_shaders, Globals::cargo_A_ubos
+		Globals::station_shaders, Globals::station_ubos
 	));
 
 	struct state1 : public ImGuiState {
