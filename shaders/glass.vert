@@ -18,8 +18,8 @@ layout (std140) uniform lighting {
 void main()
 {
     vec3 model_normal = normalize((transpose(inverse(model_mat)) * vec4(normal, 0.0)).xyz);
-	vec3 v = normalize(cam_pos - pos);
+    vec4 world_pos = proj_view_model_mat * vec4(pos, 1.0);
+	vec3 v = normalize(cam_pos - vec3(world_pos));
 	TexCoords = reflect(v, model_normal);
-    vec4 pos = proj_view_model_mat * vec4(pos, 1.0);
-    gl_Position = pos;
+    gl_Position = world_pos;
 }  

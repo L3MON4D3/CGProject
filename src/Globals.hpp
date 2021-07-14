@@ -49,9 +49,9 @@ const std::string mat_names[6] = {"metal", "orange", "metal2", "asteroid", "glas
 
 // roughness and refractionIndex of material.
 const float material_values[mat_sz][2] = {
-	{.322, .092},
-	{.032, .885},
-	{.058, 0},
+	{.485, .472},
+	{.0, .061},
+	{1, .884},
 	{.356, 1},
 	{0,1},
 	{0,1}
