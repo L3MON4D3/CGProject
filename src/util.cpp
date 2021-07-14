@@ -354,7 +354,7 @@ namespace util {
 				std::vector<double> point{};
 				ctrl.erase(ctrl.begin()+*indx*dim, ctrl.begin()+(*indx+1)*dim);
 				unsigned int deg = (*spline)->degree();
-				*spline = std::make_shared<tinyspline::BSpline>((*spline)->numControlPoints()-1, dim, deg >= ctrl.size()/3 ? deg-1 : deg);
+				*spline = std::make_shared<tinyspline::BSpline>((*spline)->numControlPoints()-1, dim, deg > ctrl.size()/3 ? deg-1 : deg);
 				(*spline)->setControlPoints(ctrl);
 			}
 		}

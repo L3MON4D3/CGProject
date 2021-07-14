@@ -46,6 +46,7 @@ void load_models() {
 	(*Globals::cargo_A)[0].transform = glm::translate(glm::vec3(0, -.4, 0));
 
 	Globals::station = std::make_shared<std::vector<geometry>>(loadScene("station2.obj", false));
+	(*Globals::station)[0].transform = glm::scale(glm::vec3(20,20,20));
 
 	Globals::laser_missile = std::make_shared<geometry>(loadScene("sphere.obj", false)[0]);
 	Globals::laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
@@ -163,6 +164,85 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<ExplodeAction>(.1, 1),
 		},
 		Globals::station_shaders, Globals::station_ubos
+	));
+
+	struct state1 : public ImGuiState {
+		int indx_rot;
+		int range_rot = 1;
+		double rot_offset[2] {0, 0};
+
+		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
+	};
+
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
+		Object &o = *scene.objects[state_cast->current_indx];
+		tinyspline::BSpline &time_curve = *o.time_curve;
+		ImGui::Begin("Obj_Rotation");
+		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
+			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
+		});
+		util::control_point_edit(&o.curves[1],
+			&state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
+		ImGui::End();
+
+		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
+	}, std::make_unique<state1>(0,3, std::vector<char>{1, 1, 1, 1}), length[0], cam, light_glm);
+}
+
+std::unique_ptr<Scene> load_station(std::string filename, std::shared_ptr<camera> cam) {
+	std::ifstream file;
+	file.open(filename + "-0.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_0 = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-1.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_1 = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-cam.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_cam = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-0.actions");
+	std::vector<float> actions_0 = util::read_floats(file, '#');
+	file.close();
+
+	file.open(filename + "-1.actions");
+	std::vector<float> actions_1 = util::read_floats(file, '#');
+	file.close();
+
+	file.open(filename + ".light");
+	std::vector<float> light = util::read_floats(file, '#');
+	glm::vec3 light_glm {light[0], light[1], light[2]};
+	file.close();
+
+	file.open(filename + ".length");
+	std::vector<float> length = util::read_floats(file, '#');
+	file.close();
+
+	glm::vec4 c1 = glm::vec4(1,0,0,1);
+	glm::vec4 c2 = glm::vec4(0,1,0,1);
+
+	auto objs = std::vector<std::unique_ptr<Object>>();
+	objs.emplace_back(std::make_unique<Object>(
+		Globals::cargo_A,
+		splines_0[0], splines_0[1], std::vector{
+			splines_0[2],
+			splines_0[3]
+		},
+		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(actions_0[0], actions_0[1], glm::identity<glm::mat4>(), c1)},
+		Globals::cargo_A_shaders, Globals::cargo_A_ubos
+	));
+
+	objs.emplace_back(std::make_unique<Object>(
+		Globals::station,
+		splines_1[0], splines_1[1], std::vector{splines_1[2], splines_1[3]},
+		std::vector<std::shared_ptr<ObjectAction>>{},
+		Globals::station_shaders, Globals::station_ubos, [](float t, Object &o) {
+			return glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
+				glm::rotate<float>(t, glm::vec3(0,1,0));
+		}
 	));
 
 	struct state1 : public ImGuiState {
