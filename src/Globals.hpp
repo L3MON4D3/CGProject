@@ -19,6 +19,7 @@ const unsigned int shaders_sz = 8;
 extern unsigned int shaders[shaders_sz];
 
 const unsigned int cargo_A_shaders[6] {shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Glass, shader_Exhaust};
+const unsigned int pirate_shaders[6] {shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Glass, shader_Exhaust};
 const unsigned int station_shaders[7] {shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Obj};
 const unsigned int asteroid_shaders[1] {shader_Obj};
 
@@ -26,6 +27,7 @@ const size_t light_size = 1;
 extern std::pair<unsigned int, std::pair<int, int>> shader_lights[light_size];
 
 extern std::shared_ptr<std::vector<geometry>> cargo_A;
+extern std::shared_ptr<std::vector<geometry>> pirate;
 extern std::shared_ptr<std::vector<geometry>> station;
 extern std::shared_ptr<geometry> laser_missile;
 extern std::shared_ptr<geometry> sphere;
@@ -67,6 +69,7 @@ const float material_values[mat_sz][2] = {
 extern unsigned int mat2ubo[mat_sz];
 
 const unsigned int cargo_A_ubos[6] {mat_metal, mat_metal_dark, mat_orange, mat_dark, mat_glass, mat_exhaust};
+const unsigned int pirate_ubos[6] {mat_metal, mat_metal_dark, mat_orange, mat_dark, mat_glass, mat_exhaust};
 const unsigned int station_ubos[4] {mat_orange, mat_metal, mat_metal_dark, mat_dark};
 const unsigned int asteroid_ubos[1] {mat_asteroid};
 
