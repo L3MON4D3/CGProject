@@ -301,7 +301,7 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_1 = util::read_splines(file, '#');
 	file.close();
 
-	file.open(filename + "-1.curves");
+	file.open(filename + "-2.curves");
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_2 = util::read_splines(file, '#');
 	file.close();
 
@@ -317,7 +317,7 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 	std::vector<float> actions_1 = util::read_floats(file, '#');
 	file.close();
 
-	file.open(filename + "-1.actions");
+	file.open(filename + "-2.actions");
 	std::vector<float> actions_2 = util::read_floats(file, '#');
 	file.close();
 
@@ -341,7 +341,30 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{},
-		Globals::cargo_A_shaders, Globals::cargo_A_ubos
+		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
+			[](float t, float t_lin, Object &o) {
+				if (t_lin <= 0.05)
+					return glm::zero<glm::mat4>();
+				// Calculate correct forward from derived func.
+				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0]->eval(t).result()));
+				// get vector that points up and is orthogonal to forw.
+				glm::vec3 up = util::gs1(forw, util::up);
+				// Third vector for complete base.
+				glm::vec3 x = glm::normalize(glm::cross(forw, up));
+
+				glm::mat4 rot = {
+					   x.x,    x.y,    x.z, 0,
+					  up.x,   up.y,   up.z, 0,
+					forw.x, forw.y, forw.z, 0,
+					     0,      0,      0, 1
+				};
+
+				return
+					// translate to position.
+					glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
+					// rotate model_forw onto forw
+					rot * glm::rotate<float>(o.curves[1]->bisect(t_lin).result()[1], glm::vec3(0,0,1));
+			}
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
