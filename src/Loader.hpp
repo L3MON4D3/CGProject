@@ -231,7 +231,7 @@ std::unique_ptr<Scene> load_station(std::string filename, std::shared_ptr<camera
 			splines_0[2],
 			splines_0[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(actions_0[0], actions_0[1], glm::identity<glm::mat4>(), c1)},
+		std::vector<std::shared_ptr<ObjectAction>>{},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
 
@@ -358,7 +358,7 @@ void store_scene1(Scene &scene, std::string filename) {
 	file.close();
 
 	file.open(filename + ".light");
-	std::vector<float> light_std{scene.light_dir.x,scene.light_dir.y,scene.light_dir.z};
+	std::vector<float> light_std{scene.light_pos.x,scene.light_pos.y,scene.light_pos.z};
 	util::write_floats(light_std, file, '#');
 	file.close();
 

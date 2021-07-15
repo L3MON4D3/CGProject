@@ -38,6 +38,14 @@ struct ImGuiState {
 	int range_time = 3;
 	double offset_time = 0;
 
+	int indx_time_c = 0;
+	int range_time_c = 3;
+	double offset_time_c = 0;
+
+	int indx_time_cl = 0;
+	int range_time_cl = 3;
+	double offset_time_cl = 0;
+
 	int range_light = 10;
 	double offset_light[3] {0,0,0};
 

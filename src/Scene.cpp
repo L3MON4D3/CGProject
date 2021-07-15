@@ -9,7 +9,6 @@ const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
 
 const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
 
-float light_verts = 0;
 unsigned int Scene::light_shader;
 
 Scene::Scene(
@@ -72,14 +71,14 @@ void Scene::render() {
 		util::plot_spline(*cam.time_pos_curve, "time", [](const tinyspline::BSpline &spline, float t) {
 			return util::eval_timespline(spline, t);
 		});
-		util::control_point_edit(&cam.time_pos_curve, &state->indx_time, &state->range_time, &state->offset_time);
+		util::control_point_edit(&cam.time_pos_curve, &state->indx_time_c, &state->range_time_c, &state->offset_time_c);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Look_Time");
 		util::plot_spline(*cam.time_look_curve, "time", [](const tinyspline::BSpline &spline, float t) {
 			return util::eval_timespline(spline, t);
 		});
-		util::control_point_edit(&cam.time_look_curve, &state->indx_time, &state->range_time, &state->offset_time);
+		util::control_point_edit(&cam.time_look_curve, &state->indx_time_cl, &state->range_time_cl, &state->offset_time_cl);
 	ImGui::End();
 
 	ImGui::Begin("Cam_Pos");

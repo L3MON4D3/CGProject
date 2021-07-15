@@ -104,7 +104,5 @@ void main() {
 	float specularTerm = cooktorranceTerm(interp_normal, light_dir);
 
 	vec3 color = (diffuse * diffuseTerm + specular * specularTerm) * cdot(interp_normal, light_dir);
-	vec3 amb = diffuse*.04*orennayarTerm(r_d_pi, interp_normal, v);
-	//vec3 amb = vec3(0); 
-	frag_color = vec4(color+amb, 1.0);
+	frag_color = vec4(color, 1.0);
 }
