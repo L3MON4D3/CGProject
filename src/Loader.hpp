@@ -372,6 +372,7 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
 	};
 
+	std::vector<char> render_curves(objs.size()+2);
 	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
@@ -385,7 +386,7 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 		ImGui::End();
 
 		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
-	}, std::make_unique<state1>(0,3, std::vector<char>{1, 1, 1, 1}), length[0], cam, light_glm);
+	}, std::make_unique<state1>(0,3, render_curves), length[0], cam, light_glm);
 }
 
 std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera> cam) {
