@@ -22,7 +22,7 @@ public:
 	std::vector<std::shared_ptr<ObjectAction>> actions;
 	std::vector<std::shared_ptr<ObjectAction>> inactive;
 	std::vector<std::shared_ptr<ObjectAction>> active;
-	std::function<glm::mat4(float, Object &o)> model_func;
+	std::function<glm::mat4(float, float, Object &o)> model_func;
 	std::vector<std::shared_ptr<tinyspline::BSpline>> curves;
 	std::shared_ptr<tinyspline::BSpline> pos_curve;
 	std::shared_ptr<tinyspline::BSpline> time_curve;
@@ -35,8 +35,8 @@ public:
 		std::vector<std::shared_ptr<ObjectAction>> actions,
 		const unsigned int *shader_program,
 		const unsigned int *materials,
-		std::function<glm::mat4(float, Object &o)> model_func =
-			[](float t, Object &o) {
+		std::function<glm::mat4(float, float, Object &o)> model_func =
+			[](float t, float t_lin, Object &o) {
 				// Calculate correct forward from derived func.
 				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0]->eval(t).result()));
 				// get vector that points up and is orthogonal to forw.
@@ -55,10 +55,10 @@ public:
 					// translate to position.
 					glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
 					// rotate model_forw onto forw
-					rot * glm::rotate<float>(o.curves[1]->bisect(t).result()[1], glm::vec3(0,0,1));
+					rot * glm::rotate<float>(o.curves[1]->bisect(t_lin).result()[1], glm::vec3(0,0,1));
 			}
 	);
 
-	glm::mat4 get_model_mat(float);
+	glm::mat4 get_model_mat(float, float);
 	void render(float time, glm::mat4);
 };

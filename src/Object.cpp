@@ -12,7 +12,7 @@ Object::Object(
 	std::vector<std::shared_ptr<ObjectAction>> actions,
 	const unsigned int *shaders,
 	const unsigned int *materials,
-	std::function<glm::mat4(float, Object &)> model_func
+	std::function<glm::mat4(float, float, Object &)> model_func
 ) : model{model},
 	materials{materials},
 	shaders{shaders},
@@ -26,13 +26,13 @@ Object::Object(
 	time_curve{time_curve},
 	curve_color{initial_curve_color} { }
 
-glm::mat4 Object::get_model_mat(float t) {
-	return model_func(t, *this)*(*model)[0].transform;
+glm::mat4 Object::get_model_mat(float t, float t_lin) {
+	return model_func(t, t_lin, *this)*(*model)[0].transform;
 }
 
 void Object::render(float time, glm::mat4 proj_view) {
 	float obj_time = util::eval_timespline(*time_curve, time);
-	glm::mat4 model_mat = get_model_mat(obj_time);
+	glm::mat4 model_mat = get_model_mat(obj_time, time);
 	glm::mat4 proj_view_trans = proj_view * model_mat;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
