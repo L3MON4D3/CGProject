@@ -7,8 +7,6 @@
 const glm::vec4   active_color = glm::vec4(0,1,0,1);
 const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
 
-const glm::mat4 proj_mat = glm::perspective(45.0f, 1.0f, .1f, 600.0f);
-
 unsigned int Scene::light_shader;
 
 Scene::Scene(
@@ -137,7 +135,7 @@ void Scene::render() {
 	if (state->play)
 		state->time = (util::getTimeDelta(state->start_time) % length)/float(length);
 
-    glm::mat4 proj_view_mat = proj_mat;
+    glm::mat4 proj_view_mat = Globals::proj;
 	glm::vec3 cam_pos;
     if (state->free_cam) {
 		proj_view_mat *= free_cam->view_matrix();

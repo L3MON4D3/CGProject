@@ -21,7 +21,6 @@ const int WINDOW_HEIGHT = 1400;
 const float FOV = 45.f;
 const float NEAR_VALUE = 0.1f;
 const float FAR_VALUE = 600.f;
-const float SUN_EARTH_DISTANCE = 5.f;
 
 glm::mat4 proj_matrix;
 std::chrono::time_point<std::chrono::system_clock> start_time;
@@ -40,6 +39,7 @@ main(int, char**) {
     init_imgui(window);
 	std::srand(std::time(nullptr));
 
+	Globals::proj = glm::perspective(FOV, static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT, NEAR_VALUE, FAR_VALUE);
 	std::vector<std::unique_ptr<Scene>> scenes;
 
 	Loader::load_models();
@@ -101,5 +101,5 @@ void resizeCallback(GLFWwindow*, int width, int height)
 {
     // set new width and height as viewport size
     glViewport(0, 0, width, height);
-    proj_matrix = glm::perspective(FOV, static_cast<float>(width) / height, NEAR_VALUE, FAR_VALUE);
+	Globals::proj = glm::perspective(FOV, static_cast<float>(width) / height, NEAR_VALUE, FAR_VALUE);
 }
