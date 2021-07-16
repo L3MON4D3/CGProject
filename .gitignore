@@ -4,7 +4,8 @@
 /vendor/
 /build/
 /imgui.ini
-/data
+/data/**/*
+!/data/PNG/Vector/Style 8/
 !/data/PNG/Vector/Style 8/emote_exclamation.png
 !/data/PNG/Vector/Style 8/emote_question.png
 !/data/PNG/Vector/Style 8/emote_exclamations.png
