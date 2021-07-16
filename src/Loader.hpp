@@ -13,6 +13,8 @@
 const std::string exclamation = "data/PNG/Vector/Style 8/emote_exclamation.png";
 const std::string exclamations = "data/PNG/Vector/Style 8/emote_exclamations.png";
 const std::string question = "data/PNG/Vector/Style 8/emote_question.png";
+const std::string treasure = "data/treasure.png";
+const std::string treasure2 = "data/treasure2.png";
 
 const std::string particle = "data/particle.png";
 
@@ -343,7 +345,13 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			splines_0[2],
 			splines_0[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<EmoteAction>(treasure, actions_0[0], actions_0[1], 10, 4),
+			std::make_shared<EmoteAction>(treasure2, actions_0[2], actions_0[3], 10, 4),
+			std::make_shared<EmoteAction>(treasure, actions_0[4], actions_0[5], 10, 4),
+			std::make_shared<EmoteAction>(treasure2, actions_0[6], actions_0[7], 10, 4),
+			std::make_shared<EmoteAction>(treasure, actions_0[8], actions_0[9], 10, 4),
+		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
 			[](float t, float t_lin, Object &o) {
 				if (t_lin <= 0.05)

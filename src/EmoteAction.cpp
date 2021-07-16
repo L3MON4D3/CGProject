@@ -12,17 +12,16 @@ float quad_triStrip[] = {
 	0.5,-0.5,
 };
 
-const float scale = 2;
-const float height = 1.6;
-
 unsigned int EmoteAction::shader;
 int EmoteAction::pvm_loc;
 
 EmoteAction::EmoteAction(
 	std::string image,
 	float from,
-	float until) :
-	ObjectAction{from, until}, image{image} {
+	float until,
+	float scale,
+	float height) :
+	ObjectAction{from, until}, image{image}, scale{scale}, height{height} {
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -37,10 +36,10 @@ EmoteAction::EmoteAction(
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	int width, height, channels;
+	int w, h, channels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *data = stbi_load(image.c_str(), &width, &height, &channels, 4);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	unsigned char *data = stbi_load(image.c_str(), &w, &h, &channels, 4);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	stbi_image_free(data);
 }
 

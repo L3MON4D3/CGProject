@@ -157,6 +157,7 @@ void Scene::render() {
 	glBindBuffer(GL_UNIFORM_BUFFER,	0);
 
 	skybox.render(proj_view_mat);
+
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
 
