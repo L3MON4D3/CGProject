@@ -73,7 +73,9 @@ const unsigned int pirate_ubos[6] {mat_metal, mat_metal_dark, mat_orange, mat_da
 const unsigned int station_ubos[4] {mat_orange, mat_metal, mat_metal_dark, mat_dark};
 const unsigned int asteroid_ubos[1] {mat_asteroid};
 
-extern glm::mat4 cargo_A_laser_origin_left;
-extern glm::mat4 cargo_A_laser_origin_right;
+const glm::mat4 cargo_A_laser_origin_left = glm::translate(glm::vec3(-0.604, 0.297, -0.399));;
+const glm::mat4 cargo_A_laser_origin_right = glm::translate(glm::vec3(0.604, 0.297, -0.399));
+const glm::mat4 pirate_laser_origin_left = glm::translate(glm::vec3(-0.48, 0.25, 0));
+const glm::mat4 pirate_laser_origin_right = glm::translate(glm::vec3(0.48, 0.25, 0));
 
 }

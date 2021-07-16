@@ -20,8 +20,4 @@ unsigned int skybox;
 glm::mat4 proj;
 
 unsigned int mat2ubo[mat_sz];
-
-glm::mat4 cargo_A_laser_origin_left = glm::translate(glm::vec3(-0.604, 0.297, -0.399));
-glm::mat4 cargo_A_laser_origin_right = glm::translate(glm::vec3(0.604, 0.297, -0.399));
-
 }

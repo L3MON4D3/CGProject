@@ -1,7 +1,7 @@
 #include "LaserAction.hpp"
 #include "Globals.hpp"
 
-const float ray_speed = 300;
+const float ray_speed = 1000;
 
 unsigned int LaserAction::shader_program;
 int LaserAction::pvm_mat_loc;
@@ -38,4 +38,4 @@ void LaserAction::render(float t, glm::mat4 vp_mat, glm::mat4) {
 
 	glBindVertexArray(ray->vao);
 	glDrawElements(GL_TRIANGLES, ray->vertex_count, GL_UNSIGNED_INT, (void*) 0);
-}	
+}

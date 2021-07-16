@@ -3,11 +3,11 @@
 class LaserAction : public ObjectAction {
 private:
 	glm::mat4 model_transform;
-	glm::mat4 active_transform;
-	float actual_start;
 	glm::vec4 color;
 
 public:
+	float actual_start;
+	glm::mat4 active_transform;
 	static std::shared_ptr<geometry> ray;
 	static unsigned int shader_program;
 	static int pvm_mat_loc;
