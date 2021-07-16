@@ -46,7 +46,7 @@ void load_models() {
 	(*Globals::cargo_A)[0].transform = glm::translate(glm::vec3(0, -.4, 0));
 
 	Globals::pirate = std::make_shared<std::vector<geometry>>(loadScene("pirate.obj", false));
-	(*Globals::pirate)[0].transform = glm::translate(glm::vec3(0, -.4, 0));
+	(*Globals::pirate)[0].transform = glm::translate(glm::vec3(0, -.25, 0));
 
 	Globals::station = std::make_shared<std::vector<geometry>>(loadScene("station2.obj", false));
 	(*Globals::station)[0].transform = glm::scale(glm::vec3(20,20,20));
@@ -381,13 +381,13 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 	));
 
 	objs.emplace_back(std::make_unique<Object>(
-		Globals::cargo_A,
+		Globals::pirate,
 		splines_2[0], splines_2[1], std::vector{
 			splines_2[2],
 			splines_2[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{},
-		Globals::cargo_A_shaders, Globals::cargo_A_ubos
+		Globals::pirate_shaders, Globals::pirate_ubos
 	));
 
 	struct state1 : public ImGuiState {
