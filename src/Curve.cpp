@@ -21,12 +21,17 @@ Curve::Curve(tinyspline::BSpline spline, glm::vec4 color) {
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-	unsigned int vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, verts * 3 * sizeof(float), &(vertices[0]));
+	vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, verts * 3 * sizeof(float), &(vertices[0]));
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	set_color(color);
+}
+
+Curve::~Curve() {
+	glDeleteBuffers(1, &vbo);
+	glDeleteVertexArrays(1, &vao);
 }
 
 void Curve::set_color(glm::vec4 color) {

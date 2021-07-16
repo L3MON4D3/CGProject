@@ -7,6 +7,7 @@
 class Curve : public Renderable {
 private:
 	unsigned int vao;
+	unsigned int vbo;
 	size_t verts;
 
 public:
@@ -16,6 +17,7 @@ public:
 	Curve(
 		tinyspline::BSpline,
 		glm::vec4 color = glm::vec4(1.0,0.0,0.0,1.0));
+	~Curve();
 	void set_color(glm::vec4);
 	void render(float, glm::mat4);
 };
