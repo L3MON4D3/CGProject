@@ -87,10 +87,9 @@ void Scene::render() {
 		util::control_point_edit(&cam.look_curve, &state->indx_look_c, &state->range_look_c, state->offset_look_c);
 	ImGui::End();
 
-	tinyspline::BSpline &cam_time = *cam.time_look_curve;
 	ImGui::Begin("Cam_Zoom");
-		util::plot_spline(*cam.zoom_curve, "rot", [cam_time](const tinyspline::BSpline &spline, float t) {
-			return spline.bisect(util::eval_timespline(cam_time, t)).result()[1];
+		util::plot_spline(*cam.zoom_curve, "rot", [](const tinyspline::BSpline &spline, float t) {
+			return spline.bisect(t).result()[1];
 		});
 		util::control_point_edit(&cam.zoom_curve, &state->indx_zoom_c, &state->range_zoom_c, state->offset_zoom_c);
 	ImGui::End();
