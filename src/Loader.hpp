@@ -623,12 +623,23 @@ std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<ca
 	file.close();
 
 	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_pos = {};
+	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_axis = {};
+	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_speed= {};
+
 	asteroid_pos.reserve(Globals::asteroids->size());
+	asteroid_axis.reserve(Globals::asteroids->size());
+	asteroid_speed.reserve(Globals::asteroids->size());
+
 	for (size_t i = 0; i != Globals::asteroids->size(); ++i) {
 		file.open(filename +"-"+ std::to_string(i+3) + ".curves");
-		asteroid_pos.push_back(util::read_splines(file, '#')[0]);
+		auto ast_splines = util::read_splines(file, '#');
+		asteroid_pos.push_back(ast_splines[0]);
+		asteroid_axis.push_back(ast_splines[2]);
+		asteroid_speed.push_back(ast_splines[3]);
+
 		file.close();
 	}
+	std::cout << asteroid_pos.size();
 	
 
 	file.open(filename + "-cam.curves");
@@ -768,15 +779,15 @@ std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<ca
 		//	p_2.z
 		//});
 
-		auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
-		rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
+		//auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
+		//rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
 
-		auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
-		rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
+		//auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
+		//rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
 
 		objs.emplace_back(std::make_unique<Object>(
 			std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[i]}),
-			asteroid_pos[i], splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
+			asteroid_pos[i], splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{asteroid_axis[i], asteroid_speed[i]},
 			std::vector<std::shared_ptr<ObjectAction>>{},
 			Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
 				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
