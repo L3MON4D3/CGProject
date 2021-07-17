@@ -65,8 +65,8 @@ void Object::render(float time, glm::mat4 proj_view) {
 			inactive.push_back(std::move(*act));
 			act = active.erase(act);
 		} else {
-			LaserAction *miss = dynamic_cast<LaserAction *>(act->get());
-			miss->active_transform = get_model_mat(util::eval_timespline(*time_curve, miss->actual_start), miss->actual_start);
+			//LaserAction *miss = dynamic_cast<LaserAction *>(act->get());
+			//miss->active_transform = get_model_mat(util::eval_timespline(*time_curve, miss->actual_start), miss->actual_start);
 			(*act)->render(time, proj_view, model_mat);
 			++act;
 		}

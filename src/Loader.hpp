@@ -13,6 +13,7 @@
 const std::string exclamation = "data/PNG/Vector/Style 8/emote_exclamation.png";
 const std::string exclamations = "data/PNG/Vector/Style 8/emote_exclamations.png";
 const std::string question = "data/PNG/Vector/Style 8/emote_question.png";
+const std::string radio = "data/radio.png";
 const std::string treasure = "data/treasure.png";
 const std::string treasure2 = "data/treasure2.png";
 
@@ -473,11 +474,20 @@ std::unique_ptr<Scene> load_chase(std::string filename, std::shared_ptr<camera> 
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			//std::make_shared<EmoteAction>(treasure, actions_0[0], actions_0[1], 10, 4),
-			//std::make_shared<EmoteAction>(treasure2, actions_0[2], actions_0[3], 10, 4),
-			//std::make_shared<EmoteAction>(treasure, actions_0[4], actions_0[5], 10, 4),
-			//std::make_shared<EmoteAction>(treasure2, actions_0[6], actions_0[7], 10, 4),
-			//std::make_shared<EmoteAction>(treasure, actions_0[8], actions_0[9], 10, 4),
+			std::make_shared<EmoteAction>(exclamation, actions_0[0], actions_0[1], 3, 1.8),
+			std::make_shared<EmoteAction>(exclamation, actions_0[2], actions_0[3], 3, 1.8),
+
+			std::make_shared<EmoteAction>(radio, actions_0[4], actions_0[5], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[6], actions_0[7], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[8], actions_0[9], 3, 1.8),
+
+			std::make_shared<EmoteAction>(radio, actions_0[10], actions_0[11], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[12], actions_0[13], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[14], actions_0[15], 3, 1.8),
+
+			std::make_shared<EmoteAction>(radio, actions_0[16], actions_0[17], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[18], actions_0[19], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[20], actions_0[21], 3, 1.8),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
 			[](float t, float t_lin, Object &o) {
