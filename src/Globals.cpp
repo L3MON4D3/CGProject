@@ -11,6 +11,7 @@ std::shared_ptr<std::vector<geometry>> pirate;
 std::shared_ptr<std::vector<geometry>> station;
 std::shared_ptr<geometry> laser_missile;
 std::shared_ptr<geometry> sphere;
+std::shared_ptr<std::vector<geometry>> asteroids;
 
 unsigned int transform_ubo;
 unsigned int lighting_ubo;

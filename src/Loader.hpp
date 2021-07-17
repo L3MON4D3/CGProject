@@ -58,6 +58,18 @@ void load_models() {
 	Globals::laser_missile->transform = glm::scale(glm::vec3(.03, .03, .7));
 
 	Globals::sphere = std::make_shared<geometry>(loadScene("sphere_fine.obj", false)[0]);
+
+	const size_t asteroid_count = 200;
+	Globals::asteroids = std::make_shared<std::vector<geometry>>();
+	Globals::asteroids->reserve(asteroid_count);
+	for (int i = 0; i != asteroid_count; ++i) {
+		geometry aster = *util::create_asteroid();
+
+		float f = std::rand()/float(RAND_MAX)*2.5+0.8;
+		aster.transform = glm::scale(glm::vec3{f,f,f});
+
+		(*Globals::asteroids).push_back(aster);
+	}
 }
 
 void load_ubos() {
@@ -610,6 +622,15 @@ std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<ca
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_2 = util::read_splines(file, '#');
 	file.close();
 
+	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_pos = {};
+	asteroid_pos.reserve(Globals::asteroids->size());
+	for (size_t i = 0; i != Globals::asteroids->size(); ++i) {
+		file.open(filename +"-"+ std::to_string(i+3) + ".curves");
+		asteroid_pos.push_back(util::read_splines(file, '#')[0]);
+		file.close();
+	}
+	
+
 	file.open(filename + "-cam.curves");
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_cam = util::read_splines(file, '#');
 	file.close();
@@ -728,6 +749,41 @@ std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<ca
 		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
+
+	//glm::vec3 zone {500,100,500};
+	//glm::vec3 center {400,-20,500};
+	for (size_t i = 0; i != Globals::asteroids->size(); ++i) {
+		//float len = std::rand()/float(RAND_MAX);
+
+		//glm::vec3 p_1 = center + glm::normalize(util::v3_rand())*zone*len;
+		//glm::vec3 p_2 = p_1+util::v3_rand()*glm::vec3(20,20,20);
+
+		//auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
+		//pos_spline->setControlPoints({
+		//	p_1.x,
+		//	p_1.y,
+		//	p_1.z,
+		//	p_2.x,
+		//	p_2.y,
+		//	p_2.z
+		//});
+
+		auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
+		rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
+
+		auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
+		rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
+
+		objs.emplace_back(std::make_unique<Object>(
+			std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[i]}),
+			asteroid_pos[i], splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
+			std::vector<std::shared_ptr<ObjectAction>>{},
+			Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
+				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
+					*glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
+			}
+		));
+	}
 
 	struct state1 : public ImGuiState {
 		int indx_rot;

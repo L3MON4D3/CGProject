@@ -20,7 +20,7 @@ const int WINDOW_WIDTH = 2000;
 const int WINDOW_HEIGHT = 1400;
 const float FOV = 45.f;
 const float NEAR_VALUE = 0.1f;
-const float FAR_VALUE = 600.f;
+const float FAR_VALUE = 1000.f;
 
 glm::mat4 proj_matrix;
 std::chrono::time_point<std::chrono::system_clock> start_time;

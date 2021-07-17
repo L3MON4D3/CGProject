@@ -32,6 +32,8 @@ extern std::shared_ptr<std::vector<geometry>> station;
 extern std::shared_ptr<geometry> laser_missile;
 extern std::shared_ptr<geometry> sphere;
 
+extern std::shared_ptr<std::vector<geometry>> asteroids;
+
 extern glm::mat4 proj;
 
 const unsigned int material_binding = 1;
