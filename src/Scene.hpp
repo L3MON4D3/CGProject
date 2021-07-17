@@ -7,7 +7,7 @@
 #include "Camera.hpp"
 #include "skybox.hpp"
 #include "Curve.hpp"
-#include "Renderable.hpp"
+#include "Asteroids.hpp"
 #include <functional>
 
 struct ImGuiState {
@@ -58,10 +58,10 @@ struct ImGuiState {
 
 class Scene {
 private:
-	std::function<void(Scene &)> render_extras;
 	std::shared_ptr<camera> free_cam;
 	unsigned int light_vao;
 	Skybox skybox;
+	std::unique_ptr<Asteroids> extras;
 
 public:
 	Camera cam;
@@ -71,9 +71,10 @@ public:
 	glm::vec3 light_dir;
 	int length;
 	glm::vec3 light_pos;
+	std::function<void(Scene &)> render_extras;
 	static unsigned int light_shader;
 
-	Scene(std::string, std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, int length, std::shared_ptr<camera>, glm::vec3 light_pos = glm::vec3(1,0,0));
+	Scene(std::string, std::vector<std::unique_ptr<Object>>, Camera, std::function<void(Scene &)>, std::unique_ptr<ImGuiState>, int length, std::shared_ptr<camera>, glm::vec3 light_pos = glm::vec3(1,0,0), std::unique_ptr<Asteroids> = {});
 	void render();
 	void render_light(glm::mat4 proj_view);
 };

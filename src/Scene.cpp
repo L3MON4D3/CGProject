@@ -3,6 +3,7 @@
 #include "Globals.hpp"
 #include "buffer.hpp"
 #include "ExplodeAction.hpp"
+#include "Asteroids.hpp"
 
 const glm::vec4   active_color = glm::vec4(0,1,0,1);
 const glm::vec4 inactive_color = glm::vec4(1,0,0,1);
@@ -17,9 +18,10 @@ Scene::Scene(
 	std::unique_ptr<ImGuiState> init_state, 
 	int length,
 	std::shared_ptr<camera> free_cam,
-	glm::vec3 light_pos) :
+	glm::vec3 light_pos,
+	std::unique_ptr<Asteroids> extras) :
 	skybox{},
-	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length}, light_pos{light_pos} {
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length}, light_pos{light_pos}, extras{std::move(extras)} {
 	glGenVertexArrays(1, &light_vao);
 }
 
@@ -165,6 +167,11 @@ void Scene::render() {
 
 		o.render(state->time, proj_view_mat);
 	}
+
+
+	if (extras)
+		extras->render(state->time, proj_view_mat);
+	
 	render_light(proj_view_mat);
 }
 
