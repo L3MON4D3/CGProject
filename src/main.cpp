@@ -48,6 +48,7 @@ main(int, char**) {
 	scenes.push_back(Loader::load_station("scenes/station/scene", cam));
 	scenes.push_back(Loader::load_travel("scenes/travel/scene", cam));
 	scenes.push_back(Loader::load_chase("scenes/chase/scene", cam));
+	scenes.push_back(Loader::load_asteroids_1("scenes/asteroids_1/scene", cam));
 	scenes.push_back(Loader::load_scene2("scenes/sceneTest/scene", cam));
 
 	Skybox::shader_program = Globals::shaders[Globals::shader_Skybox];

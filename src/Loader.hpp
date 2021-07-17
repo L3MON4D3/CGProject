@@ -596,6 +596,164 @@ std::unique_ptr<Scene> load_chase(std::string filename, std::shared_ptr<camera> 
 	}, std::make_unique<state1>(0,3, render_curves), length[0], cam, light_glm);
 }
 
+std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<camera> cam) {
+	std::ifstream file;
+	file.open(filename + "-0.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_0 = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-1.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_1 = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-2.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_2 = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-cam.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_cam = util::read_splines(file, '#');
+	file.close();
+
+	file.open(filename + "-0.actions");
+	std::vector<float> actions_0 = util::read_floats(file, '#');
+	file.close();
+
+	file.open(filename + "-1.actions");
+	std::vector<float> actions_1 = util::read_floats(file, '#');
+	file.close();
+
+	file.open(filename + "-2.actions");
+	std::vector<float> actions_2 = util::read_floats(file, '#');
+	file.close();
+
+	file.open(filename + ".light");
+	std::vector<float> light = util::read_floats(file, '#');
+	glm::vec3 light_glm {light[0], light[1], light[2]};
+	file.close();
+
+	file.open(filename + ".length");
+	std::vector<float> length = util::read_floats(file, '#');
+	file.close();
+
+	glm::vec4 c1 = glm::vec4(1,0,0,1);
+	glm::vec4 c2 = glm::vec4(0,1,0,1);
+
+	auto objs = std::vector<std::unique_ptr<Object>>();
+	objs.emplace_back(std::make_unique<Object>(
+		Globals::cargo_A,
+		splines_0[0], splines_0[1], std::vector{
+			splines_0[2],
+			splines_0[3]
+		},
+		std::vector<std::shared_ptr<ObjectAction>>{
+		},
+		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
+			[](float t, float t_lin, Object &o) {
+				// Calculate correct forward from derived func.
+				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0]->eval(t).result()));
+				// get vector that points up and is orthogonal to forw.
+				glm::vec3 up = util::gs1(forw, util::up);
+				// Third vector for complete base.
+				glm::vec3 x = glm::normalize(glm::cross(forw, up));
+
+				glm::mat4 rot = {
+					   x.x,    x.y,    x.z, 0,
+					  up.x,   up.y,   up.z, 0,
+					forw.x, forw.y, forw.z, 0,
+					     0,      0,      0, 1
+				};
+
+				return
+					// translate to position.
+					glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
+					// rotate model_forw onto forw
+					rot * glm::rotate<float>(o.curves[1]->bisect(t_lin).result()[1], glm::vec3(0,0,1));
+			}
+	));
+
+	objs.emplace_back(std::make_unique<Object>(
+		Globals::pirate,
+		splines_1[0], splines_1[1], std::vector{
+			splines_1[2],
+			splines_1[3]
+		},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<LaserAction>(actions_1[0], actions_1[1], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[2], actions_1[3], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[4], actions_1[5], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[6], actions_1[7], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[8], actions_1[9], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[10], actions_1[11], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[12], actions_1[13], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[14], actions_1[15], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[16], actions_1[17], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[18], actions_1[19], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[20], actions_1[21], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[22], actions_1[23], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[24], actions_1[25], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[26], actions_1[27], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[28], actions_1[29], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[30], actions_1[31], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[32], actions_1[33], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[34], actions_1[35], Globals::pirate_laser_origin_right, c1),
+		},
+		Globals::pirate_shaders, Globals::pirate_ubos
+	));
+
+	objs.emplace_back(std::make_unique<Object>(
+		Globals::pirate,
+		splines_2[0], splines_2[1], std::vector{
+			splines_2[2],
+			splines_2[3]
+		},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<LaserAction>(actions_2[0], actions_2[1], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[2], actions_2[3], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[4], actions_2[5], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[6], actions_2[7], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[8], actions_2[9], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[10], actions_2[11], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[12], actions_2[13], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[14], actions_2[15], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[16], actions_2[17], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[18], actions_2[19], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[20], actions_2[21], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[22], actions_2[23], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[24], actions_2[25], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[26], actions_2[27], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[28], actions_2[29], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[30], actions_2[31], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1),
+		},
+		Globals::pirate_shaders, Globals::pirate_ubos
+	));
+
+	struct state1 : public ImGuiState {
+		int indx_rot;
+		int range_rot = 1;
+		double rot_offset[2] {0, 0};
+
+		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
+	};
+
+	std::vector<char> render_curves(objs.size()+2);
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
+		Object &o = *scene.objects[state_cast->current_indx];
+		tinyspline::BSpline &time_curve = *o.time_curve;
+		ImGui::Begin("Obj_Rotation");
+		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
+			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
+		});
+		util::control_point_edit(&o.curves[1],
+			&state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
+		ImGui::End();
+
+		o.curves[0] = std::make_shared<tinyspline::BSpline>(o.pos_curve->derive());
+	}, std::make_unique<state1>(0,3, render_curves), length[0], cam, light_glm);
+}
+
 std::unique_ptr<Scene> load_scene2(std::string filename, std::shared_ptr<camera> cam) {
 	std::ifstream file;
 	file.open(filename + ".curves");
