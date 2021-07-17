@@ -10,6 +10,8 @@
 #include <memory>
 #include <fstream>
 
+const float RAND_MAX_F = float(RAND_MAX);
+
 const std::string exclamation = "data/PNG/Vector/Style 8/emote_exclamation.png";
 const std::string exclamations = "data/PNG/Vector/Style 8/emote_exclamations.png";
 const std::string question = "data/PNG/Vector/Style 8/emote_question.png";
@@ -974,12 +976,14 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
 
-	glm::vec3 zone {600,600,600};
+	glm::vec3 zone {300,300,300};
 	glm::vec3 center {0,0,0};
 	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
 		int indx = i/dup_count;
+		// smaller angular distance in center, use root-fn to distribute outside.
+		float len = std::pow(std::rand()/RAND_MAX_F, .4);
 
-		glm::vec3 p_1 = center + glm::normalize(util::v3_rand())*zone;
+		glm::vec3 p_1 = center + glm::normalize(util::v3_rand())*zone*len;
 		glm::vec3 p_2 = p_1+util::v3_rand()*glm::vec3(20,20,20);
 
 		auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
@@ -998,15 +1002,15 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
 		rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
 
-		//objs.emplace_back(std::make_unique<Object>(
-		//	std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[indx]}),
-		//	pos_spline, splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{asteroid_axis[i], asteroid_speed[i]},
-		//	std::vector<std::shared_ptr<ObjectAction>>{},
-		//	Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
-		//		return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
-		//			*glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
-		//	}
-		//));
+		objs.emplace_back(std::make_unique<Object>(
+			std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[indx]}),
+			pos_spline, splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{asteroid_axis[i], asteroid_speed[i]},
+			std::vector<std::shared_ptr<ObjectAction>>{},
+			Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
+				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
+					*glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()));
+			}
+		));
 	}
 
 	struct state1 : public ImGuiState {
