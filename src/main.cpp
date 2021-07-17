@@ -20,7 +20,7 @@ const int WINDOW_WIDTH = 2000;
 const int WINDOW_HEIGHT = 1400;
 const float FOV = 45.f;
 const float NEAR_VALUE = 0.1f;
-const float FAR_VALUE = 1000.f;
+const float FAR_VALUE = 2000.f;
 
 glm::mat4 proj_matrix;
 std::chrono::time_point<std::chrono::system_clock> start_time;
@@ -49,6 +49,7 @@ main(int, char**) {
 	scenes.push_back(Loader::load_travel("scenes/travel/scene", cam));
 	scenes.push_back(Loader::load_chase("scenes/chase/scene", cam));
 	scenes.push_back(Loader::load_asteroids_1("scenes/asteroids_1/scene", cam));
+	scenes.push_back(Loader::load_asteroids_2("scenes/asteroids_2/scene", cam));
 	scenes.push_back(Loader::load_scene2("scenes/sceneTest/scene", cam));
 
 	Skybox::shader_program = Globals::shaders[Globals::shader_Skybox];
