@@ -845,7 +845,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	asteroid_axis.reserve(Globals::asteroids->size());
 	asteroid_speed.reserve(Globals::asteroids->size());
 
-	int dup_count = 12;
+	int dup_count = 8;
 	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
 		file.open(filename +"-"+ std::to_string(i+3) + ".curves");
 		auto ast_splines = util::read_splines(file, '#');
@@ -1021,7 +1021,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	auto asts = std::make_unique<Asteroids>(Globals::asteroids, Globals::asteroids->size(), 300, 600, 200);
+	auto asts = std::make_unique<Asteroids>(Globals::asteroids, Globals::asteroids->size(), 300, 700, 300);
 
 	std::vector<char> render_curves(objs.size()+2);
 	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
