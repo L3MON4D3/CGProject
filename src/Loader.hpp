@@ -843,7 +843,8 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	asteroid_axis.reserve(Globals::asteroids->size());
 	asteroid_speed.reserve(Globals::asteroids->size());
 
-	for (size_t i = 0; i != Globals::asteroids->size(); ++i) {
+	int dup_count = 12;
+	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
 		file.open(filename +"-"+ std::to_string(i+3) + ".curves");
 		auto ast_splines = util::read_splines(file, '#');
 		asteroid_pos.push_back(ast_splines[0]);
@@ -973,9 +974,8 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
 
-	glm::vec3 zone {1000,600,1000};
+	glm::vec3 zone {600,600,600};
 	glm::vec3 center {0,0,0};
-	int dup_count = 12;
 	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
 		int indx = i/dup_count;
 
@@ -1000,7 +1000,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 
 		objs.emplace_back(std::make_unique<Object>(
 			std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[indx]}),
-			pos_spline, splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec, rot_speed},
+			asteroid_pos[i], splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{asteroid_axis[i], asteroid_speed[i]},
 			std::vector<std::shared_ptr<ObjectAction>>{},
 			Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
 				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
