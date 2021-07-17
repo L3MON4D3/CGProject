@@ -1,7 +1,7 @@
 #include "LaserAction.hpp"
 #include "Globals.hpp"
 
-const float ray_speed = 1000;
+const float ray_speed = 1500;
 
 unsigned int LaserAction::shader_program;
 int LaserAction::pvm_mat_loc;

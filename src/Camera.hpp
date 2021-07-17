@@ -35,7 +35,7 @@ public:
 
 				glm::vec3 a = util::std2glm(c.pos_curve->eval(t_pos).result());
 				glm::vec3 forw = glm::normalize(util::std2glm(c.look_curve->eval(t_look).result())-a);
-				a = a + forw * float(c.zoom_curve->bisect(t_look).result()[1]);
+				a = a + forw * float(c.zoom_curve->bisect(t).result()[1]);
 				// get vector that points up and is orthogonal to forw.
 				glm::vec3 up = util::gs1(forw, util::up);
 				// Third vector for complete base.
