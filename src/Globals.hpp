@@ -81,4 +81,18 @@ const glm::mat4 cargo_A_laser_origin_right = glm::translate(glm::vec3(0.604, 0.2
 const glm::mat4 pirate_laser_origin_left = glm::translate(glm::vec3(-0.48, 0.25, 0));
 const glm::mat4 pirate_laser_origin_right = glm::translate(glm::vec3(0.48, 0.25, 0));
 
+const glm::vec3 cargo_A_turbine_right[4] = {
+	glm::vec3{.75, .239, -1.125},
+	glm::vec3{.75, .36, -1.125},
+	glm::vec3{.45, .436, -1.125},
+	glm::vec3{.45, .164, -1.125},
+};
+
+const glm::vec3 cargo_A_turbine_left[4] = {
+	glm::vec3{-.45, .164, -1.125},
+	glm::vec3{-.45, .436, -1.125},
+	glm::vec3{-.75, .36, -1.125},
+	glm::vec3{-.75, .239, -1.125},
+};
+
 }

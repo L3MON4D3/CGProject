@@ -5,8 +5,8 @@
 
 const float f_rand_max = float(RAND_MAX);
 
-TurbineAction::TurbineAction(float from, float to) : ObjectAction{from, to} {
-	init_particles();
+TurbineAction::TurbineAction(const glm::vec3 verts[4], float from, float to) : ObjectAction{from, to} {
+	init_particles(verts);
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -37,27 +37,49 @@ TurbineAction::TurbineAction(float from, float to) : ObjectAction{from, to} {
 	glEnableVertexAttribArray(2);
 }
 
-void TurbineAction::init_particles() {
+void TurbineAction::init_particles(const glm::vec3 verts[4]) {
 	int indx_pos = 0;
 	int indx_color = 0;
-	glm::vec3 obj_dir = glm::normalize(glm::vec3{0,0,1});
+
+	glm::vec3 edges[3] {
+		verts[0]-verts[1],
+		verts[2]-verts[1],
+		verts[3]-verts[1],
+	};
+
 	for (TurbineParticle &p : particles) {
-		//auto v = (std::rand()/f_rand_max)*glm::normalize(util::v3_rand());
-		//p.v = std::pow(glm::dot(v, obj_dir), 2.0f)/3 * glm::vec3{v.x, v.y, std::abs(v.z)};
-		auto v = glm::vec3{
-			std::rand()/f_rand_max-.5f,
-			std::rand()/f_rand_max-.5f,
-			//util::pdf_gaussian(std::rand()/f_rand_max, 0, .3)-.1};
-			std::rand()/f_rand_max-.2};
-		p.v.z = (std::rand()/f_rand_max-1)*50;
+		p.v = glm::vec3(
+			0,
+			0,
+			-.1-(std::rand()/f_rand_max-1)/15);
+
 		p.pos = &positions[indx_pos++*3];
+
+		// make sure that rand1+rand2 <= 1.
+		float rand1 = std::rand()/f_rand_max;
+		float rand2 = std::rand()/f_rand_max*(1-rand1);
+
+		glm::vec3 pos;
+		// decide triangle.
+		if (indx_pos % 2 == 0)
+			pos = verts[1] + edges[0]*rand1 + edges[2]*rand2;
+		else
+			pos = verts[1] + edges[1]*rand1 + edges[2]*rand2;
+
+		p.pos[0] = pos[0];
+		p.pos[1] = pos[1];
+		p.pos[2] = pos[2];
+
+		p.start_pos = pos;
+
 		// %green of color.
 		p.color = &colors[indx_color++*4];
 		p.color[0] = 0;
 		p.color[1] = std::rand()/f_rand_max;
 		p.color[2] = 0.7;
-		p.color[3] = 1;
-		p.max_dist = 3;
+		p.color[3] = std::rand()/f_rand_max/2;
+		// assume all verts are in one xy-plane.
+		p.min_z = verts[0].z - (.5-std::rand()/f_rand_max);
 	}
 }
 
@@ -67,14 +89,9 @@ void TurbineAction::activate(float t, glm::mat4 model) {
 }
 
 void TurbineAction::render(float t, glm::mat4 pv, glm::mat4 model) {
-	
-	
-	//paticles.erase(std::remove_if(particles.begin(), particles.end(), [](TurbineParticle p){
-	//	return p.pos[2]>=p.max_dist; 	
-	//})) 
-
 	for (TurbineParticle &p : particles)
 		p.update_pos(t);
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
 	glBufferData(GL_ARRAY_BUFFER, particle_count*3*sizeof(float), positions, GL_STATIC_DRAW);
 	

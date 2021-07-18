@@ -4,6 +4,7 @@
 #include "EmoteAction.hpp"
 #include "Globals.hpp"
 #include "ExplodeAction.hpp"
+#include "TurbineAction.hpp"
 
 #include "shader.hpp"
 
@@ -251,7 +252,10 @@ std::unique_ptr<Scene> load_station(std::string filename, std::shared_ptr<camera
 			splines_0[2],
 			splines_0[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
+		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos, [](float t, float t_lin, Object &o) {
 				if (t_lin >= 0.97)
 					return glm::zero<glm::mat4>();
