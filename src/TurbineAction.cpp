@@ -2,10 +2,8 @@
 #include "buffer.hpp"
 #include "Globals.hpp"
 #include "util.hpp"
-#include "Globals.hpp"
 
 const float f_rand_max = float(RAND_MAX);
-const float ray_speed = -25;
 
 TurbineAction::TurbineAction(float from, float to) : ObjectAction{from, to} {
 	init_particles();
@@ -51,9 +49,7 @@ void TurbineAction::init_particles() {
 			std::rand()/f_rand_max-.5f,
 			//util::pdf_gaussian(std::rand()/f_rand_max, 0, .3)-.1};
 			std::rand()/f_rand_max-.2};
-		p.v = std::rand()/f_rand_max*glm::normalize(v);
-		p.v.x *= .85f;
-		p.v.y *= .85f;
+		p.v.z = (std::rand()/f_rand_max-1)*50;
 		p.pos = &positions[indx_pos++*3];
 		// %green of color.
 		p.color = &colors[indx_color++*4];
@@ -61,6 +57,7 @@ void TurbineAction::init_particles() {
 		p.color[1] = std::rand()/f_rand_max;
 		p.color[2] = 0.7;
 		p.color[3] = 1;
+		p.max_dist = 3;
 	}
 }
 
@@ -70,34 +67,14 @@ void TurbineAction::activate(float t, glm::mat4 model) {
 }
 
 void TurbineAction::render(float t, glm::mat4 pv, glm::mat4 model) {
-	model = model * glm::translate(glm::vec3(0.6,0.3,-1.5));
-	model = model * glm::translate((t - actual_start) * ray_speed * glm::vec3(0,0,1));
-	//model = model * glm::translate(glm::vec3(0.6,0.3,-1.5));
-	float part_time = std::pow((t-actual_start)*300, .2);
-
-	for (TurbineParticle &p : particles)
-		p.update_pos(part_time);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
-	glBufferData(GL_ARRAY_BUFFER, particle_count*3*sizeof(float), positions, GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(pv));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(model));
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-	glBindTexture(GL_TEXTURE_2D, Globals::particle_texture);
-	glBindVertexArray(vao);
-
-	glUseProgram(Globals::shaders[Globals::shader_Particle]);
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_count);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	model = model * glm::translate(glm::vec3(-1.2,0,0));
+	
+	//paticles.erase(std::remove_if(particles.begin(), particles.end(), [](TurbineParticle p){
+	//	return p.pos[2]>=p.max_dist; 	
+	//})) 
 
 	for (TurbineParticle &p : particles)
-		p.update_pos(part_time);
+		p.update_pos(t);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
 	glBufferData(GL_ARRAY_BUFFER, particle_count*3*sizeof(float), positions, GL_STATIC_DRAW);
 	

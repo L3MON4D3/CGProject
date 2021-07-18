@@ -1,16 +1,21 @@
 #include "ObjectAction.hpp"
 
 struct TurbineParticle {
-	glm::vec3 start_position;
 	glm::vec3 v;
+	glm::vec3 start_pos;
 	// 3 floats
 	float *pos;
 	// 4 floats
 	float *color;
+	float max_dist;
 	void update_pos(float t) {
-		pos[0] = 0.13*t*v[0];
-		pos[1] = 0.10*t*v[1];
-		pos[2] = 0.4*t*v[2];
+		pos[0] = start_pos[0];
+		pos[1] = start_pos[1];
+		if (pos[2]>=max_dist){
+			pos[2] = 0;	
+		}else{
+			pos[2] = t*v[2];
+		}
 	}
 };
 
@@ -22,7 +27,7 @@ private:
 	float actual_start;
 	glm::mat4 model_from;
 	const static int strip_len = 8;
-	const static int particle_count = 2000;
+	const static int particle_count = 200;
 	const float quad_triStrip[strip_len] {
 		-0.1,0.1,
 		0.1,0.1,
