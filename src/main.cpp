@@ -37,7 +37,7 @@ main(int, char**) {
     glfwSetFramebufferSizeCallback(window, resizeCallback);
     auto cam = std::make_shared<camera>(window);
     init_imgui(window);
-	std::srand(std::time(nullptr));
+	std::srand(0);
 
 	Globals::proj = glm::perspective(FOV, static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT, NEAR_VALUE, FAR_VALUE);
 	std::vector<std::unique_ptr<Scene>> scenes;
