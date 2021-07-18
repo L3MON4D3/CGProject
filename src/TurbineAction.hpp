@@ -27,7 +27,7 @@ private:
 	float actual_start;
 	glm::mat4 model_from;
 	const static int strip_len = 8;
-	const static int particle_count = 10000;
+	const static int particle_count = 5000;
 	const float quad_triStrip[strip_len] {
 		-0.05,0.05,
 		0.05,0.05,
