@@ -845,7 +845,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	asteroid_axis.reserve(Globals::asteroids->size());
 	asteroid_speed.reserve(Globals::asteroids->size());
 
-	int dup_count = 8;
+	int dup_count = 6;
 	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
 		file.open(filename +"-"+ std::to_string(i+3) + ".curves");
 		auto ast_splines = util::read_splines(file, '#');
@@ -980,31 +980,31 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	glm::vec3 center {0,0,0};
 	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
 		int indx = i/dup_count;
-		// smaller angular distance in center, use root-fn to distribute outside.
-		float len = std::pow(std::rand()/RAND_MAX_F, .4);
+		//// smaller angular distance in center, use root-fn to distribute outside.
+		//float len = std::pow(std::rand()/RAND_MAX_F, .58);
 
-		glm::vec3 p_1 = center + glm::normalize(util::v3_rand())*zone*len;
-		glm::vec3 p_2 = p_1+util::v3_rand()*glm::vec3(20,20,20);
+		//glm::vec3 p_1 = center + glm::normalize(util::v3_rand())*zone*len;
+		//glm::vec3 p_2 = p_1+util::v3_rand()*glm::vec3(20,20,20);
 
-		auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
-		pos_spline->setControlPoints({
-			p_1.x,
-			p_1.y,
-			p_1.z,
-			p_2.x,
-			p_2.y,
-			p_2.z
-		});
+		//auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
+		//pos_spline->setControlPoints({
+		//	p_1.x,
+		//	p_1.y,
+		//	p_1.z,
+		//	p_2.x,
+		//	p_2.y,
+		//	p_2.z
+		//});
 
-		auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
-		rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
+		//auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
+		//rot_vec->setControlPoints(util::glm2std(glm::normalize(util::v3_rand())));
 
-		auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
-		rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
+		//auto rot_speed = std::make_shared<tinyspline::BSpline>(1, 1, 0);
+		//rot_speed->setControlPoints(std::vector<double>{double(std::rand()%100)/10});
 
 		objs.emplace_back(std::make_unique<Object>(
 			std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[indx]}),
-			pos_spline, splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{asteroid_axis[i], asteroid_speed[i]},
+			asteroid_pos[i], splines_1[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{asteroid_axis[i], asteroid_speed[i]},
 			std::vector<std::shared_ptr<ObjectAction>>{},
 			Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
 				return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
@@ -1021,10 +1021,10 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		state1(int i_r, int r_r, std::vector<char> render_curves) : ImGuiState{render_curves}, indx_rot{i_r}, range_rot{r_r} { }
 	};
 
-	auto asts = std::make_unique<Asteroids>(Globals::asteroids, Globals::asteroids->size(), 300, 700, 300);
+	auto asts = std::make_unique<Asteroids>(Globals::asteroids, Globals::asteroids->size(), 300, 900, 400);
 
 	std::vector<char> render_curves(objs.size()+2);
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_0[0], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
 		tinyspline::BSpline &time_curve = *o.time_curve;
