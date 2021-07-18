@@ -12,7 +12,7 @@ void Asteroids::init_asteroids() {
 
 	for (size_t i = 0; i != ast_count; ++i) {
 		// speed \in (-20,20)^3.
-		asteroids[i].v = util::v3_rand() * 20.0f;
+		asteroids[i].v = util::v3_rand() * 200.0f;
 		//asteroids[i].rot_speed = std::rand()%10/100;
 
 		float dist = radius_from + (std::rand()/RAND_MAX_F)*(radius_to - radius_from);
