@@ -16,8 +16,8 @@
 #include <tinysplinecxx.h>
 #include <imgui.hpp>
 
-const int WINDOW_WIDTH = 2000;
-const int WINDOW_HEIGHT = 1400;
+const int WINDOW_WIDTH = 2560;
+const int WINDOW_HEIGHT = 1440;
 const float FOV = 45.f;
 const float NEAR_VALUE = 0.1f;
 const float FAR_VALUE = 2000.f;
