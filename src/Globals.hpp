@@ -15,8 +15,9 @@ const unsigned int shader_Light = 5;
 const unsigned int shader_Particle = 6;
 const unsigned int shader_Skybox = 7;
 const unsigned int shader_Asteroids = 8;
+const unsigned int shader_Turbine = 9;
 
-const unsigned int shaders_sz = 9;
+const unsigned int shaders_sz = 10;
 extern unsigned int shaders[shaders_sz];
 
 const unsigned int cargo_A_shaders[6] {shader_Obj, shader_Obj, shader_Obj, shader_Obj, shader_Glass, shader_Exhaust};

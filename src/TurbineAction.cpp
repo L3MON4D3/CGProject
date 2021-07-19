@@ -14,15 +14,19 @@ TurbineAction::TurbineAction(const glm::vec3 verts[4], float from, float to) : O
 	unsigned int quad_vbo;
     glGenBuffers(1, &quad_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo);
-	glBufferData(GL_ARRAY_BUFFER, strip_len*sizeof(float), quad_triStrip, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vert_count*3*sizeof(float), elem_verts, GL_STATIC_DRAW);
 
-	// particles have pos(3)+color(1).
+    glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elem_count*3*sizeof(unsigned int), indcs, GL_STATIC_DRAW);
+
+	// particles have pos(3).
 	vbo_positions = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, particle_count*3*sizeof(float), positions);
 	// colors.
 	vbo_colors = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, particle_count*4*sizeof(float), colors);
 
 	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
@@ -35,6 +39,8 @@ TurbineAction::TurbineAction(const glm::vec3 verts[4], float from, float to) : O
 	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)0);
 	glVertexAttribDivisor(2, 1);
 	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 }
 
 void TurbineAction::init_particles(const glm::vec3 verts[4]) {
@@ -101,18 +107,15 @@ void TurbineAction::render(float t, glm::mat4 pv, glm::mat4 model) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
 	glBufferData(GL_ARRAY_BUFFER, particle_count*3*sizeof(float), positions, GL_STATIC_DRAW);
-	
+
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(pv));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(model));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-	glBindTexture(GL_TEXTURE_2D, Globals::particle_texture);
 	glBindVertexArray(vao);
-
-	glUseProgram(Globals::shaders[Globals::shader_Particle]);
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_count);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glUseProgram(Globals::shaders[Globals::shader_Turbine]);
+	glDrawElementsInstanced(GL_TRIANGLES, elem_count*3, GL_UNSIGNED_INT, (void *) 0, particle_count);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

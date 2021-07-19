@@ -25,7 +25,7 @@ const std::string particle = "data/particle.png";
 namespace Loader {
 
 void load_shader() {
-	std::vector<std::string> files_base {"mesh_render", "curve_render", "quad_front", "glass", "exhaust", "light", "particle", "skybox", "asteroids"};
+	std::vector<std::string> files_base {"mesh_render", "curve_render", "quad_front", "glass", "exhaust", "light", "particle", "skybox", "asteroids", "turbine"};
 
 	for (unsigned int i = 0; i != Globals::shaders_sz; ++i) {
 		unsigned int v = compileShader((files_base[i]+".vert").c_str(), GL_VERTEX_SHADER);

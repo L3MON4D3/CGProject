@@ -24,22 +24,39 @@ private:
 	unsigned int vao;
 	unsigned int vbo_positions;
 	unsigned int vbo_colors;
+	unsigned int ibo;
+	unsigned int vbo;
 	float actual_start;
 	glm::mat4 model_from;
-	const static int strip_len = 8;
-	const static int particle_count = 5000;
-	const float quad_triStrip[strip_len] {
-		-0.05,0.05,
-		0.05,0.05,
-		-0.05,-0.05,
-		0.05,-0.05,
+	const static int particle_count = 1000;
+	const static int vert_count = 6;
+	const float elem_verts[vert_count*3] {
+		-0.003, -0.003, 0,
+		 0.003, -0.003, 0,
+		 0.003,  0.003, 0,
+		-0.003,  0.003, 0,
+
+		0,0,.07,
+		0,0,-.07
+	};
+	const static int elem_count = 8;
+	const unsigned int indcs[elem_count*3] {
+		0,1,5,
+		1,2,5,
+		2,3,5,
+		3,0,5,
+
+		1,0,4,
+		2,1,4,
+		3,2,4,
+		0,3,4,
 	};
 	std::array<TurbineParticle, particle_count> particles = {};
 	// zero-initialized, 1 float for g in color.
 	float positions[particle_count*3] = {};
 	float colors[particle_count*4] = {};
 
-	// couterclockwise, starting at bottom left.
+	// clockwise, starting at bottom left.
 	void init_particles(const glm::vec3 verts[4]);
 
 public:
