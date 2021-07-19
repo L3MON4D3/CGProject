@@ -54,6 +54,9 @@ void load_models() {
 	Globals::pirate = std::make_shared<std::vector<geometry>>(loadScene("pirate.obj", false));
 	(*Globals::pirate)[0].transform = glm::translate(glm::vec3(0, -.25, 0));
 
+	Globals::support = std::make_shared<std::vector<geometry>>(loadScene("support.obj", false));
+	(*Globals::pirate)[0].transform = glm::translate(glm::vec3(0, -.25, 0));
+
 	Globals::station = std::make_shared<std::vector<geometry>>(loadScene("station2.obj", false));
 	(*Globals::station)[0].transform = glm::scale(glm::vec3(20,20,20));
 
@@ -364,7 +367,7 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 
 	auto objs = std::vector<std::unique_ptr<Object>>();
 	objs.emplace_back(std::make_unique<Object>(
-		Globals::cargo_A,
+		Globals::support,
 		splines_0[0], splines_0[1], std::vector{
 			splines_0[2],
 			splines_0[3]
@@ -379,7 +382,7 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
 		},
-		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
+		Globals::support_shaders, Globals::support_ubos,
 			[](float t, float t_lin, Object &o) {
 				if (t_lin <= 0.05)
 					return glm::zero<glm::mat4>();
