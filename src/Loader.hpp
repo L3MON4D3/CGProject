@@ -893,7 +893,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		file.open(filename +"-"+ std::to_string(i+5) + ".curves");
 		auto ast_splines = util::read_splines(file, '#');
 		asteroid_pos.push_back(ast_splines[0]);
-		asteroid_time.push_back(ast_splines[0]);
+		asteroid_time.push_back(ast_splines[1]);
 		asteroid_axis.push_back(ast_splines[2]);
 		asteroid_speed.push_back(ast_splines[3]);
 
@@ -1102,6 +1102,11 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		//	p_2.x,
 		//	p_2.y,
 		//	p_2.z
+		//});
+		//auto time_lin = std::make_shared<tinyspline::BSpline>(2, 2, 1);
+		//time_lin->setControlPoints({
+		//	0,0,
+		//	1,1,
 		//});
 
 		//auto rot_vec = std::make_shared<tinyspline::BSpline>(1, 3, 0);
