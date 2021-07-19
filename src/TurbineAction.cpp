@@ -57,7 +57,7 @@ void TurbineAction::init_particles(const glm::vec3 verts[4]) {
 		p.v = glm::vec3(
 			0,
 			0,
-			((std::rand()/f_rand_max/8-.125)-.2)/30);
+			((std::rand()/f_rand_max/8-.125)-.3)/15);
 
 		p.pos = &positions[indx_pos++*3];
 

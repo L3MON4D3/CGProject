@@ -96,4 +96,18 @@ const glm::vec3 cargo_A_turbine_left[4] = {
 	glm::vec3{-.75, .239, -1.125},
 };
 
+const glm::vec3 pirate_turbine_right[4] = {
+	glm::vec3{.5, .1, -.813},
+	glm::vec3{.5, .4, -.813},
+	glm::vec3{.3, .4, -.813},
+	glm::vec3{.3, .1, -.813},
+};
+
+const glm::vec3 pirate_turbine_left[4] = {
+	glm::vec3{-.3, .1, -.813},
+	glm::vec3{-.3, .4, -.813},
+	glm::vec3{-.5, .4, -.813},
+	glm::vec3{-.5, .1, -.813},
+};
+
 }

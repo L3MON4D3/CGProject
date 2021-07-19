@@ -411,7 +411,10 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			splines_1[2],
 			splines_1[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
+		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
 
@@ -421,7 +424,10 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			splines_2[2],
 			splines_2[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
+		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
 
@@ -567,6 +573,9 @@ std::unique_ptr<Scene> load_chase(std::string filename, std::shared_ptr<camera> 
 			std::make_shared<LaserAction>(actions_1[30], actions_1[31], Globals::pirate_laser_origin_right, c1),
 			std::make_shared<LaserAction>(actions_1[32], actions_1[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_1[34], actions_1[35], Globals::pirate_laser_origin_right, c1),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
 		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
@@ -596,6 +605,9 @@ std::unique_ptr<Scene> load_chase(std::string filename, std::shared_ptr<camera> 
 			std::make_shared<LaserAction>(actions_2[30], actions_2[31], Globals::pirate_laser_origin_right, c1),
 			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
 		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
@@ -745,6 +757,9 @@ std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<ca
 			std::make_shared<LaserAction>(actions_1[30], actions_1[31], Globals::pirate_laser_origin_right, c1),
 			std::make_shared<LaserAction>(actions_1[32], actions_1[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_1[34], actions_1[35], Globals::pirate_laser_origin_right, c1),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
 		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
@@ -774,6 +789,9 @@ std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<ca
 			std::make_shared<LaserAction>(actions_2[30], actions_2[31], Globals::pirate_laser_origin_right, c1),
 			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
 		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
@@ -971,6 +989,9 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			std::make_shared<LaserAction>(actions_1[30], actions_1[31], Globals::pirate_laser_origin_right, c1),
 			std::make_shared<LaserAction>(actions_1[32], actions_1[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_1[34], actions_1[35], Globals::pirate_laser_origin_right, c1),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
 		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
@@ -1000,6 +1021,9 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			std::make_shared<LaserAction>(actions_2[30], actions_2[31], Globals::pirate_laser_origin_right, c1),
 			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
 		},
 		Globals::pirate_shaders, Globals::pirate_ubos
 	));
