@@ -114,4 +114,18 @@ const glm::vec3 pirate_turbine_left[4] = {
 	glm::vec3{-.5, .1, -.813},
 };
 
+const glm::vec3 support_turbine_right[4] = {
+	glm::vec3{ .4, .15, -.183},
+	glm::vec3{ .4, .35, -.183},
+	glm::vec3{.25, .35, -.183},
+	glm::vec3{.25, .15, -.183},
+};
+
+const glm::vec3 support_turbine_left[4] = {
+	glm::vec3{-.25, .15, -.183},
+	glm::vec3{-.25, .35, -.183},
+	glm::vec3{- .4, .35, -.183},
+	glm::vec3{- .4, .15, -.183},
+};
+
 }
