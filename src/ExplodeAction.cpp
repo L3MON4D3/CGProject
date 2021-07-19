@@ -40,7 +40,6 @@ ExplodeAction::ExplodeAction(float from, float to) : ObjectAction{from, to} {
 void ExplodeAction::init_particles() {
 	int indx_pos = 0;
 	int indx_color = 0;
-	glm::vec3 obj_dir = glm::normalize(glm::vec3{0,0,1});
 	for (Particle &p : particles) {
 		//auto v = (std::rand()/f_rand_max)*glm::normalize(util::v3_rand());
 		//p.v = std::pow(glm::dot(v, obj_dir), 2.0f)/3 * glm::vec3{v.x, v.y, std::abs(v.z)};
@@ -49,7 +48,13 @@ void ExplodeAction::init_particles() {
 			std::rand()/f_rand_max-.5f,
 			//util::pdf_gaussian(std::rand()/f_rand_max, 0, .3)-.1};
 			std::rand()/f_rand_max-.2};
-		p.v = std::rand()/f_rand_max*glm::normalize(v);
+
+		auto stretch = glm::vec3{
+			3*std::rand()/f_rand_max,
+			3*std::rand()/f_rand_max,
+			//util::pdf_gaussian(std::rand()/f_rand_max, 0, .3)-.1};
+			10*std::rand()/f_rand_max};
+		p.v = glm::normalize(v) * stretch;
 		p.v.x *= .85f;
 		p.v.y *= .85f;
 		p.pos = &positions[indx_pos++*3];
@@ -62,16 +67,19 @@ void ExplodeAction::init_particles() {
 	}
 }
 
+// make sure to not have a zero-mat on activate, fucks whole renderer
+// (1000s of quads, each covers entire view, drawn over each other.)
 void ExplodeAction::activate(float t, glm::mat4 model) {
 	actual_start = t;
 	model_from = model;
 }
 
 void ExplodeAction::render(float t, glm::mat4 pv, glm::mat4) {
-	float part_time = std::pow((t-actual_start)*300, .2);
+	float part_time = std::pow((t-actual_start)*500, .2);
 
 	for (Particle &p : particles)
 		p.update_pos(part_time);
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_positions);
 	glBufferData(GL_ARRAY_BUFFER, particle_count*3*sizeof(float), positions, GL_STATIC_DRAW);
 	
@@ -82,10 +90,10 @@ void ExplodeAction::render(float t, glm::mat4 pv, glm::mat4) {
 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-	glBindTexture(GL_TEXTURE_2D, Globals::particle_texture);
+	//glBindTexture(GL_TEXTURE_2D, Globals::particle_texture);
 	glBindVertexArray(vao);
 
 	glUseProgram(Globals::shaders[Globals::shader_Particle]);
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_count);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
