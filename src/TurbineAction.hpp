@@ -28,28 +28,26 @@ private:
 	unsigned int vbo;
 	float actual_start;
 	glm::mat4 model_from;
-	const static int particle_count = 1000;
-	const static int vert_count = 6;
+	const static int particle_count = 3000;
+	const static int vert_count = 8;
 	const float elem_verts[vert_count*3] {
-		-0.003, -0.003, 0,
-		 0.003, -0.003, 0,
-		 0.003,  0.003, 0,
-		-0.003,  0.003, 0,
+		// cross-shaped
+		 0.001, 0, -0.02,
+		-0.001, 0, -0.02,
+		 0.001, 0,  0.02,
+		-0.001, 0,  0.02,
 
-		0,0,.07,
-		0,0,-.07
+		0,  0.001, -0.02,
+		0, -0.001, -0.02,
+		0,  0.001,  0.02,
+		0, -0.001,  0.02,
 	};
-	const static int elem_count = 8;
+	const static int elem_count = 4;
 	const unsigned int indcs[elem_count*3] {
-		0,1,5,
-		1,2,5,
-		2,3,5,
-		3,0,5,
-
-		1,0,4,
-		2,1,4,
-		3,2,4,
-		0,3,4,
+		0,1,2,
+		1,2,3,
+		4,5,6,
+		5,6,7,
 	};
 	std::array<TurbineParticle, particle_count> particles = {};
 	// zero-initialized, 1 float for g in color.

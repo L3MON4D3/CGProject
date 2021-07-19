@@ -57,7 +57,7 @@ void TurbineAction::init_particles(const glm::vec3 verts[4]) {
 		p.v = glm::vec3(
 			0,
 			0,
-			((std::rand()/f_rand_max/4-.25)-.1)/40);
+			((std::rand()/f_rand_max/8-.125)-.2)/30);
 
 		p.pos = &positions[indx_pos++*3];
 
@@ -90,7 +90,7 @@ void TurbineAction::init_particles(const glm::vec3 verts[4]) {
 		p.color[0] = .256;
 		p.color[1] = .7725;
 		p.color[2] = .9607;
-		p.color[3] = .4;
+		p.color[3] = .7;
 		// assume all verts are in one xy-plane.
 		p.min_z = verts[0].z - ((std::rand()/f_rand_max)*.5) * 1/(not_middle*3);
 	}

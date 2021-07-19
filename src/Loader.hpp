@@ -164,7 +164,12 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			splines_0[2],
 			splines_0[3]
 		},
-		std::vector<std::shared_ptr<ObjectAction>>{std::make_shared<LaserAction>(actions_0[0], actions_0[1], glm::identity<glm::mat4>(), c1)},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<LaserAction>(actions_0[0], actions_0[1], glm::identity<glm::mat4>(), c1),
+
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
+		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos
 	));
 
@@ -370,6 +375,9 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			std::make_shared<EmoteAction>(treasure, actions_0[4], actions_0[5], 10, 4),
 			std::make_shared<EmoteAction>(treasure2, actions_0[6], actions_0[7], 10, 4),
 			std::make_shared<EmoteAction>(treasure, actions_0[8], actions_0[9], 10, 4),
+
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
 			[](float t, float t_lin, Object &o) {
@@ -506,6 +514,9 @@ std::unique_ptr<Scene> load_chase(std::string filename, std::shared_ptr<camera> 
 			std::make_shared<EmoteAction>(radio, actions_0[16], actions_0[17], 3, 1.8),
 			std::make_shared<EmoteAction>(radio, actions_0[18], actions_0[19], 3, 1.8),
 			std::make_shared<EmoteAction>(radio, actions_0[20], actions_0[21], 3, 1.8),
+
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
 			[](float t, float t_lin, Object &o) {
@@ -682,6 +693,8 @@ std::unique_ptr<Scene> load_asteroids_1(std::string filename, std::shared_ptr<ca
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
 			[](float t, float t_lin, Object &o) {
@@ -906,6 +919,8 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
 		},
 		Globals::cargo_A_shaders, Globals::cargo_A_ubos,
 			[](float t, float t_lin, Object &o) {
