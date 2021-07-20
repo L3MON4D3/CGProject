@@ -50,6 +50,9 @@ main(int, char**) {
 	scenes.push_back(Loader::load_chase("scenes/chase/scene", cam));
 	scenes.push_back(Loader::load_asteroids_1("scenes/asteroids_1/scene", cam));
 	scenes.push_back(Loader::load_asteroids_2("scenes/asteroids_2/scene", cam));
+	scenes.push_back(Loader::supporttravel("scenes/supporttravel/scene", cam));
+	scenes.push_back(Loader::supportarrive("scenes/supportarrive/scene", cam));
+	scenes.push_back(Loader::supportkill("scenes/supportkill/scene", cam));
 	scenes.push_back(Loader::load_scene2("scenes/sceneTest/scene", cam));
 
 	Skybox::shader_program = Globals::shaders[Globals::shader_Skybox];
