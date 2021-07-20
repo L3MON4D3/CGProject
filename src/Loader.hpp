@@ -881,6 +881,10 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	std::vector<std::shared_ptr<tinyspline::BSpline>> ast_big_pos2 = util::read_splines(file, '#');
 	file.close();
 
+	file.open(filename + "-5.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> ast_collide = util::read_splines(file, '#');
+	file.close();
+
 	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_pos = {};
 	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_time = {};
 	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_axis = {};
@@ -893,7 +897,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 
 	int dup_count = 6;
 	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
-		file.open(filename +"-"+ std::to_string(i+5) + ".curves");
+		file.open(filename +"-"+ std::to_string(i+6) + ".curves");
 		auto ast_splines = util::read_splines(file, '#');
 		asteroid_pos.push_back(ast_splines[0]);
 		asteroid_time.push_back(ast_splines[1]);
@@ -1025,10 +1029,35 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1),
 
-			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
-			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
+			std::make_shared<ExplodeAction>(.884, 1),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, .886),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, .886),
 		},
-		Globals::pirate_shaders, Globals::pirate_ubos
+		Globals::pirate_shaders, Globals::pirate_ubos,
+			[](float t, float t_lin, Object &o) {
+				if (t_lin >= 0.886)
+					return glm::zero<glm::mat4>();
+				// Calculate correct forward from derived func.
+				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0]->eval(t).result()));
+				// get vector that points up and is orthogonal to forw.
+				glm::vec3 up = util::gs1(forw, util::up);
+				// Third vector for complete base.
+				glm::vec3 x = glm::normalize(glm::cross(forw, up));
+
+				glm::mat4 rot = {
+					   x.x,    x.y,    x.z, 0,
+					  up.x,   up.y,   up.z, 0,
+					forw.x, forw.y, forw.z, 0,
+					     0,      0,      0, 1
+				};
+
+				return
+					// translate to position.
+					glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
+					// rotate model_forw onto forw
+					rot * glm::rotate<float>(o.curves[1]->bisect(t_lin).result()[1], glm::vec3(0,0,1));
+			}
 	));
 
 	auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
@@ -1080,10 +1109,29 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[2]}),
 		ast_big_pos2[0], ast_big_pos2[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec2, rot_speed2},
 		std::vector<std::shared_ptr<ObjectAction>>{},
-		Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
+		Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float t_lin, Object &o) {
 			return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
 				* glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()))
 				* glm::scale(glm::vec3(6,4,6));
+		}
+	));
+
+	//auto rot_vec2 = std::make_shared<tinyspline::BSpline>(1, 3, 0);
+	//rot_vec->setControlPoints(util::glm2std(glm::normalize(glm::vec3{1,.5,1})));
+
+	//auto rot_speed2 = std::make_shared<tinyspline::BSpline>(1, 1, 0);
+	//rot_speed->setControlPoints({20});
+
+	objs.emplace_back(std::make_unique<Object>(
+		std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[2]}),
+		ast_collide[0], ast_collide[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec2, rot_speed2},
+		std::vector<std::shared_ptr<ObjectAction>>{},
+		Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float t_lin, Object &o) {
+			if (t_lin >= 0.886)
+				return glm::zero<glm::mat4>();
+			return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
+				* glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()))
+				* glm::scale(glm::vec3(.5,.5,.5));
 		}
 	));
 
