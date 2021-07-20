@@ -6,10 +6,7 @@
 
 const int strip_len = 2*4;
 float quad_triStrip[] = {
-	-0.5,0.5,
-	0.5,0.5,
-	-0.5,-0.5,
-	0.5,-0.5,
+	0,0
 };
 
 unsigned int EmoteAction::shader;
@@ -19,17 +16,12 @@ EmoteAction::EmoteAction(
 	std::string image,
 	float from,
 	float until,
-	float scale,
+	float size,
 	float height) :
-	ObjectAction{from, until}, image{image}, scale{scale}, height{height} {
+	ObjectAction{from, until}, image{image}, size{size}, height{height} {
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-	unsigned int vbo = makeBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, strip_len * sizeof(float), quad_triStrip);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
 
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -44,11 +36,7 @@ EmoteAction::EmoteAction(
 }
 
 void EmoteAction::render(float, glm::mat4 mat, glm::mat4 obj) {
-	glm::mat4 pvm_mat = mat * glm::translate(height*util::up) * obj;
-	// remove rotations, apply scale only.
-	pvm_mat[0] = glm::vec4{scale,0,0,0};
-	pvm_mat[1] = glm::vec4{0,scale,0,0};
-	pvm_mat[2] = glm::vec4{0,0,scale,0};
+	glm::mat4 pvm_mat = mat * obj * glm::translate(height*util::up);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(pvm_mat));
@@ -58,6 +46,7 @@ void EmoteAction::render(float, glm::mat4 mat, glm::mat4 obj) {
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindVertexArray(vao);
-	// Four vertices.
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glPointSize(size);
+	glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+	glDrawArrays(GL_POINTS, 0, 1);
 }
