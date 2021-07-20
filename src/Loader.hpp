@@ -1192,10 +1192,9 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
-		tinyspline::BSpline &time_curve = *o.time_curve;
 		ImGui::Begin("Obj_Rotation");
-		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
-			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
+		util::plot_spline(*o.curves[1], "rot", [](const tinyspline::BSpline &spline, float t) {
+			return spline.bisect(t).result()[1];
 		});
 		util::control_point_edit(&o.curves[1],
 			&state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);
