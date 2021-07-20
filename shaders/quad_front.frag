@@ -2,10 +2,11 @@
 
 uniform sampler2D tex;
 
-in vec2 tex_coord;
 out vec4 frag_color;
 
 void main()
 {
-    frag_color = texture(tex, tex_coord);
+    vec4 color = texture(tex, gl_PointCoord);
+    if (color.w == 0) discard;
+    frag_color = color;
 }

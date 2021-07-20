@@ -1,17 +1,16 @@
 #include "LaserAction.hpp"
 #include "Globals.hpp"
 
-const float ray_speed = 1500;
-
 unsigned int LaserAction::shader_program;
 int LaserAction::pvm_mat_loc;
 int LaserAction::color_loc;
 std::shared_ptr<geometry> LaserAction::ray;
 
-LaserAction::LaserAction(float from, float until, glm::mat4 model_transform, glm::vec4 color) :
+LaserAction::LaserAction(float from, float until, glm::mat4 model_transform, glm::vec4 color, float speed) :
 	ObjectAction{from, until},
 	model_transform{model_transform},
 	active_transform{glm::identity<glm::mat4>()},
+	ray_speed{speed},
 	color{color} { }
 
 void LaserAction::activate(float t, glm::mat4 obj_transform) {

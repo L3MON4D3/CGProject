@@ -21,7 +21,7 @@ private:
 	float actual_start;
 	glm::mat4 model_from;
 	const static int strip_len = 8;
-	const static int particle_count = 5000;
+	const static int particle_count = 3000;
 	const float quad_triStrip[strip_len] {
 		-0.5,0.5,
 		0.5,0.5,
@@ -34,10 +34,11 @@ private:
 	float colors[particle_count*4] = {};
 
 	void init_particles();
+	float speed;
 
 public:
 	const static int position_count = 4;
-	ExplodeAction(float from, float to = 1);
+	ExplodeAction(float from, float to = 1, float speed = 3000);
 	void render(float t, glm::mat4 pv, glm::mat4 model);
 	void activate(float t, glm::mat4 model);
 };

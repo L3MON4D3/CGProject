@@ -190,7 +190,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<EmoteAction>(question, actions_1[8], actions_1[9]),
 			std::make_shared<EmoteAction>(exclamation, actions_1[10], actions_1[11]),
 			std::make_shared<EmoteAction>(exclamation, actions_1[12], actions_1[13]),
-			std::make_shared<ExplodeAction>(.1, 1),
+			std::make_shared<ExplodeAction>(.1, 1, 8000),
 		},
 		Globals::station_shaders, Globals::station_ubos
 	));
@@ -373,11 +373,11 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(treasure, actions_0[0], actions_0[1], 10, 4),
-			std::make_shared<EmoteAction>(treasure2, actions_0[2], actions_0[3], 10, 4),
-			std::make_shared<EmoteAction>(treasure, actions_0[4], actions_0[5], 10, 4),
-			std::make_shared<EmoteAction>(treasure2, actions_0[6], actions_0[7], 10, 4),
-			std::make_shared<EmoteAction>(treasure, actions_0[8], actions_0[9], 10, 4),
+			std::make_shared<EmoteAction>(treasure, actions_0[0], actions_0[1], 52, 6),
+			std::make_shared<EmoteAction>(treasure2, actions_0[2], actions_0[3], 52, 6),
+			std::make_shared<EmoteAction>(treasure, actions_0[4], actions_0[5], 52, 6),
+			std::make_shared<EmoteAction>(treasure2, actions_0[6], actions_0[7], 52, 6),
+			std::make_shared<EmoteAction>(treasure, actions_0[8], actions_0[9], 52, 6),
 
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
@@ -509,20 +509,20 @@ std::unique_ptr<Scene> load_chase(std::string filename, std::shared_ptr<camera> 
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(exclamation, actions_0[0], actions_0[1], 3, 1.8),
-			std::make_shared<EmoteAction>(exclamation, actions_0[2], actions_0[3], 3, 1.8),
+			std::make_shared<EmoteAction>(exclamation, actions_0[0], actions_0[1], 44, 3),
+			std::make_shared<EmoteAction>(exclamation, actions_0[2], actions_0[3], 44, 3),
 
-			std::make_shared<EmoteAction>(radio, actions_0[4], actions_0[5], 3, 1.8),
-			std::make_shared<EmoteAction>(radio, actions_0[6], actions_0[7], 3, 1.8),
-			std::make_shared<EmoteAction>(radio, actions_0[8], actions_0[9], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[4], actions_0[5], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[6], actions_0[7], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[8], actions_0[9], 44, 3),
 
-			std::make_shared<EmoteAction>(radio, actions_0[10], actions_0[11], 3, 1.8),
-			std::make_shared<EmoteAction>(radio, actions_0[12], actions_0[13], 3, 1.8),
-			std::make_shared<EmoteAction>(radio, actions_0[14], actions_0[15], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[10], actions_0[11], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[12], actions_0[13], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[14], actions_0[15], 44, 3),
 
-			std::make_shared<EmoteAction>(radio, actions_0[16], actions_0[17], 3, 1.8),
-			std::make_shared<EmoteAction>(radio, actions_0[18], actions_0[19], 3, 1.8),
-			std::make_shared<EmoteAction>(radio, actions_0[20], actions_0[21], 3, 1.8),
+			std::make_shared<EmoteAction>(radio, actions_0[16], actions_0[17], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[18], actions_0[19], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[20], actions_0[21], 44, 3),
 
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
@@ -881,6 +881,10 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	std::vector<std::shared_ptr<tinyspline::BSpline>> ast_big_pos2 = util::read_splines(file, '#');
 	file.close();
 
+	file.open(filename + "-5.curves");
+	std::vector<std::shared_ptr<tinyspline::BSpline>> ast_collide = util::read_splines(file, '#');
+	file.close();
+
 	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_pos = {};
 	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_time = {};
 	std::vector<std::shared_ptr<tinyspline::BSpline>> asteroid_axis = {};
@@ -893,7 +897,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 
 	int dup_count = 6;
 	for (size_t i = 0; i != Globals::asteroids->size()*dup_count; ++i) {
-		file.open(filename +"-"+ std::to_string(i+5) + ".curves");
+		file.open(filename +"-"+ std::to_string(i+6) + ".curves");
 		auto ast_splines = util::read_splines(file, '#');
 		asteroid_pos.push_back(ast_splines[0]);
 		asteroid_time.push_back(ast_splines[1]);
@@ -974,24 +978,24 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			splines_1[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(actions_1[0], actions_1[1], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[2], actions_1[3], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[4], actions_1[5], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[6], actions_1[7], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[8], actions_1[9], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[10], actions_1[11], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[12], actions_1[13], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[14], actions_1[15], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[16], actions_1[17], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[18], actions_1[19], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[20], actions_1[21], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[22], actions_1[23], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[24], actions_1[25], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[26], actions_1[27], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[28], actions_1[29], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[30], actions_1[31], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_1[32], actions_1[33], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_1[34], actions_1[35], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[0], actions_1[1], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[2], actions_1[3], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[4], actions_1[5], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[6], actions_1[7], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[8], actions_1[9], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[10], actions_1[11], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[12], actions_1[13], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[14], actions_1[15], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[16], actions_1[17], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[18], actions_1[19], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[20], actions_1[21], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[22], actions_1[23], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[24], actions_1[25], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[26], actions_1[27], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[28], actions_1[29], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[30], actions_1[31], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[32], actions_1[33], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_1[34], actions_1[35], Globals::pirate_laser_origin_right, c1, 2500),
 
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
@@ -1006,29 +1010,55 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			splines_2[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(actions_2[0], actions_2[1], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[2], actions_2[3], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[4], actions_2[5], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[6], actions_2[7], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[8], actions_2[9], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[10], actions_2[11], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[12], actions_2[13], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[14], actions_2[15], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[16], actions_2[17], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[18], actions_2[19], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[20], actions_2[21], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[22], actions_2[23], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[24], actions_2[25], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[26], actions_2[27], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[28], actions_2[29], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[30], actions_2[31], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_2[0], actions_2[1], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[2], actions_2[3], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[4], actions_2[5], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[6], actions_2[7], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[8], actions_2[9], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[10], actions_2[11], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[12], actions_2[13], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[14], actions_2[15], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[16], actions_2[17], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[18], actions_2[19], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[20], actions_2[21], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[22], actions_2[23], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[24], actions_2[25], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[26], actions_2[27], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[28], actions_2[29], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[30], actions_2[31], Globals::pirate_laser_origin_right, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1, 2500),
+			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1, 2500),
 
-			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
-			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
+			std::make_shared<EmoteAction>(exclamation, .87, .885, 42, 2),
+			std::make_shared<ExplodeAction>(.884, 1, 10000),
+
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, .886),
+			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, .886),
 		},
-		Globals::pirate_shaders, Globals::pirate_ubos
+		Globals::pirate_shaders, Globals::pirate_ubos,
+			[](float t, float t_lin, Object &o) {
+				if (t_lin >= 0.886)
+					return glm::zero<glm::mat4>();
+				// Calculate correct forward from derived func.
+				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0]->eval(t).result()));
+				// get vector that points up and is orthogonal to forw.
+				glm::vec3 up = util::gs1(forw, util::up);
+				// Third vector for complete base.
+				glm::vec3 x = glm::normalize(glm::cross(forw, up));
+
+				glm::mat4 rot = {
+					   x.x,    x.y,    x.z, 0,
+					  up.x,   up.y,   up.z, 0,
+					forw.x, forw.y, forw.z, 0,
+					     0,      0,      0, 1
+				};
+
+				return
+					// translate to position.
+					glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
+					// rotate model_forw onto forw
+					rot * glm::rotate<float>(o.curves[1]->bisect(t_lin).result()[1], glm::vec3(0,0,1));
+			}
 	));
 
 	auto pos_spline = std::make_shared<tinyspline::BSpline>(2, 3, 1);
@@ -1080,10 +1110,29 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 		std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[2]}),
 		ast_big_pos2[0], ast_big_pos2[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec2, rot_speed2},
 		std::vector<std::shared_ptr<ObjectAction>>{},
-		Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float, Object &o) {
+		Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float t_lin, Object &o) {
 			return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
 				* glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()))
 				* glm::scale(glm::vec3(6,4,6));
+		}
+	));
+
+	//auto rot_vec2 = std::make_shared<tinyspline::BSpline>(1, 3, 0);
+	//rot_vec->setControlPoints(util::glm2std(glm::normalize(glm::vec3{1,.5,1})));
+
+	//auto rot_speed2 = std::make_shared<tinyspline::BSpline>(1, 1, 0);
+	//rot_speed->setControlPoints({20});
+
+	objs.emplace_back(std::make_unique<Object>(
+		std::make_shared<std::vector<geometry>>(std::vector{(*Globals::asteroids)[2]}),
+		ast_collide[0], ast_collide[1], std::vector<std::shared_ptr<tinyspline::BSpline>>{rot_vec2, rot_speed2},
+		std::vector<std::shared_ptr<ObjectAction>>{},
+		Globals::asteroid_shaders, Globals::asteroid_ubos, [](float t, float t_lin, Object &o) {
+			if (t_lin >= 0.886)
+				return glm::zero<glm::mat4>();
+			return glm::translate(util::std2glm(o.pos_curve->eval(t).result()))
+				* glm::rotate(float(t*o.curves[1]->eval(0).result()[0]), util::std2glm(o.curves[0]->eval(0).result()))
+				* glm::scale(glm::vec3(.5,.5,.5));
 		}
 	));
 
@@ -1140,13 +1189,12 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 	auto asts = std::make_unique<Asteroids>(Globals::asteroids, Globals::asteroids->size(), 300, 900, 400);
 
 	std::vector<char> render_curves(objs.size()+2);
-	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_0[0], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
+	return std::make_unique<Scene>(filename, std::move(objs), Camera{splines_cam[0], splines_cam[1], splines_cam[2], splines_cam[3], splines_cam[4], std::vector<std::shared_ptr<tinyspline::BSpline>>{}}, [](Scene &scene) {
 		auto state_cast = dynamic_cast<state1 *>(scene.state.get());
 		Object &o = *scene.objects[state_cast->current_indx];
-		tinyspline::BSpline &time_curve = *o.time_curve;
 		ImGui::Begin("Obj_Rotation");
-		util::plot_spline(*o.curves[1], "rot", [time_curve](const tinyspline::BSpline &spline, float t) {
-			return spline.bisect(util::eval_timespline(time_curve, t)).result()[1];
+		util::plot_spline(*o.curves[1], "rot", [](const tinyspline::BSpline &spline, float t) {
+			return spline.bisect(t).result()[1];
 		});
 		util::control_point_edit(&o.curves[1],
 			&state_cast->indx_rot, &state_cast->range_rot, state_cast->rot_offset);

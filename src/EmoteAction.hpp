@@ -6,7 +6,7 @@ private:
 	unsigned int vao;
 	unsigned int texture;
 	std::string image;
-	float scale, height;
+	float size, height;
 
 public:
 	static unsigned int shader;
