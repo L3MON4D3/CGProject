@@ -47,13 +47,13 @@ void ExplodeAction::init_particles() {
 			std::rand()/f_rand_max-.5f,
 			std::rand()/f_rand_max-.5f,
 			//util::pdf_gaussian(std::rand()/f_rand_max, 0, .3)-.1};
-			std::rand()/f_rand_max-.2};
+			std::rand()/f_rand_max-.1};
 
 		auto stretch = glm::vec3{
-			3*std::rand()/f_rand_max,
-			3*std::rand()/f_rand_max,
+			2*std::pow(std::rand()/f_rand_max, 2),
+			2*std::pow(std::rand()/f_rand_max, 2),
 			//util::pdf_gaussian(std::rand()/f_rand_max, 0, .3)-.1};
-			10*std::rand()/f_rand_max};
+			5*std::pow(std::rand()/f_rand_max, 2)};
 		p.v = glm::normalize(v) * stretch;
 		p.v.x *= .85f;
 		p.v.y *= .85f;
@@ -75,7 +75,7 @@ void ExplodeAction::activate(float t, glm::mat4 model) {
 }
 
 void ExplodeAction::render(float t, glm::mat4 pv, glm::mat4) {
-	float part_time = std::pow((t-actual_start)*500, .2);
+	float part_time = std::pow((t-actual_start)*8000, .4);
 
 	for (Particle &p : particles)
 		p.update_pos(part_time);
