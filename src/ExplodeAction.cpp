@@ -5,7 +5,7 @@
 
 const float f_rand_max = float(RAND_MAX);
 
-ExplodeAction::ExplodeAction(float from, float to) : ObjectAction{from, to} {
+ExplodeAction::ExplodeAction(float from, float to, float speed) : ObjectAction{from, to}, speed{speed} {
 	init_particles();
 
 	glGenVertexArrays(1, &vao);
@@ -75,7 +75,7 @@ void ExplodeAction::activate(float t, glm::mat4 model) {
 }
 
 void ExplodeAction::render(float t, glm::mat4 pv, glm::mat4) {
-	float part_time = std::pow((t-actual_start)*8000, .4);
+	float part_time = std::pow((t-actual_start)*speed, .4);
 
 	for (Particle &p : particles)
 		p.update_pos(part_time);

@@ -190,7 +190,7 @@ std::unique_ptr<Scene> load_scene1(std::string filename, std::shared_ptr<camera>
 			std::make_shared<EmoteAction>(question, actions_1[8], actions_1[9]),
 			std::make_shared<EmoteAction>(exclamation, actions_1[10], actions_1[11]),
 			std::make_shared<EmoteAction>(exclamation, actions_1[12], actions_1[13]),
-			std::make_shared<ExplodeAction>(.1, 1),
+			std::make_shared<ExplodeAction>(.1, 1, 8000),
 		},
 		Globals::station_shaders, Globals::station_ubos
 	));
@@ -1029,7 +1029,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1),
 			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1),
 
-			std::make_shared<ExplodeAction>(.884, 1),
+			std::make_shared<ExplodeAction>(.884, 1, 6000),
 
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, .886),
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, .886),

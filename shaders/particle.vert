@@ -21,7 +21,7 @@ void main()
 			0,0,1,0,
 			instance_position, 1);
 
-	float scale = length(vert_position);
+	float scale = pow(1/length(vert_position), .5);
 	pvm[0] = vec4(scale,0,0,0);
 	pvm[1] = vec4(0,scale,0,0);
 	pvm[2] = vec4(0,0,scale,0);

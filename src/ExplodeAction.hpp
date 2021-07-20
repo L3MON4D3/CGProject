@@ -34,10 +34,11 @@ private:
 	float colors[particle_count*4] = {};
 
 	void init_particles();
+	float speed;
 
 public:
 	const static int position_count = 4;
-	ExplodeAction(float from, float to = 1);
+	ExplodeAction(float from, float to = 1, float speed = 3000);
 	void render(float t, glm::mat4 pv, glm::mat4 model);
 	void activate(float t, glm::mat4 model);
 };
