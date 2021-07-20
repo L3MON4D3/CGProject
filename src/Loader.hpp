@@ -1214,10 +1214,6 @@ std::unique_ptr<Scene> supporttravel(std::string filename, std::shared_ptr<camer
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_1 = util::read_splines(file, '#');
 	file.close();
 
-	file.open(filename + "-2.curves");
-	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_2 = util::read_splines(file, '#');
-	file.close();
-
 	file.open(filename + "-cam.curves");
 	std::vector<std::shared_ptr<tinyspline::BSpline>> splines_cam = util::read_splines(file, '#');
 	file.close();
@@ -1228,10 +1224,6 @@ std::unique_ptr<Scene> supporttravel(std::string filename, std::shared_ptr<camer
 
 	file.open(filename + "-1.actions");
 	std::vector<float> actions_1 = util::read_floats(file, '#');
-	file.close();
-
-	file.open(filename + "-2.actions");
-	std::vector<float> actions_2 = util::read_floats(file, '#');
 	file.close();
 
 	file.open(filename + ".light");
@@ -1250,6 +1242,43 @@ std::unique_ptr<Scene> supporttravel(std::string filename, std::shared_ptr<camer
 
 	objs.emplace_back(std::make_unique<Object>(
 		Globals::support,
+		splines_0[0], splines_0[1], std::vector{
+			splines_0[2],
+			splines_0[3]
+		},
+		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
+			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
+		},
+		Globals::support_shaders, Globals::support_ubos,
+			[](float t, float t_lin, Object &o) {
+				if (t_lin >= .977)
+					return glm::zero<glm::mat4>();
+				
+				// Calculate correct forward from derived func.
+				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0]->eval(t).result()));
+				// get vector that points up and is orthogonal to forw.
+				glm::vec3 up = util::gs1(forw, util::up);
+				// Third vector for complete base.
+				glm::vec3 x = glm::normalize(glm::cross(forw, up));
+
+				glm::mat4 rot = {
+					   x.x,    x.y,    x.z, 0,
+					  up.x,   up.y,   up.z, 0,
+					forw.x, forw.y, forw.z, 0,
+					     0,      0,      0, 1
+				};
+
+				return
+					// translate to position.
+					glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
+					// rotate model_forw onto forw
+					rot * glm::rotate<float>(o.curves[1]->bisect(t_lin).result()[1], glm::vec3(0,0,1));
+			}
+	));
+
+	objs.emplace_back(std::make_unique<Object>(
+		Globals::support,
 		splines_1[0], splines_1[1], std::vector{
 			splines_1[2],
 			splines_1[3]
@@ -1258,24 +1287,31 @@ std::unique_ptr<Scene> supporttravel(std::string filename, std::shared_ptr<camer
 			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
 		},
-		Globals::support_shaders, Globals::support_ubos
-	));
+		Globals::support_shaders, Globals::support_ubos,
+			[](float t, float t_lin, Object &o) {
+				if (t_lin >= .956)
+					return glm::zero<glm::mat4>();
+				
+				// Calculate correct forward from derived func.
+				glm::vec3 forw = glm::normalize(util::std2glm(o.curves[0]->eval(t).result()));
+				// get vector that points up and is orthogonal to forw.
+				glm::vec3 up = util::gs1(forw, util::up);
+				// Third vector for complete base.
+				glm::vec3 x = glm::normalize(glm::cross(forw, up));
 
-	objs.emplace_back(std::make_unique<Object>(
-		Globals::support,
-		splines_2[0], splines_2[1], std::vector{
-			splines_2[2],
-			splines_2[3]
-		},
-		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(radio, actions_0[4], actions_0[5], 50, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[6], actions_0[7], 50, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[8], actions_0[9], 50, 3),
+				glm::mat4 rot = {
+					   x.x,    x.y,    x.z, 0,
+					  up.x,   up.y,   up.z, 0,
+					forw.x, forw.y, forw.z, 0,
+					     0,      0,      0, 1
+				};
 
-			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
-			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
-		},
-		Globals::support_shaders, Globals::support_ubos
+				return
+					// translate to position.
+					glm::translate(util::std2glm(o.pos_curve->eval(t).result())) *
+					// rotate model_forw onto forw
+					rot * glm::rotate<float>(o.curves[1]->bisect(t_lin).result()[1], glm::vec3(0,0,1));
+			}
 	));
 
 	struct state1 : public ImGuiState {
