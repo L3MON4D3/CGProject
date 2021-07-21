@@ -1433,12 +1433,12 @@ std::unique_ptr<Scene> supportarrive(std::string filename, std::shared_ptr<camer
 			splines_1[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<LaserAction>(actions_2[0], actions_2[1], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[2], actions_2[3], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[4], actions_2[5], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[6], actions_2[7], Globals::pirate_laser_origin_right, c1),
-			std::make_shared<LaserAction>(actions_2[8], actions_2[9], Globals::pirate_laser_origin_left, c1),
-			std::make_shared<LaserAction>(actions_2[10], actions_2[11], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[0], actions_1[1], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[2], actions_1[3], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[4], actions_1[5], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[6], actions_1[7], Globals::pirate_laser_origin_right, c1),
+			std::make_shared<LaserAction>(actions_1[8], actions_1[9], Globals::pirate_laser_origin_left, c1),
+			std::make_shared<LaserAction>(actions_1[10], actions_1[11], Globals::pirate_laser_origin_right, c1),
 
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
@@ -1453,6 +1453,13 @@ std::unique_ptr<Scene> supportarrive(std::string filename, std::shared_ptr<camer
 			splines_2[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<LaserAction>(actions_2[0], actions_2[1], Globals::pirate_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_2[2], actions_2[3], Globals::pirate_laser_origin_right, c2),
+			std::make_shared<LaserAction>(actions_2[4], actions_2[5], Globals::pirate_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_2[6], actions_2[7], Globals::pirate_laser_origin_right, c2),
+			std::make_shared<LaserAction>(actions_2[8], actions_2[9], Globals::pirate_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_2[10], actions_2[11], Globals::pirate_laser_origin_right, c2),
+
 			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
 		},
@@ -1466,6 +1473,13 @@ std::unique_ptr<Scene> supportarrive(std::string filename, std::shared_ptr<camer
 			splines_3[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
+			std::make_shared<LaserAction>(actions_3[0], actions_3[1], Globals::pirate_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_3[2], actions_3[3], Globals::pirate_laser_origin_right, c2),
+			std::make_shared<LaserAction>(actions_3[4], actions_3[5], Globals::pirate_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_3[6], actions_3[7], Globals::pirate_laser_origin_right, c2),
+			std::make_shared<LaserAction>(actions_3[8], actions_3[9], Globals::pirate_laser_origin_left, c2),
+			std::make_shared<LaserAction>(actions_3[10], actions_3[11], Globals::pirate_laser_origin_right, c2),
+
 			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
 		},
