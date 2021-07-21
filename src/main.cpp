@@ -18,7 +18,7 @@
 
 const int WINDOW_WIDTH = 2560;
 const int WINDOW_HEIGHT = 1440;
-const float FOV = 45.f;
+const float FOV = (40.0f/180)*M_PI;
 const float NEAR_VALUE = 0.1f;
 const float FAR_VALUE = 2000.f;
 
@@ -46,14 +46,14 @@ main(int, char**) {
 	Loader::load_shader();
 	Loader::load_ubos();
 	scenes.push_back(Loader::load_station("scenes/station/scene", cam));
-	scenes.push_back(Loader::load_travel("scenes/travel/scene", cam));
-	scenes.push_back(Loader::load_chase("scenes/chase/scene", cam));
-	scenes.push_back(Loader::load_asteroids_1("scenes/asteroids_1/scene", cam));
-	scenes.push_back(Loader::supporttravel("scenes/supporttravel/scene", cam));
-	scenes.push_back(Loader::load_asteroids_2("scenes/asteroids_2/scene", cam));
-	scenes.push_back(Loader::supportarrive("scenes/supportarrive/scene", cam));
-	scenes.push_back(Loader::supportkill("scenes/supportkill/scene", cam));
-	scenes.push_back(Loader::load_goodbye("scenes/goodbye/scene", cam));
+	//scenes.push_back(Loader::load_travel("scenes/travel/scene", cam));
+	//scenes.push_back(Loader::load_chase("scenes/chase/scene", cam));
+	//scenes.push_back(Loader::load_asteroids_1("scenes/asteroids_1/scene", cam));
+	//scenes.push_back(Loader::supporttravel("scenes/supporttravel/scene", cam));
+	//scenes.push_back(Loader::load_asteroids_2("scenes/asteroids_2/scene", cam));
+	//scenes.push_back(Loader::supportarrive("scenes/supportarrive/scene", cam));
+	//scenes.push_back(Loader::supportkill("scenes/supportkill/scene", cam));
+	//scenes.push_back(Loader::load_goodbye("scenes/goodbye/scene", cam));
 
 	Skybox::shader_program = Globals::shaders[Globals::shader_Skybox];
 

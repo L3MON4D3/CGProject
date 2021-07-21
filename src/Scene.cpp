@@ -26,101 +26,101 @@ Scene::Scene(
 }
 
 void Scene::render() {
-	ImGui::Begin("Scene_Control");
-		ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
-		ImGui::InputInt("Length", &length);
-		if (length < 1)
-			length = 1;
+	//ImGui::Begin("Scene_Control");
+	//	ImGui::SliderInt("Object", &state->current_indx, 0, objects.size()-1);
+	//	ImGui::InputInt("Length", &length);
+	//	if (length < 1)
+	//		length = 1;
 
-		if (ImGui::Checkbox("play", &state->play) && state->play)
-			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*length));
+	//	if (ImGui::Checkbox("play", &state->play) && state->play)
+	//		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*length));
 
-		if(ImGui::SliderFloat("time", &state->time, 0, 1))
-			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*length));
-		ImGui::Checkbox("freecam", &state->free_cam);
+	//	if(ImGui::SliderFloat("time", &state->time, 0, 1))
+	//		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*length));
+	//	ImGui::Checkbox("freecam", &state->free_cam);
 
-		if (ImGui::Button("Show all"))
-			for (char &c : state->render_curves)
-				c = 1;
-		if (ImGui::Button("Hide all"))
-			for (char &c : state->render_curves)
-				c = 0;
-		util::edit_boolvec(state->render_curves);
-	ImGui::End();
+	//	if (ImGui::Button("Show all"))
+	//		for (char &c : state->render_curves)
+	//			c = 1;
+	//	if (ImGui::Button("Hide all"))
+	//		for (char &c : state->render_curves)
+	//			c = 0;
+	//	util::edit_boolvec(state->render_curves);
+	//ImGui::End();
 
 	Object &current = *objects[state->current_indx];
 
-	ImGui::Begin("Obj_Time");
-		if(ImGui::SliderFloat("time", &state->time, 0, 1))
-			state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
-		util::plot_spline(*current.time_curve, "time", [](const tinyspline::BSpline &spline, float t) {
-			return util::eval_timespline(spline, t);
-		});
-		util::control_point_edit(&current.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
-	ImGui::End();
+	//ImGui::Begin("Obj_Time");
+	//	if(ImGui::SliderFloat("time", &state->time, 0, 1))
+	//		state->start_time = std::chrono::system_clock::now()-std::chrono::milliseconds(int(state->time*5000));
+	//	util::plot_spline(*current.time_curve, "time", [](const tinyspline::BSpline &spline, float t) {
+	//		return util::eval_timespline(spline, t);
+	//	});
+	//	util::control_point_edit(&current.time_curve, &state->indx_time, &state->range_time, &state->offset_time);
+	//ImGui::End();
 
-	ImGui::Begin("Obj_Pos");
-		util::control_point_edit(&current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
-	ImGui::End();
+	//ImGui::Begin("Obj_Pos");
+	//	util::control_point_edit(&current.pos_curve, &state->indx_pos, &state->range_pos, state->offset_pos);
+	//ImGui::End();
 
-	ImGui::Begin("Obj_Actions");
-		util::action_edit(current.inactive);
-	ImGui::End();
+	//ImGui::Begin("Obj_Actions");
+	//	util::action_edit(current.inactive);
+	//ImGui::End();
 
-	ImGui::Begin("Cam_Pos_Time");
-		util::plot_spline(*cam.time_pos_curve, "time", [](const tinyspline::BSpline &spline, float t) {
-			return util::eval_timespline(spline, t);
-		});
-		util::control_point_edit(&cam.time_pos_curve, &state->indx_time_c, &state->range_time_c, &state->offset_time_c);
-	ImGui::End();
+	//ImGui::Begin("Cam_Pos_Time");
+	//	util::plot_spline(*cam.time_pos_curve, "time", [](const tinyspline::BSpline &spline, float t) {
+	//		return util::eval_timespline(spline, t);
+	//	});
+	//	util::control_point_edit(&cam.time_pos_curve, &state->indx_time_c, &state->range_time_c, &state->offset_time_c);
+	//ImGui::End();
 
-	ImGui::Begin("Cam_Look_Time");
-		util::plot_spline(*cam.time_look_curve, "time", [](const tinyspline::BSpline &spline, float t) {
-			return util::eval_timespline(spline, t);
-		});
-		util::control_point_edit(&cam.time_look_curve, &state->indx_time_cl, &state->range_time_cl, &state->offset_time_cl);
-	ImGui::End();
+	//ImGui::Begin("Cam_Look_Time");
+	//	util::plot_spline(*cam.time_look_curve, "time", [](const tinyspline::BSpline &spline, float t) {
+	//		return util::eval_timespline(spline, t);
+	//	});
+	//	util::control_point_edit(&cam.time_look_curve, &state->indx_time_cl, &state->range_time_cl, &state->offset_time_cl);
+	//ImGui::End();
 
-	ImGui::Begin("Cam_Pos");
-		util::control_point_edit(&cam.pos_curve, &state->indx_pos_c, &state->range_pos_c, state->offset_pos_c);
-	ImGui::End();
+	//ImGui::Begin("Cam_Pos");
+	//	util::control_point_edit(&cam.pos_curve, &state->indx_pos_c, &state->range_pos_c, state->offset_pos_c);
+	//ImGui::End();
 
-	ImGui::Begin("Cam_Look");
-		util::control_point_edit(&cam.look_curve, &state->indx_look_c, &state->range_look_c, state->offset_look_c);
-	ImGui::End();
+	//ImGui::Begin("Cam_Look");
+	//	util::control_point_edit(&cam.look_curve, &state->indx_look_c, &state->range_look_c, state->offset_look_c);
+	//ImGui::End();
 
-	ImGui::Begin("Cam_Zoom");
-		util::plot_spline(*cam.zoom_curve, "rot", [](const tinyspline::BSpline &spline, float t) {
-			return spline.bisect(t).result()[1];
-		});
-		util::control_point_edit(&cam.zoom_curve, &state->indx_zoom_c, &state->range_zoom_c, state->offset_zoom_c);
-	ImGui::End();
+	//ImGui::Begin("Cam_Zoom");
+	//	util::plot_spline(*cam.zoom_curve, "rot", [](const tinyspline::BSpline &spline, float t) {
+	//		return spline.bisect(t).result()[1];
+	//	});
+	//	util::control_point_edit(&cam.zoom_curve, &state->indx_zoom_c, &state->range_zoom_c, state->offset_zoom_c);
+	//ImGui::End();
 
-	ImGui::Begin("Light_pos");
-		if (ImGui::InputInt("range", &state->range_light))
-			for (int i = 0; i != 3; ++i)
-				state->offset_light[i] = light_pos[i];
+	//ImGui::Begin("Light_pos");
+	//	if (ImGui::InputInt("range", &state->range_light))
+	//		for (int i = 0; i != 3; ++i)
+	//			state->offset_light[i] = light_pos[i];
 
-		for (int i = 0; i != 3; ++i)
-			ImGui::SliderFloat(std::to_string(i).c_str(), &light_pos[i],
-				state->offset_light[i]-state->range_light,
-				state->offset_light[i]+state->range_light);	
-	ImGui::End();
+	//	for (int i = 0; i != 3; ++i)
+	//		ImGui::SliderFloat(std::to_string(i).c_str(), &light_pos[i],
+	//			state->offset_light[i]-state->range_light,
+	//			state->offset_light[i]+state->range_light);	
+	//ImGui::End();
 
-	ImGui::Begin("Shader");
-		ImGui::SliderInt("current", &state->mat_indx, 0, Globals::mat_sz-1);
+	//ImGui::Begin("Shader");
+	//	ImGui::SliderInt("current", &state->mat_indx, 0, Globals::mat_sz-1);
 
-		glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[state->mat_indx]);
-		float vals[2];
-		glGetBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &vals[0]);
-		glGetBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &vals[1]);
+	//	glBindBuffer(GL_UNIFORM_BUFFER, Globals::mat2ubo[state->mat_indx]);
+	//	float vals[2];
+	//	glGetBufferSubData(GL_UNIFORM_BUFFER, 0, 4, &vals[0]);
+	//	glGetBufferSubData(GL_UNIFORM_BUFFER, 4, 4, &vals[1]);
 
-		ImGui::Text("%s", Globals::mat_names[state->mat_indx].c_str());
-		ImGui::SliderFloat("rough", &vals[0], 0, 1);
-		ImGui::SliderFloat("refr", &vals[1], 0, 1);
+	//	ImGui::Text("%s", Globals::mat_names[state->mat_indx].c_str());
+	//	ImGui::SliderFloat("rough", &vals[0], 0, 1);
+	//	ImGui::SliderFloat("refr", &vals[1], 0, 1);
 
-		glBufferData(GL_UNIFORM_BUFFER, 8, vals, GL_STATIC_DRAW);
-	ImGui::End();
+	//	glBufferData(GL_UNIFORM_BUFFER, 8, vals, GL_STATIC_DRAW);
+	//ImGui::End();
 
 	//ImGui::Begin("Misc");
 	//	if (current.done.size() > 0) {
@@ -131,14 +131,14 @@ void Scene::render() {
 	//	}
 	//ImGui::End();
 
-	render_extras(*this);
+	//render_extras(*this);
 
 	if (state->play)
 		state->time = (util::getTimeDelta(state->start_time) % length)/float(length);
 
     glm::mat4 proj_view_mat = Globals::proj;
 	glm::vec3 cam_pos;
-    if (state->free_cam) {
+    if (false) {
 		proj_view_mat *= free_cam->view_matrix();
 		cam_pos = free_cam->position(); 
 	} else {
@@ -146,11 +146,11 @@ void Scene::render() {
 		cam_pos = util::std2glm(cam.pos_curve->eval(util::eval_timespline(*cam.time_pos_curve, state->time)).result());
 	}
 
-	if (state->render_curves[0])
-		Curve(*cam.pos_curve, glm::vec4(0,0,1,1)).render(0, proj_view_mat);
+	//if (state->render_curves[0])
+	//	Curve(*cam.pos_curve, glm::vec4(0,0,1,1)).render(0, proj_view_mat);
 
-	if (state->render_curves[1])
-		Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
+	//if (state->render_curves[1])
+	//	Curve(*cam.look_curve, glm::vec4(1,1,0,1)).render(0, proj_view_mat);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::lighting_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::vec3), glm::value_ptr(light_pos));
@@ -162,8 +162,8 @@ void Scene::render() {
 	for (int i = 0; i != int(objects.size()); ++i) {
 		Object &o = *objects[i];
 
-		if (state->render_curves[i+2])
-			Curve(*o.pos_curve, i == state->current_indx ? active_color : inactive_color).render(0, proj_view_mat);
+		//if (state->render_curves[i+2])
+		//	Curve(*o.pos_curve, i == state->current_indx ? active_color : inactive_color).render(0, proj_view_mat);
 
 		o.render(state->time, proj_view_mat);
 	}
@@ -172,7 +172,7 @@ void Scene::render() {
 	if (extras)
 		extras->render(state->time, proj_view_mat);
 	
-	render_light(proj_view_mat);
+	//render_light(proj_view_mat);
 }
 
 void Scene::render_light(glm::mat4 proj_view) {
