@@ -21,7 +21,7 @@ Scene::Scene(
 	glm::vec3 light_pos,
 	std::unique_ptr<Asteroids> extras) :
 	skybox{},
-	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length}, light_pos{light_pos}, extras{std::move(extras)} {
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length*2}, light_pos{light_pos}, extras{std::move(extras)} {
 	glGenVertexArrays(1, &light_vao);
 }
 

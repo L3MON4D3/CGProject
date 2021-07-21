@@ -16,8 +16,8 @@
 #include <tinysplinecxx.h>
 #include <imgui.hpp>
 
-const int WINDOW_WIDTH = 2560;
-const int WINDOW_HEIGHT = 1440;
+const int WINDOW_WIDTH = 1920;
+const int WINDOW_HEIGHT = 1080;
 float fov = (53.0f*M_PI)/180;
 const float NEAR_VALUE = 0.1f;
 const float FAR_VALUE = 2000.f;
@@ -41,6 +41,10 @@ main(int, char**) {
 
 	Globals::proj = glm::perspective(fov, static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT, NEAR_VALUE, FAR_VALUE);
 	std::vector<std::unique_ptr<Scene>> scenes;
+
+	FILE *avconv = NULL;
+	avconv = popen("/usr/bin/ffmpeg -vcodec rawvideo -f rawvideo -pix_fmt rgb24 -s 1920x1080 -i pipe:0 -vf vflip -vcodec h264 -r 60 out.mp4", "w");
+	auto pixels = std::make_unique<unsigned char[]>(1920*1080*3);
 
 	Loader::load_models();
 	Loader::load_shader();
@@ -80,7 +84,7 @@ main(int, char**) {
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		imgui_new_frame(400, 200);
+		//imgui_new_frame(400, 200);
 
 		//ImGui::Begin("Global");
 		//ImGui::SliderInt("Scene", &scene_indx, 0, scenes.size()-1);
@@ -94,7 +98,12 @@ main(int, char**) {
 
         current_scene.render();
 
-		imgui_render();
+		//imgui_render();
+
+		glReadPixels(0,0,1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, pixels.get());
+		if (avconv)
+			fwrite(pixels.get(), 1920*1080*3, 1, avconv);
+		
         // swap buffers == show rendered content
         glfwSwapBuffers(window);
         // process window events
@@ -103,6 +112,7 @@ main(int, char**) {
 
 	cleanup_imgui();
     glfwTerminate();
+    pclose(avconv);
 }
 
 void resizeCallback(GLFWwindow*, int width, int height)
