@@ -53,7 +53,6 @@ main(int, char**) {
 	scenes.push_back(Loader::supporttravel("scenes/supporttravel/scene", cam));
 	scenes.push_back(Loader::supportarrive("scenes/supportarrive/scene", cam));
 	scenes.push_back(Loader::supportkill("scenes/supportkill/scene", cam));
-	scenes.push_back(Loader::load_scene2("scenes/sceneTest/scene", cam));
 
 	Skybox::shader_program = Globals::shaders[Globals::shader_Skybox];
 
