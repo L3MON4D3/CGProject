@@ -43,7 +43,7 @@ main(int, char**) {
 	std::vector<std::unique_ptr<Scene>> scenes;
 
 	FILE *avconv = NULL;
-	avconv = popen("/usr/bin/ffmpeg -r 60 -vcodec rawvideo -f rawvideo -pix_fmt rgb24 -s 1920x1080 -i pipe:0 -vf vflip -vcodec h264 -r 60 -crf 16 -preset veryslow out.mp4", "w");
+	avconv = popen("/usr/bin/ffmpeg -r 60 -vcodec rawvideo -f rawvideo -pix_fmt rgb24 -s 1920x1080 -i pipe:0 -vf vflip -vcodec h264 -r 60 -crf 16 -preset veryslow 7_2.mp4", "w");
 	auto pixels = std::make_unique<unsigned char[]>(1920*1080*3);
 
 	Loader::load_models();
@@ -84,13 +84,13 @@ main(int, char**) {
         // and fill screen with it (therefore clearing the window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//imgui_new_frame(400, 200);
+		imgui_new_frame(400, 200);
 
 		//ImGui::Begin("Global");
 		//ImGui::SliderInt("Scene", &scene_indx, 0, scenes.size()-1);
 		//if (ImGui::SliderFloat("fov", &fov, 0, 100))
 		//	Globals::proj = glm::perspective(float(fov*M_PI)/180, float(WINDOW_WIDTH) / WINDOW_HEIGHT, NEAR_VALUE, FAR_VALUE);
-		Scene &current_scene = *scenes[4];
+		Scene &current_scene = *scenes[7];
 
 		//if (ImGui::Button("Store"))
 		//	Loader::store_scene1(current_scene, current_scene.name);
@@ -98,7 +98,7 @@ main(int, char**) {
 
         current_scene.render();
 
-		//imgui_render();
+		imgui_render();
 
 		glReadPixels(0,0,1920, 1080, GL_RGB, GL_UNSIGNED_BYTE, pixels.get());
 		if (avconv)

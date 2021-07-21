@@ -1602,7 +1602,7 @@ std::unique_ptr<Scene> supportkill(std::string filename, std::shared_ptr<camera>
 			std::make_shared<LaserAction>(actions_1[32], actions_1[33], Globals::pirate_laser_origin_left, c1, 2500),
 			std::make_shared<LaserAction>(actions_1[34], actions_1[35], Globals::pirate_laser_origin_right, c1, 2500),
 
-			std::make_shared<ExplodeAction>(.940, 940),
+			std::make_shared<ExplodeAction>(.861, 1),
 			
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_right, 0, 1),
