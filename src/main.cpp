@@ -18,7 +18,7 @@
 
 const int WINDOW_WIDTH = 2560;
 const int WINDOW_HEIGHT = 1440;
-const float FOV = (40.0f/180)*M_PI;
+float fov = (53.0f*M_PI)/180;
 const float NEAR_VALUE = 0.1f;
 const float FAR_VALUE = 2000.f;
 
@@ -39,21 +39,21 @@ main(int, char**) {
     init_imgui(window);
 	std::srand(0);
 
-	Globals::proj = glm::perspective(FOV, static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT, NEAR_VALUE, FAR_VALUE);
+	Globals::proj = glm::perspective(fov, static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT, NEAR_VALUE, FAR_VALUE);
 	std::vector<std::unique_ptr<Scene>> scenes;
 
 	Loader::load_models();
 	Loader::load_shader();
 	Loader::load_ubos();
 	scenes.push_back(Loader::load_station("scenes/station/scene", cam));
-	//scenes.push_back(Loader::load_travel("scenes/travel/scene", cam));
-	//scenes.push_back(Loader::load_chase("scenes/chase/scene", cam));
-	//scenes.push_back(Loader::load_asteroids_1("scenes/asteroids_1/scene", cam));
-	//scenes.push_back(Loader::supporttravel("scenes/supporttravel/scene", cam));
-	//scenes.push_back(Loader::load_asteroids_2("scenes/asteroids_2/scene", cam));
-	//scenes.push_back(Loader::supportarrive("scenes/supportarrive/scene", cam));
-	//scenes.push_back(Loader::supportkill("scenes/supportkill/scene", cam));
-	//scenes.push_back(Loader::load_goodbye("scenes/goodbye/scene", cam));
+	scenes.push_back(Loader::load_travel("scenes/travel/scene", cam));
+	scenes.push_back(Loader::load_chase("scenes/chase/scene", cam));
+	scenes.push_back(Loader::load_asteroids_1("scenes/asteroids_1/scene", cam));
+	scenes.push_back(Loader::supporttravel("scenes/supporttravel/scene", cam));
+	scenes.push_back(Loader::load_asteroids_2("scenes/asteroids_2/scene", cam));
+	scenes.push_back(Loader::supportarrive("scenes/supportarrive/scene", cam));
+	scenes.push_back(Loader::supportkill("scenes/supportkill/scene", cam));
+	scenes.push_back(Loader::load_goodbye("scenes/goodbye/scene", cam));
 
 	Skybox::shader_program = Globals::shaders[Globals::shader_Skybox];
 
@@ -82,13 +82,15 @@ main(int, char**) {
 
 		imgui_new_frame(400, 200);
 
-		ImGui::Begin("Global");
-		ImGui::SliderInt("Scene", &scene_indx, 0, scenes.size()-1);
-		Scene &current_scene = *scenes[scene_indx];
+		//ImGui::Begin("Global");
+		//ImGui::SliderInt("Scene", &scene_indx, 0, scenes.size()-1);
+		//if (ImGui::SliderFloat("fov", &fov, 0, 100))
+		//	Globals::proj = glm::perspective(float(fov*M_PI)/180, float(WINDOW_WIDTH) / WINDOW_HEIGHT, NEAR_VALUE, FAR_VALUE);
+		Scene &current_scene = *scenes[0];
 
-		if (ImGui::Button("Store"))
-			Loader::store_scene1(current_scene, current_scene.name);
-		ImGui::End();
+		//if (ImGui::Button("Store"))
+		//	Loader::store_scene1(current_scene, current_scene.name);
+		//ImGui::End();
 
         current_scene.render();
 
@@ -107,5 +109,5 @@ void resizeCallback(GLFWwindow*, int width, int height)
 {
     // set new width and height as viewport size
     glViewport(0, 0, width, height);
-	Globals::proj = glm::perspective(FOV, static_cast<float>(width) / height, NEAR_VALUE, FAR_VALUE);
+	Globals::proj = glm::perspective(fov, static_cast<float>(width) / height, NEAR_VALUE, FAR_VALUE);
 }

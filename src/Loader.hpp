@@ -374,11 +374,11 @@ std::unique_ptr<Scene> load_travel(std::string filename, std::shared_ptr<camera>
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(treasure, actions_0[0], actions_0[1], 52, 6),
-			std::make_shared<EmoteAction>(treasure2, actions_0[2], actions_0[3], 52, 6),
-			std::make_shared<EmoteAction>(treasure, actions_0[4], actions_0[5], 52, 6),
-			std::make_shared<EmoteAction>(treasure2, actions_0[6], actions_0[7], 52, 6),
-			std::make_shared<EmoteAction>(treasure, actions_0[8], actions_0[9], 52, 6),
+			std::make_shared<EmoteAction>(treasure, actions_0[0], actions_0[1], 64, .07),
+			std::make_shared<EmoteAction>(treasure2, actions_0[2], actions_0[3], 64, .07),
+			std::make_shared<EmoteAction>(treasure, actions_0[4], actions_0[5], 64, .07),
+			std::make_shared<EmoteAction>(treasure2, actions_0[6], actions_0[7], 64, .07),
+			std::make_shared<EmoteAction>(treasure, actions_0[8], actions_0[9], 64, .07),
 
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
@@ -510,20 +510,20 @@ std::unique_ptr<Scene> load_chase(std::string filename, std::shared_ptr<camera> 
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(exclamation, actions_0[0], actions_0[1], 44, 3),
-			std::make_shared<EmoteAction>(exclamation, actions_0[2], actions_0[3], 44, 3),
+			std::make_shared<EmoteAction>(exclamation, actions_0[0], actions_0[1], 44, .07),
+			std::make_shared<EmoteAction>(exclamation, actions_0[2], actions_0[3], 44, .07),
 
-			std::make_shared<EmoteAction>(radio, actions_0[4], actions_0[5], 44, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[6], actions_0[7], 44, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[8], actions_0[9], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[4], actions_0[5], 44, .07),
+			std::make_shared<EmoteAction>(radio, actions_0[6], actions_0[7], 44, .07),
+			std::make_shared<EmoteAction>(radio, actions_0[8], actions_0[9], 44, .07),
 
-			std::make_shared<EmoteAction>(radio, actions_0[10], actions_0[11], 44, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[12], actions_0[13], 44, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[14], actions_0[15], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[10], actions_0[11], 44, .07),
+			std::make_shared<EmoteAction>(radio, actions_0[12], actions_0[13], 44, .07),
+			std::make_shared<EmoteAction>(radio, actions_0[14], actions_0[15], 44, .07),
 
-			std::make_shared<EmoteAction>(radio, actions_0[16], actions_0[17], 44, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[18], actions_0[19], 44, 3),
-			std::make_shared<EmoteAction>(radio, actions_0[20], actions_0[21], 44, 3),
+			std::make_shared<EmoteAction>(radio, actions_0[16], actions_0[17], 44, .07),
+			std::make_shared<EmoteAction>(radio, actions_0[18], actions_0[19], 44, .07),
+			std::make_shared<EmoteAction>(radio, actions_0[20], actions_0[21], 44, .07),
 
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
@@ -1030,7 +1030,7 @@ std::unique_ptr<Scene> load_asteroids_2(std::string filename, std::shared_ptr<ca
 			std::make_shared<LaserAction>(actions_2[32], actions_2[33], Globals::pirate_laser_origin_left, c1, 2500),
 			std::make_shared<LaserAction>(actions_2[34], actions_2[35], Globals::pirate_laser_origin_right, c1, 2500),
 
-			std::make_shared<EmoteAction>(exclamation, .87, .885, 42, 2),
+			std::make_shared<EmoteAction>(exclamation, .87, .885, 42, .07),
 			std::make_shared<ExplodeAction>(.884, 1, 10000),
 
 			std::make_shared<TurbineAction>(Globals::pirate_turbine_left, 0, .886),
@@ -1773,7 +1773,6 @@ std::unique_ptr<Scene> load_goodbye(std::string filename, std::shared_ptr<camera
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
 			std::make_shared<EmoteAction>(thumb, actions_0[0], actions_0[1], 44, 3),
-			std::make_shared<EmoteAction>(thumb, actions_0[2], actions_0[3], 44, 3),
 
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
@@ -1812,8 +1811,7 @@ std::unique_ptr<Scene> load_goodbye(std::string filename, std::shared_ptr<camera
 			splines_1[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(thumb, .1, .5, 44, 3),
-			std::make_shared<EmoteAction>(thumb, .5, .5, 44, 3),
+			std::make_shared<EmoteAction>(thumb, actions_1[0], actions_1[1], 44, 3),
 
 			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
@@ -1852,8 +1850,7 @@ std::unique_ptr<Scene> load_goodbye(std::string filename, std::shared_ptr<camera
 			splines_2[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(thumb, .1, .5, 44, 3),
-			std::make_shared<EmoteAction>(thumb, .5, .5, 44, 3),
+			std::make_shared<EmoteAction>(thumb, actions_2[0], actions_2[1], 44, 3),
 
 			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),

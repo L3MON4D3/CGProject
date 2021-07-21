@@ -36,7 +36,7 @@ EmoteAction::EmoteAction(
 }
 
 void EmoteAction::render(float, glm::mat4 mat, glm::mat4 obj) {
-	glm::mat4 pvm_mat = mat * obj * glm::translate(height*util::up);
+	glm::mat4 pvm_mat = glm::translate(height*util::up) * mat * obj;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, Globals::transform_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(pvm_mat));
