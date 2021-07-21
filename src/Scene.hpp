@@ -15,7 +15,7 @@ struct ImGuiState {
 	float time = 0;
 	std::chrono::time_point<std::chrono::system_clock> start_time =
 		std::chrono::system_clock::now();
-	bool play = false;
+	bool play = true;
 	bool free_cam = true;
 
 	int indx_pos = 0;
