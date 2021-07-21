@@ -43,7 +43,7 @@ main(int, char**) {
 	std::vector<std::unique_ptr<Scene>> scenes;
 
 	FILE *avconv = NULL;
-	avconv = popen("/usr/bin/ffmpeg -r 60 -vcodec rawvideo -f rawvideo -pix_fmt rgb24 -s 1920x1080 -i pipe:0 -vf vflip -vcodec h264 -r 60 -crf 16 out.mp4", "w");
+	avconv = popen("/usr/bin/ffmpeg -r 60 -vcodec rawvideo -f rawvideo -pix_fmt rgb24 -s 1920x1080 -i pipe:0 -vf vflip -vcodec h264 -r 60 -crf 16 -preset veryslow out.mp4", "w");
 	auto pixels = std::make_unique<unsigned char[]>(1920*1080*3);
 
 	Loader::load_models();
