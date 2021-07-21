@@ -21,7 +21,7 @@ Scene::Scene(
 	glm::vec3 light_pos,
 	std::unique_ptr<Asteroids> extras) :
 	skybox{},
-	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length*2}, light_pos{light_pos}, extras{std::move(extras)} {
+	render_extras{render_extras}, free_cam{free_cam}, cam{cam}, objects{std::move(objects)}, state{std::move(init_state)}, name{name},  length{length}, light_pos{light_pos}, extras{std::move(extras)}, frame{0} {
 	glGenVertexArrays(1, &light_vao);
 }
 
@@ -134,7 +134,10 @@ void Scene::render() {
 	// render_extras(*this);
 
 	if (state->play)
-		state->time = (util::getTimeDelta(state->start_time) % length)/float(length);
+		state->time = (frame/60.0f)/(length/1000);
+	if (state->time > 1)
+		std::exit(0);
+	
 
     glm::mat4 proj_view_mat = Globals::proj;
 	glm::vec3 cam_pos;
@@ -173,6 +176,7 @@ void Scene::render() {
 		extras->render(state->time, proj_view_mat);
 	
 	//render_light(proj_view_mat);
+	frame++;
 }
 
 void Scene::render_light(glm::mat4 proj_view) {

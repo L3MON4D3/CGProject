@@ -62,6 +62,7 @@ private:
 	unsigned int light_vao;
 	Skybox skybox;
 	std::unique_ptr<Asteroids> extras;
+	int frame;
 
 public:
 	Camera cam;
