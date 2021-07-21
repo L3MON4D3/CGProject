@@ -74,7 +74,7 @@ void TurbineAction::init_particles(const glm::vec3 verts[4]) {
 
 		p.pos[0] = pos[0];
 		p.pos[1] = pos[1];
-		p.pos[2] = pos[2];
+		p.pos[2] = verts[0].z -(std::rand()/f_rand_max);
 
 		p.start_pos = pos;
 
