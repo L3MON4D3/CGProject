@@ -1772,7 +1772,7 @@ std::unique_ptr<Scene> load_goodbye(std::string filename, std::shared_ptr<camera
 			splines_0[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(thumb, actions_0[0], actions_0[1], 44, 3),
+			std::make_shared<EmoteAction>(thumb, actions_0[0], actions_0[1], 44, .2),
 
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::cargo_A_turbine_right, 0, 1),
@@ -1811,7 +1811,7 @@ std::unique_ptr<Scene> load_goodbye(std::string filename, std::shared_ptr<camera
 			splines_1[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(thumb, actions_1[0], actions_1[1], 44, 3),
+			std::make_shared<EmoteAction>(thumb, actions_1[0], actions_1[1], 44, .2),
 
 			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
@@ -1850,7 +1850,7 @@ std::unique_ptr<Scene> load_goodbye(std::string filename, std::shared_ptr<camera
 			splines_2[3]
 		},
 		std::vector<std::shared_ptr<ObjectAction>>{
-			std::make_shared<EmoteAction>(thumb, actions_2[0], actions_2[1], 44, 3),
+			std::make_shared<EmoteAction>(thumb, actions_2[0], actions_2[1], 44, .2),
 
 			std::make_shared<TurbineAction>(Globals::support_turbine_left, 0, 1),
 			std::make_shared<TurbineAction>(Globals::support_turbine_right, 0, 1),
